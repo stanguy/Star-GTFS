@@ -21,8 +21,40 @@ all_lines = []
 CSV.foreach( File.join( Rails.root, "/tmp/routes.txt" ),
              :headers => true,
              :header_converters => :symbol,
+             :encoding => 'UTF-8' ) do |rawline|
+  line = rawline.to_hash
+  Line.create({ :src_id => line[:route_id],
+                :short_name => line[:route_short_name],
+                :long_name => line[:route_long_name],
+                :bgcolor => line[:route_color],
+                :fgcolor => line[:route_text_color] })
+end
+
+calendar = {}
+CSV.foreach( File.join( Rails.root, "/tmp/calendar.txt" ),
+             :headers => true,
+             :header_converters => :symbol,
              :encoding => 'UTF-8' ) do |line|
-  all_lines << line.to_hash
+  cal = line.to_hash
+  id = cal[:service_id]
+  calendar[id] = 0
+  cal.keys.grep(/day$/) do|k|
+    if cal[k] == "1"
+      calendar[id] |= Calendar.const_get( k.upcase )
+    end
+  end
+end
+
+CSV.foreach( File.join( Rails.root, "/tmp/trips.txt" ),
+             :headers => true,
+             :header_converters => :symbol,
+             :encoding => 'UTF-8' ) do |rawline|
+  line = rawline.to_hash
+  Trip.create({ :src_id => line[:trip_id],
+                :calendar => calendar[line[:service_id]],
+                :src_route_id => line[:route_id],
+                :headsign => line[:trip_headsign],
+                :block_id => line[:block_id] })
 end
 
 def average array
@@ -52,9 +84,4 @@ all_stops.each do |short_name,stops|
 end
 
 all_lines.each do |line|
-  Line.create({ :src_id => line[:route_id],
-                :short_name => line[:route_short_name],
-                :long_name => line[:route_long_name],
-                :bgcolor => line[:route_color],
-                :fgcolor => line[:route_text_color] })
 end

@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  src_id: 1
+  calendar: 1
+  src_route_id: MyString
+  headsign: MyString
+  block_id: 1
+
+two:
+  src_id: 1
+  calendar: 1
+  src_route_id: MyString
+  headsign: MyString
+  block_id: 1
