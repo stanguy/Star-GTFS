@@ -90,8 +90,8 @@ all_stops.each do |short_name,stops|
     real_name = counts.keys.sort { |a,b| counts[a] <=> counts[b] }.last
   end
   new_stop = Stop.create({ :stop_name => real_name, 
-                           :lat => average( stops.collect{|s| s[:stop_lat] } ),
-                           :lon => average( stops.collect{|s| s[:stop_lon] } ) })
+                           :lat => average( stops.collect{|s| s[:stop_lat].to_f } ),
+                           :lon => average( stops.collect{|s| s[:stop_lon].to_f } ) })
   stops.each do |stop|
     new_stop.stop_aliases.create({ :src_id => stop[:stop_id],
                                    :src_code => stop[:stop_code],
