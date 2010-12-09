@@ -57,7 +57,7 @@ CSV.foreach( File.join( Rails.root, "/tmp/calendar.txt" ),
   end
 end
 
-legacy[:trip_line] = {}
+legacy[:trip] = {}
 mlog "loading trips"
 CSV.foreach( File.join( Rails.root, "/tmp/trips.txt" ),
              :headers => true,
@@ -69,7 +69,7 @@ CSV.foreach( File.join( Rails.root, "/tmp/trips.txt" ),
                        :src_route_id => line[:route_id],
                        :headsign => line[:trip_headsign],
                        :block_id => line[:block_id] })
-  legacy[:trip_line][line[:trip_id]] = line[:route_id]
+  legacy[:trip][line[:trip_id]] = {  :line => line[:route_id], :calendar => calendar[line[:service_id]] }
 end
 
 def average array
@@ -107,8 +107,13 @@ CSV.foreach( File.join( Rails.root, "/tmp/stop_times.txt" ),
              :header_converters => :symbol,
              :encoding => 'UTF-8' ) do |rawline|
   line = rawline.to_hash
+  if ! legacy[:trip].has_key?(line[:trip_id])
+#    puts "Missing trip #{line[:trip_id]}"
+    next
+  end
   StopTime.create({ :stop_id => legacy[:stops][line[:stop_id]],
-                    :line_id => legacy[:trip_line][line[:trip_id]],
+                    :line_id => legacy[:trip][line[:trip_id]][:line],
+                    :calendar => legacy[:trip][line[:trip_id]][:calendar],
                     :arrival => line[:arrival_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i },
                     :departure => line[:departure_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i }
                   })

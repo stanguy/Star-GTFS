@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(:version => 20101209000234) do
     t.integer  "line_id"
     t.integer  "arrival"
     t.integer  "departure"
+    t.integer  "calendar"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

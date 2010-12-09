@@ -5,6 +5,7 @@ class CreateStopTimes < ActiveRecord::Migration
       t.integer :line_id
       t.integer :arrival
       t.integer :departure
+      t.integer :calendar
 
       t.timestamps
     end
