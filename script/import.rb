@@ -3,8 +3,17 @@
 require 'csv'
 require 'pp'
 
+
+def mlog msg
+  puts Time.now.to_s(:db) + " " + msg
+end
+    
+
+legacy = {}
+
 all_stops = {}
 
+mlog "loading stops"
 CSV.foreach( File.join( Rails.root, "/tmp/stops.txt" ),
              :headers => true,
              :header_converters => :symbol,
@@ -17,20 +26,23 @@ CSV.foreach( File.join( Rails.root, "/tmp/stops.txt" ),
   all_stops[name] << stop
 end
 
-all_lines = []
+legacy[:line] = {}
+mlog "loading routes"
 CSV.foreach( File.join( Rails.root, "/tmp/routes.txt" ),
              :headers => true,
              :header_converters => :symbol,
              :encoding => 'UTF-8' ) do |rawline|
   line = rawline.to_hash
-  Line.create({ :src_id => line[:route_id],
-                :short_name => line[:route_short_name],
-                :long_name => line[:route_long_name],
-                :bgcolor => line[:route_color],
-                :fgcolor => line[:route_text_color] })
+  new_line = Line.create({ :src_id => line[:route_id],
+                           :short_name => line[:route_short_name],
+                           :long_name => line[:route_long_name],
+                           :bgcolor => line[:route_color],
+                           :fgcolor => line[:route_text_color] })
+  legacy[:line][line[:route_id]] = new_line.id
 end
 
 calendar = {}
+mlog "loading calendar"
 CSV.foreach( File.join( Rails.root, "/tmp/calendar.txt" ),
              :headers => true,
              :header_converters => :symbol,
@@ -45,16 +57,19 @@ CSV.foreach( File.join( Rails.root, "/tmp/calendar.txt" ),
   end
 end
 
+legacy[:trip_line] = {}
+mlog "loading trips"
 CSV.foreach( File.join( Rails.root, "/tmp/trips.txt" ),
              :headers => true,
              :header_converters => :symbol,
              :encoding => 'UTF-8' ) do |rawline|
   line = rawline.to_hash
-  Trip.create({ :src_id => line[:trip_id],
-                :calendar => calendar[line[:service_id]],
-                :src_route_id => line[:route_id],
-                :headsign => line[:trip_headsign],
-                :block_id => line[:block_id] })
+  trip = Trip.create({ :src_id => line[:trip_id],
+                       :calendar => calendar[line[:service_id]],
+                       :src_route_id => line[:route_id],
+                       :headsign => line[:trip_headsign],
+                       :block_id => line[:block_id] })
+  legacy[:trip_line][line[:trip_id]] = line[:route_id]
 end
 
 def average array
@@ -62,6 +77,8 @@ def average array
 end
     
 
+legacy[:stops] = {}
+mlog "storing stops"
 all_stops.each do |short_name,stops|
   real_name = ''
   names = stops.collect {|s| s[:stop_name] }
@@ -80,8 +97,20 @@ all_stops.each do |short_name,stops|
                                    :src_name => stop[:stop_name],
                                    :src_lat => stop[:stop_lat],
                                    :src_lon => stop[:stop_lon] })
+    legacy[:stops][stop[:stop_id]] = new_stop.id
   end
 end
 
-all_lines.each do |line|
+mlog "loading stop_times"
+CSV.foreach( File.join( Rails.root, "/tmp/stop_times.txt" ),
+             :headers => true,
+             :header_converters => :symbol,
+             :encoding => 'UTF-8' ) do |rawline|
+  line = rawline.to_hash
+  StopTime.create({ :stop_id => legacy[:stops][line[:stop_id]],
+                    :line_id => legacy[:trip_line][line[:trip_id]],
+                    :arrival => line[:arrival_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i },
+                    :departure => line[:departure_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i }
+                  })
 end
+mlog "The end"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101208233400) do
+ActiveRecord::Schema.define(:version => 20101209000234) do
 
   create_table "lines", :force => true do |t|
     t.string   "src_id"
@@ -29,6 +29,15 @@ ActiveRecord::Schema.define(:version => 20101208233400) do
     t.string   "src_name"
     t.float    "src_lat"
     t.float    "src_lon"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "stop_times", :force => true do |t|
+    t.integer  "stop_id"
+    t.integer  "line_id"
+    t.integer  "arrival"
+    t.integer  "departure"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

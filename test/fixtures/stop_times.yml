@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  stop_id: 1
+  line_id: 1
+  arrival: 1
+  departure: 1
+
+two:
+  stop_id: 1
+  line_id: 1
+  arrival: 1
+  departure: 1
