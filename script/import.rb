@@ -3,6 +3,7 @@
 require 'csv'
 require 'pp'
 
+ActiveRecord::Base.logger.level = Logger::Severity::UNKNOWN
 
 def mlog msg
   puts Time.now.to_s(:db) + " " + msg
@@ -119,3 +120,9 @@ CSV.foreach( File.join( Rails.root, "/tmp/stop_times.txt" ),
                   })
 end
 mlog "The end"
+
+import_db = ActiveRecord::Base.connection.raw_connection
+output_db = SQLite3::Database.new( File.join( Rails.root, "/db/import.db" ) )
+backup = SQLite3::Backup.new( output_db, 'main', import_db, 'main')
+backup.step(-1) 
+backup.finish
