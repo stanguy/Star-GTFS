@@ -28,6 +28,7 @@ CSV.foreach( File.join( Rails.root, "/tmp/stops.txt" ),
 end
 
 legacy[:line] = {}
+lines_stops = {}
 mlog "loading routes"
 CSV.foreach( File.join( Rails.root, "/tmp/routes.txt" ),
              :headers => true,
@@ -39,7 +40,8 @@ CSV.foreach( File.join( Rails.root, "/tmp/routes.txt" ),
                            :long_name => line[:route_long_name],
                            :bgcolor => line[:route_color],
                            :fgcolor => line[:route_text_color] })
-  legacy[:line][line[:route_id]] = new_line.id
+  legacy[:line][line[:route_id]] = new_line
+  lines_stops[new_line.id] = {}
 end
 
 calendar = {}
@@ -70,7 +72,7 @@ CSV.foreach( File.join( Rails.root, "/tmp/trips.txt" ),
                        :src_route_id => line[:route_id],
                        :headsign => line[:trip_headsign],
                        :block_id => line[:block_id] })
-  legacy[:trip][line[:trip_id]] = {  :line => line[:route_id], :calendar => calendar[line[:service_id]] }
+  legacy[:trip][line[:trip_id]] = {  :line => legacy[:line][line[:route_id]], :calendar => calendar[line[:service_id]], :id => trip.id }
 end
 
 def average array
@@ -80,6 +82,7 @@ end
 
 legacy[:stops] = {}
 mlog "storing stops"
+all_new_stops = {}
 all_stops.each do |short_name,stops|
   real_name = ''
   names = stops.collect {|s| s[:stop_name] }
@@ -100,6 +103,7 @@ all_stops.each do |short_name,stops|
                                    :src_lon => stop[:stop_lon] })
     legacy[:stops][stop[:stop_id]] = new_stop.id
   end
+  all_new_stops[new_stop.id] = new_stop
 end
 
 mlog "loading stop_times"
@@ -112,17 +116,27 @@ CSV.foreach( File.join( Rails.root, "/tmp/stop_times.txt" ),
 #    puts "Missing trip #{line[:trip_id]}"
     next
   end
-  StopTime.create({ :stop_id => legacy[:stops][line[:stop_id]],
-                    :line_id => legacy[:trip][line[:trip_id]][:line],
-                    :calendar => legacy[:trip][line[:trip_id]][:calendar],
-                    :arrival => line[:arrival_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i },
-                    :departure => line[:departure_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i }
+  st = StopTime.create({ :stop_id => legacy[:stops][line[:stop_id]],
+                         :line_id => legacy[:trip][line[:trip_id]][:line].id,
+                         :trip_id => legacy[:trip][line[:trip_id]][:id],
+                         :calendar => legacy[:trip][line[:trip_id]][:calendar],
+                         :arrival => line[:arrival_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i },
+                         :departure => line[:departure_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i }
                   })
+  lines_stops[st.line_id][st.stop_id] = 1
 end
-mlog "The end"
 
+Line.all.each do |line|
+  line.stops = lines_stops[line.id].keys.collect {|stop_id| all_new_stops[stop_id] }.reject{|x| x.nil? }
+  line.save
+end
+
+
+
+mlog "Dumping memory to file"
 import_db = ActiveRecord::Base.connection.raw_connection
 output_db = SQLite3::Database.new( File.join( Rails.root, "/db/import.db" ) )
 backup = SQLite3::Backup.new( output_db, 'main', import_db, 'main')
 backup.step(-1) 
 backup.finish
+mlog "The end"
