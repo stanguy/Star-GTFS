@@ -1,4 +1,10 @@
 StarGtfs::Application.routes.draw do
+  get "home/show"
+  get "home/line"
+  get "home/stop"
+
+  root :to => "home#show"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

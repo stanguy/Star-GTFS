@@ -1,0 +1,8 @@
+<div id="info">
+<%= select_tag "lines", 
+                tag(:option) + options_from_collection_for_select( Line.all, :id, :full_name ),
+                { 'data-line-url' => home_line_path,
+                  'data-stop-url' => home_stop_path } %>
+</div>
+<div id="map"> </div>
+<%= init_javascript "$(document).ready($.Star.init);" %>
