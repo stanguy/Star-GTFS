@@ -3,6 +3,7 @@ class CreateStopTimes < ActiveRecord::Migration
     create_table :stop_times do |t|
       t.integer :stop_id
       t.integer :line_id
+      t.integer :trip_id
       t.integer :arrival
       t.integer :departure
       t.integer :calendar
