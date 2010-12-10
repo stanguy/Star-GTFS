@@ -19,7 +19,8 @@ class HomeController < ApplicationController
       where( "arrival > ?", ( now.hour * 60 + now.min ) * 60 + now.sec ).
       order( "arrival asc" ).limit( 10 )
     jsts = sts.collect do|stop_time|
-      { :time => stop_time.arrival.to_formatted_time }
+      { :time => stop_time.arrival.to_formatted_time,
+        :direction => stop_time.trip.headsign }
     end
     render :json => jsts
   end
