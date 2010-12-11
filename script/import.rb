@@ -2,6 +2,7 @@
 
 require 'csv'
 require 'pp'
+require 'point'
 
 ActiveRecord::Base.logger.level = Logger::Severity::UNKNOWN
 
@@ -26,6 +27,35 @@ CSV.foreach( File.join( Rails.root, "/tmp/stops.txt" ),
   end
   all_stops[name] << stop
 end
+
+valid_stops = {}
+all_stops.each do |shortname,stops|
+  checked_stops = { }
+  p = Point.new( stops.first[:stop_lat].to_f, stops.first[:stop_lon].to_f )
+  checked_stops[p] = [stops.shift]
+  stops.each do |stop|
+    found = false
+    p2 = Point.new( stop[:stop_lat].to_f, stop[:stop_lon].to_f )
+    checked_stops.each do |p,cs_stops|
+      if p.dist( p2 ) < 200
+        found = true
+        cs_stops << stop
+        break
+      end
+    end
+    if not found
+      checked_stops[p2] = [stop]
+    end
+  end
+  if checked_stops.keys.count > 1
+    checked_stops.values.each_with_index do|new_stops,idx|
+      valid_stops[ shortname + idx.to_s ] = new_stops
+    end
+  else
+    valid_stops[shortname] = checked_stops.values.first
+  end
+end
+all_stops = valid_stops
 
 legacy[:line] = {}
 lines_stops = {}
