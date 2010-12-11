@@ -5,7 +5,14 @@ class HomeController < ApplicationController
   def line
     l = Line.find(params[:id])
     data = l.stops.collect do|stop|
-      { :name => stop.stop_name, :id => stop.id, :lat => stop.lat, :lon => stop.lon }
+      { :name => stop.stop_name, :id => stop.id, :lat => stop.lat, :lon => stop.lon,
+        :times => StopTime.coming(l.id,stop.id).includes(:trip).limit( 10 ).collect {|st|
+          {
+            :time => st.arrival.to_formatted_time,
+            :direction => st.trip.headsign
+          }
+        }
+      }
     end
     render :json => data
   end
@@ -14,10 +21,7 @@ class HomeController < ApplicationController
     line_id = params[:line]
     stop_id = params[:stop]
     now = Time.now
-    sts = StopTime.where( :line_id => line_id, :stop_id => stop_id ).
-      where( "calendar & ? > 0", Calendar.from_time( now ) ).
-      where( "arrival > ?", ( now.hour * 60 + now.min ) * 60 + now.sec ).
-      order( "arrival asc" ).limit( 10 )
+    sts = StopTime.coming(line_id,stop_id).limit( 10 )
     jsts = sts.collect do|stop_time|
       { :time => stop_time.arrival.to_formatted_time,
         :direction => stop_time.trip.headsign }
