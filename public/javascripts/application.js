@@ -12,11 +12,28 @@ jQuery.Star = {};
     }
     function onMarkerClick() {
         console.log("hello");
-        var url = $('#info select').data('stop-url');
-        var line_id =  $('#info select').val();
-        var stop_id = this.stop_id;
-        current_marker = this;
-        $.get( url, { line: line_id, stop: stop_id }, onStopGet );
+        var directions = {};
+        for( var i = 0 ; i < this.times.length; ++i ) {
+            if ( directions[this.times[i].direction] === undefined ) {
+                directions[this.times[i].direction] = [];
+            }
+            directions[this.times[i].direction].push( this.times[i].time );
+        }
+        var content = $("<div></div>").append(
+            $("<h2></h2>").append(this.getTitle())
+        );
+        $.each( directions, function( d, times ){
+            content.append( $("<h3></h3>").append( d ) );
+            var ul = $("<ul></ul>");
+            for( var i =0 ; i < times.length; ++i ) {
+                ul.append( $("<li></li>").append( times[i] ) );
+            }
+            content.append( ul );
+        });
+        var infow = new google.maps.InfoWindow({
+            content: content[0]
+        });
+        infow.open( map, this );
     }
     function onLineGet( d, s, x) {
         $.each( d, function( idx, point ) {
@@ -27,6 +44,7 @@ jQuery.Star = {};
                 title: point.name
             });
             marker.stop_id = point.id;
+            marker.times = point.times;
             markers.push( marker );
             google.maps.event.addListener( marker, 'click', onMarkerClick );
         });
