@@ -11,20 +11,19 @@ jQuery.Star = {};
         
     }
     function onMarkerClick() {
-        console.log("hello");
         if ( this.times === undefined || this.times.length == 0 ) {
             return;
         }
         var content = $("<div></div>").append(
             $("<h2></h2>").append(this.getTitle())
-        );
+        ).addClass( 'time_display');
         for( var i = 0; i < this.times.length; ++i ) {
             content.append( $("<h3></h3>").append( this.times[i].direction ) );
             var ul = $("<ul></ul>");
             for( var j = 0; j < this.times[i].times.length; ++j ) {
                 ul.append( $("<li></li>").append( this.times[i].times[j] ) );              
             }
-            content.append( ul );
+            content.append( ul ).append( $("<div></div>").addClass("clear") );
         }
         var infow = new google.maps.InfoWindow({
             content: content[0]

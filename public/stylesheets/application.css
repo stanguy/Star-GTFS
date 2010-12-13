@@ -2,3 +2,27 @@
     width: 100%;
     height: 100%;
 }
+
+.time_display ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.time_display h2 {
+    margin: 5px;
+}
+.time_display h3 {
+    clear: both;
+    margin: 4px;
+}
+.time_display ul li {
+    padding: 0 10px;
+    float: left;
+    border-right: 1px solid #ddd;
+}
+.time_display ul li:last-child {
+    border-right: none;
+}
+.clear {
+    clear: both;
+}
