@@ -49,6 +49,8 @@ ActiveRecord::Schema.define(:version => 20101209223459) do
     t.datetime "updated_at"
   end
 
+  add_index "stop_times", ["line_id", "calendar", "arrival"], :name => "index_stop_times_on_line_id_and_calendar_and_arrival"
+
   create_table "stops", :force => true do |t|
     t.string   "stop_name"
     t.float    "lat"
