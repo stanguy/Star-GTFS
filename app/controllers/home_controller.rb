@@ -27,7 +27,7 @@ class HomeController < ApplicationController
             :direction => trip_name,
             :times => stop_times[stop.id][trip_name].collect(&:arrival).map(&:to_formatted_time)
           }
-        end
+        end.reject {|x| x[:times].empty? }
       end
       stop_info
     end
