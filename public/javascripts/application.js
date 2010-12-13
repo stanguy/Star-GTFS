@@ -7,6 +7,10 @@ jQuery.Star = {};
     var map;
     var markers = [];
     var current_marker = null;
+
+    var greenIcon = "http://www.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png";
+    var redIcon = "http://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png";
+
     function onStopGet( d, s, x ) {
         
     }
@@ -33,10 +37,17 @@ jQuery.Star = {};
     function onLineGet( d, s, x) {
         $.each( d, function( idx, point ) {
             var myLatlng = new google.maps.LatLng( point.lat, point.lon );
+            var icon;
+            if( point.times.length > 0 ) {
+                icon = greenIcon;
+            } else {
+                icon = redIcon;
+            }
             var marker = new google.maps.Marker( {
                 position: myLatlng,
                 map: map,
-                title: point.name
+                title: point.name,
+                icon: icon
             });
             marker.stop_id = point.id;
             marker.times = point.times;
