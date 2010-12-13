@@ -98,7 +98,7 @@ CSV.foreach( File.join( Rails.root, "/tmp/trips.txt" ),
              :encoding => 'UTF-8' ) do |rawline|
   line = rawline.to_hash
   trip = Trip.create({ :src_id => line[:trip_id],
-                       :line_id => legacy[:line][line[:route_id]],
+                       :line_id => legacy[:line][line[:route_id]].id,
                        :calendar => calendar[line[:service_id]],
                        :src_route_id => line[:route_id],
                        :headsign => line[:trip_headsign],
