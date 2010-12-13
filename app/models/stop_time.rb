@@ -17,10 +17,19 @@ class StopTime < ActiveRecord::Base
   scope :coming, lambda { |line_id|
     now = Time.now 
     later = now + 2.hour
-    where( :line_id => line_id ).
-    where( "calendar & ? > 0", Calendar.from_time( now ) ).
-    where( "arrival > ?", ( now.hour * 60 + now.min ) * 60 + now.sec ).
-    where( "arrival < ?", ( later.hour * 60 + later.min ) * 60 + later.sec )
+    value_now = ( now.hour * 60 + now.min ) * 60 + now.sec 
+    value_later = ( later.hour * 60 + later.min ) * 60 + later.sec
+    if now.day != later.day
+      where( :line_id => line_id ).
+        where( "( calendar & ? > 0 AND arrival > ? ) OR ( calendar & ? > 0 AND arrival < ? )", 
+               Calendar.from_time( now ), value_now, 
+               Calendar.from_time( later ), value_later )
+    else
+      where( :line_id => line_id ).
+        where( "calendar & ? > 0", Calendar.from_time( now ) ).
+        where( "arrival > ?", value_now ).
+        where( "arrival < ?", ( later.hour * 60 + later.min ) * 60 + later.sec )
+    end
   }
 
 end
