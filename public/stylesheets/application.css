@@ -3,6 +3,9 @@
     height: 100%;
 }
 
+.time_display {
+    max-width: 400px;
+}
 .time_display ul {
     padding: 0;
     margin: 0;
