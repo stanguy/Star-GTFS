@@ -8,7 +8,7 @@ So, you want to use this application or do things with, you have just checked ou
 
 You want to initialize the database with the official dataset. Fetch the zip file from the Keolis website and unzip it in @tmp/@. If you have time and want to do something else before everything else is ready, just run @rails runner script/import.rb@. If you don't want to wait 2 hours, edit the @database.yml@ file so that the @database@ file points at the @:inmemory:@ database instead of a file, run the aforementioned command line and then copy @db/import.db@ into the file that you won't forget to switch back.
 
-The @import.db@ script takes the various csv files and put some parts into a database, plus some more that I thought more efficient at runtime (like, say, not using @trips@ but directly linking lines, stops and stop_times).
+The @import.rb@ script takes the various csv files and put some parts into a database, plus some more that I thought more efficient at runtime (like, say, not using @trips@ but directly linking lines, stops and stop_times).
 
 You can now start your server and point your browser at your usual URL (say, http://localhost:3000/).
 
