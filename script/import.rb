@@ -163,11 +163,12 @@ Line.all.each do |line|
 end
 
 
-
-mlog "Dumping memory to file"
-import_db = ActiveRecord::Base.connection.raw_connection
-output_db = SQLite3::Database.new( File.join( Rails.root, "/db/import.db" ) )
-backup = SQLite3::Backup.new( output_db, 'main', import_db, 'main')
-backup.step(-1) 
-backup.finish
+if in_memory_database?
+  mlog "Dumping memory to file"
+  import_db = ActiveRecord::Base.connection.raw_connection
+  output_db = SQLite3::Database.new( File.join( Rails.root, "/db/import.db" ) )
+  backup = SQLite3::Backup.new( output_db, 'main', import_db, 'main')
+  backup.step(-1) 
+  backup.finish
+end
 mlog "The end"
