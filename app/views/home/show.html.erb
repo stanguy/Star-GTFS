@@ -3,6 +3,9 @@
                 tag(:option) + options_from_collection_for_select( Line.all, :id, :full_name ),
                 { 'data-line-url' => home_line_path,
                   'data-stop-url' => home_stop_path } %>
+<span id="ajax-loader" style="display: none;">
+  <img src="/images/ajax-loader.gif">
+</span>
 </div>
 <div id="map"> </div>
 <%= init_javascript "$(document).ready($.Star.init);" %>

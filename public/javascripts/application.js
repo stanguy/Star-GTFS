@@ -64,6 +64,12 @@ jQuery.Star = {};
         $.get( url, { id: $(this).val() }, onLineGet, "json" );
     }
     $.Star.init= function() {
+        $('#ajax-loader').ajaxSend(function(){
+            $(this).show();
+        });
+        $('#ajax-loader').ajaxComplete(function(){
+            $(this).hide();
+        });
         map = new google.maps.Map($('#map')[0], {
             'zoom': 13,
             'center': new google.maps.LatLng( 48.11, -1.63 ),
