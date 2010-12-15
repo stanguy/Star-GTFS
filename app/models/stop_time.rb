@@ -15,7 +15,7 @@ class StopTime < ActiveRecord::Base
   belongs_to :stop
 
   scope :coming, lambda { |line_id|
-    now = Time.now 
+    now = Time.zone.now
     later = now + 2.hour
     value_now = ( now.hour * 60 + now.min ) * 60 + now.sec 
     value_later = ( later.hour * 60 + later.min ) * 60 + later.sec
