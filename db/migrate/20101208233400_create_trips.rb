@@ -5,7 +5,7 @@ class CreateTrips < ActiveRecord::Migration
       t.integer :src_id
       t.integer :calendar
       t.string :src_route_id
-      t.string :headsign
+      t.integer :headsign_id
       t.integer :block_id
 
       t.timestamps

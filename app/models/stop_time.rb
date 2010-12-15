@@ -13,6 +13,7 @@ class StopTime < ActiveRecord::Base
   belongs_to :trip
   belongs_to :line
   belongs_to :stop
+  belongs_to :headsign # normalizawha?
 
   scope :coming, lambda { |line_id|
     now = Time.zone.now

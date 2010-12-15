@@ -91,19 +91,26 @@ CSV.foreach( File.join( Rails.root, "/tmp/calendar.txt" ),
 end
 
 legacy[:trip] = {}
+all_headsigns = HashWithIndifferentAccess.new
 mlog "loading trips"
 CSV.foreach( File.join( Rails.root, "/tmp/trips.txt" ),
              :headers => true,
              :header_converters => :symbol,
              :encoding => 'UTF-8' ) do |rawline|
   line = rawline.to_hash
+  unless all_headsigns.has_key? line[:trip_headsign]
+    headsign = Headsign.create({ :name => line[:trip_headsign],
+                                 :line_id => legacy[:line][line[:route_id]].id })
+    all_headsigns[line[:trip_headsign]] = headsign
+  end
   trip = Trip.create({ :src_id => line[:trip_id],
                        :line_id => legacy[:line][line[:route_id]].id,
                        :calendar => calendar[line[:service_id]],
                        :src_route_id => line[:route_id],
-                       :headsign => line[:trip_headsign],
+                       :headsign_id => all_headsigns[line[:trip_headsign]].id,
                        :block_id => line[:block_id] })
-  legacy[:trip][line[:trip_id]] = {  :line => legacy[:line][line[:route_id]], :calendar => calendar[line[:service_id]], :id => trip.id }
+  legacy[:trip][line[:trip_id]] = {  :line => legacy[:line][line[:route_id]], :calendar => calendar[line[:service_id]], :headsign_id => trip.headsign_id, :id => trip.id }
+  
 end
 
 def average array
@@ -123,7 +130,7 @@ all_stops.each do |short_name,stops|
     counts = names.inject(Hash.new(0)) {|h,i| h[i] += 1; h }
     real_name = counts.keys.sort { |a,b| counts[a] <=> counts[b] }.last
   end
-  new_stop = Stop.create({ :stop_name => real_name, 
+  new_stop = Stop.create({ :name => real_name, 
                            :lat => average( stops.collect{|s| s[:stop_lat].to_f } ),
                            :lon => average( stops.collect{|s| s[:stop_lon].to_f } ) })
   stops.each do |stop|
@@ -150,6 +157,7 @@ CSV.foreach( File.join( Rails.root, "/tmp/stop_times.txt" ),
   st = StopTime.create({ :stop_id => legacy[:stops][line[:stop_id]],
                          :line_id => legacy[:trip][line[:trip_id]][:line].id,
                          :trip_id => legacy[:trip][line[:trip_id]][:id],
+                         :headsign_id => legacy[:trip][line[:trip_id]][:headsign_id],
                          :calendar => legacy[:trip][line[:trip_id]][:calendar],
                          :arrival => line[:arrival_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i },
                          :departure => line[:departure_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i }

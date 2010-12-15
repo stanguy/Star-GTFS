@@ -4,28 +4,27 @@ class HomeController < ApplicationController
 
   def line
     l = Line.find(params[:id])
+
     headsigns = {}
-    l.trips.of_the_day.each { |t| headsigns[t.id] = t.headsign.to_sym }
+    l.headsigns.each {|h| headsigns[h.id] = h.name }
     stop_times = {}
-    original_stop_times = StopTime.coming(l.id).order(:arrival)
-    trip_names = original_stop_times.collect(&:trip_id).map{|tid| headsigns[tid] }.uniq
-    l.stops.select('id').each do |stop|
-      sid = stop.id
-      stop_times[sid] = {}
-      trip_names.each do |tname|
-        stop_times[sid][tname] = []
+    origina_stop_times = StopTime.coming(l.id).order(:arrival)
+    origina_stop_times.each do |st|
+      stop_times[st.stop_id] = {}
+      headsigns.keys.each do|k|
+        stop_times[st.stop_id][k] = []
       end
     end
-    original_stop_times.each do |st|
-      stop_times[st.stop_id][headsigns[st.trip_id]] << st
+    origina_stop_times.each do |st|
+      stop_times[st.stop_id][st.headsign_id] << st
     end
     data = l.stops.collect do|stop|
-      stop_info = { :name => stop.stop_name, :id => stop.id, :lat => stop.lat, :lon => stop.lon }
+      stop_info = { :name => stop.name, :id => stop.id, :lat => stop.lat, :lon => stop.lon }
       if stop_times.has_key? stop.id
-        stop_info[:times] = stop_times[stop.id].keys.collect do |trip_name|
+        stop_info[:times] = stop_times[stop.id].keys.collect do |headsign_id|
           { 
-            :direction => trip_name,
-            :times => stop_times[stop.id][trip_name].collect(&:arrival).map(&:to_formatted_time)
+            :direction => headsigns[headsign_id],
+            :times => stop_times[stop.id][headsign_id].collect(&:arrival).map(&:to_formatted_time)
           }
         end.reject {|x| x[:times].empty? }
       end

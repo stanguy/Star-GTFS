@@ -10,7 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101209223459) do
+ActiveRecord::Schema.define(:version => 20101215201259) do
+
+  create_table "headsigns", :force => true do |t|
+    t.string   "name"
+    t.integer  "line_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "lines", :force => true do |t|
     t.string   "src_id"
@@ -42,6 +49,7 @@ ActiveRecord::Schema.define(:version => 20101209223459) do
     t.integer  "stop_id"
     t.integer  "line_id"
     t.integer  "trip_id"
+    t.integer  "headsign_id"
     t.integer  "arrival"
     t.integer  "departure"
     t.integer  "calendar"
@@ -52,7 +60,7 @@ ActiveRecord::Schema.define(:version => 20101209223459) do
   add_index "stop_times", ["line_id", "calendar", "arrival"], :name => "index_stop_times_on_line_id_and_calendar_and_arrival"
 
   create_table "stops", :force => true do |t|
-    t.string   "stop_name"
+    t.string   "name"
     t.float    "lat"
     t.float    "lon"
     t.datetime "created_at"
@@ -64,7 +72,7 @@ ActiveRecord::Schema.define(:version => 20101209223459) do
     t.integer  "src_id"
     t.integer  "calendar"
     t.string   "src_route_id"
-    t.string   "headsign"
+    t.integer  "headsign_id"
     t.integer  "block_id"
     t.datetime "created_at"
     t.datetime "updated_at"

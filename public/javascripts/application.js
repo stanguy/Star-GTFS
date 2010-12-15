@@ -38,7 +38,7 @@ jQuery.Star = {};
         $.each( d, function( idx, point ) {
             var myLatlng = new google.maps.LatLng( point.lat, point.lon );
             var icon;
-            if( point.times.length > 0 ) {
+            if( point.times != undefined && point.times.length > 0 ) {
                 icon = greenIcon;
             } else {
                 icon = redIcon;

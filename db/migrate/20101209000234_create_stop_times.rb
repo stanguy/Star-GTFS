@@ -4,6 +4,7 @@ class CreateStopTimes < ActiveRecord::Migration
       t.integer :stop_id
       t.integer :line_id
       t.integer :trip_id
+      t.integer :headsign_id
       t.integer :arrival
       t.integer :departure
       t.integer :calendar
