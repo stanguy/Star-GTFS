@@ -35,3 +35,17 @@ html, body {
 .clear {
     clear: both;
 }
+table.schedule {
+    border-collapse:collapse;
+}
+table.schedule th, table.schedule td {
+    vertical-align: top;
+    text-align: right;
+    width: 100px;
+    border: 1px solid #ddd;
+}
+
+div.headsign {
+    display: none;
+    background-color: white;
+}

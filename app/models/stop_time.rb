@@ -1,11 +1,14 @@
 
 class Fixnum
   def to_formatted_time
+    "%02d:%02d" % self.to_hm
+  end
+  def to_hm
     rem = self / 60
     mins = rem % 60
     hours = rem / 60
-    "%02d:%02d" % [ hours, mins ]
-  end
+    [ hours, mins ]
+  end     
 end
 
 

@@ -1,0 +1,35 @@
+<% if @schedule.keys.count > 1 %>
+  <%= select_tag "heading", 
+                options_for_select( @headsigns.invert, @schedule.keys.first ) %>
+<% end %>
+<% @schedule.each do |direction_id,hours| %>
+<div class="headsign" id="heading_<%= direction_id %>">
+  <h2><%= @headsigns[direction_id] %></h2>
+  <table class="schedule">
+    <tr>
+      <th>&nbsp;</th>
+      <% @all_calendars.keys.each do |calendar| %>
+      <th><%= Calendar.range_to_str( calendar ) %></th>
+      <% end %>
+    </tr>
+    <% hours.keys.sort.each do |hour| %>
+    <tr>
+      <th><%= hour %></th>
+      <% @all_calendars.keys.each do |calendar| %>
+      <td>&nbsp;
+        <% if hours[hour].has_key? calendar %>
+          <% hours[hour][calendar].sort.each do|min| %>
+            <%= min %><br />
+          <% end # mins %>
+        <% end %>
+      </td>
+      <% end # calendar %>
+    </tr>
+    <% end # hours%>
+  </table>
+  <div style="clear: both;"></div>
+</div>
+  <div style="clear: both;"></div>
+<% end %>
+
+<%= init_javascript "$(document).ready($.Star.init);" %>

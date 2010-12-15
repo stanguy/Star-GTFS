@@ -7,6 +7,7 @@ jQuery.Star = {};
     var map;
     var markers = [];
     var current_marker = null;
+    var default_colorbox_opts = { width: '40%', maxHeight: '80%' };
 
     var greenIcon = "http://www.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png";
     var redIcon = "http://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png";
@@ -16,6 +17,11 @@ jQuery.Star = {};
     }
     function onMarkerClick() {
         if ( this.times === undefined || this.times.length == 0 ) {
+            $.colorbox($.extend({href: this.schedule_url,
+                onComplete: function() {
+                    $('div.headsign:first').show();
+                    $.colorbox.resize(default_colorbox_opts);
+                }}, default_colorbox_opts));
             return;
         }
         var content = $("<div></div>").append(
@@ -51,6 +57,7 @@ jQuery.Star = {};
             });
             marker.stop_id = point.id;
             marker.times = point.times;
+            marker.schedule_url = point.schedule_url;
             markers.push( marker );
             google.maps.event.addListener( marker, 'click', onMarkerClick );
         });
@@ -63,10 +70,16 @@ jQuery.Star = {};
         var url = $('#info select').data('line-url');
         $.get( url, { id: $(this).val() }, onLineGet, "json" );
     }
+    function onHeadingChange() {
+        $('.headsign:visible').hide();
+        $('#heading_' + $('#heading').val() ).show();
+        $.colorbox.resize(default_colorbox_opts);
+    }
     $.Star.init= function() {
         $('#ajax-loader').ajaxSend(function(){
             $(this).show();
         });
+        $('#heading').live( 'change', onHeadingChange );
         $('#ajax-loader').ajaxComplete(function(){
             $(this).hide();
         });
