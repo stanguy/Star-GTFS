@@ -76,7 +76,7 @@ jQuery.Star = {};
             marker.setMap( null );
         });
         markers = [];
-        var url = $('#info select').data('line-url');
+        var url = $('#lineactions select').data('line-url');
         $.get( url, { id: $(this).val() }, onLineGet, "json" );
     }
     function onHeadingChange() {
@@ -112,9 +112,9 @@ jQuery.Star = {};
             'center': new google.maps.LatLng( 48.11, -1.63 ),
             'mapTypeId': google.maps.MapTypeId.ROADMAP
         });
-        $('#info select').change(onSelectLine);
-        if ( $('#info select').val() != '' ) {
-            $('#info select').change();
+        $('#lineactions select').change(onSelectLine);
+        if ( $('#lineactions select').val() != '' ) {
+            $('#lineactions select').change();
         }
     };
 })(jQuery);
