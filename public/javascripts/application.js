@@ -111,5 +111,8 @@ jQuery.Star = {};
             'mapTypeId': google.maps.MapTypeId.ROADMAP
         });
         $('#info select').change(onSelectLine);
+        if ( $('#info select').val() != '' ) {
+            $('#info select').change();
+        }
     };
 })(jQuery);
