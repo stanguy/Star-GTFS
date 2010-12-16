@@ -7,6 +7,9 @@ class Fixnum
     rem = self / 60
     mins = rem % 60
     hours = rem / 60
+    if hours >= 24
+      hours -= 24
+    end
     [ hours, mins ]
   end     
 end
