@@ -21,6 +21,7 @@ CSV.foreach( File.join( Rails.root, "/tmp/stops.txt" ),
              :header_converters => :symbol,
              :encoding => 'UTF-8' ) do |line|
   stop = line.to_hash
+  next unless stop[:stop_code].match(/^[0-9]+$/)
   name = stop[:stop_name].downcase.gsub( /[ -_\.]/, '' )
   unless all_stops.has_key? name
     all_stops[name] = []
