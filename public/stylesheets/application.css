@@ -18,13 +18,17 @@ html, body.stargtfs {
     height: 800px;
 }
 #footer {
-    text-align: right;
     height: 20px;
     font-size: 10px;
     padding-top: 5px;
 }
-#footer a{
+#footer a.datasource{
     color: #7777CC;
+    float: right;
+}
+#footer a.contact{
+    color: #469A45;
+    float: left;
 }
 
 .time_display {
