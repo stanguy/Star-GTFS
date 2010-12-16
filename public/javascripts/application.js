@@ -24,6 +24,7 @@ jQuery.Star = {};
         }
         if ( this.times === undefined || this.times.length == 0 ) {
             $.colorbox($.extend({href: this.schedule_url,
+                title: this.getTitle(),
                 onComplete: function() {
                     $('div.headsign:first').show();
                     $.colorbox.resize(default_colorbox_opts);
@@ -89,6 +90,7 @@ jQuery.Star = {};
             infowindow.close();
         }
         $.colorbox($.extend({href: $(this).attr('href'),
+                title: $(this).closest('div').children('h2').text(),
                 onComplete: function() {
                     $('div.headsign:first').show();
                     $.colorbox.resize(default_colorbox_opts);

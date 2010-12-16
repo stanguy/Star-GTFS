@@ -58,18 +58,29 @@ a.dir_schedule {
     float: right;
     margin: 5px 0;
 }
+.schedule_container {
+    min-width: 480px;
+}
+.schedule_container div.dir_select {
+    position: absolute;
+    right: 5px;
+}
+.schedule_container .headsign h2 {
+    margin: 10px;
+}
 .clear {
     clear: both;
 }
 table.schedule {
     border-collapse:collapse;
+    margin: 5px auto;
 }
 table.schedule th, table.schedule td {
     vertical-align: top;
     text-align: right;
     width: 100px;
     border-top: 1px solid #ddd;
-    padding: 2px 0;
+    padding: 4px 10px 0 0;
     font-size: 12px;
     line-height: 1.1;
 }
@@ -77,4 +88,19 @@ table.schedule th, table.schedule td {
 div.headsign {
     display: none;
     background-color: white;
+}
+
+#colorbox {
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+#cboxContent {
+    border-top: 1px solid #999999
+}
+#cboxTitle {
+    width: 100%;
+    text-align: center;
+}
+#cboxContent #cboxClose {
+    top: -27px;
 }

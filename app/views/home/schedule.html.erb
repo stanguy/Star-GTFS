@@ -1,7 +1,12 @@
+<div class="schedule_container">
 <% if @schedule.keys.count > 1 %>
+    <div class="dir_select">
+      <label for="heading">Direction:</label>
   <%= select_tag "heading", 
                 options_for_select( @headsigns.invert, @schedule.keys.first ) %>
+    </div>
 <% end %>
+  <%= div_clear %>
 <% @schedule.each do |direction_id,hours| %>
 <div class="headsign" id="heading_<%= direction_id %>">
   <h2><%= @headsigns[direction_id] %></h2>
@@ -27,9 +32,14 @@
     </tr>
     <% end # hours%>
   </table>
-  <div style="clear: both;"></div>
+  <%= div_clear %>
 </div>
-  <div style="clear: both;"></div>
+  <%= div_clear %>
 <% end %>
 
-<%= init_javascript "$(document).ready($.Star.init);" %>
+<%= init_javascript "$.Star.init();" %>
+<% if @schedule.keys.count == 1 %>
+  <%= init_javascript "$('div.headsign:first').show();" %>
+  <%= init_javascript "console.log('tamere');" %>
+<% end %>
+</div>

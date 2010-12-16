@@ -5,4 +5,10 @@ module ApplicationHelper
     @init_javascripts << scripts
     ''
   end
+  
+  def div_clear
+    tag :div, :class => 'clear'
+  end
+      
+
 end
