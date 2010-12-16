@@ -1,6 +1,6 @@
 <div id="info" class="grid_5">
 <%= select_tag "lines", 
-                tag(:option) + line_options_for_select( Line.all ),
+                content_tag(:option, "Sélectionnez une ligne...") + line_options_for_select( Line.all ),
                 { 'data-line-url' => home_line_path } %>
 <span id="ajax-loader" style="display: none;">
   <img src="/images/ajax-loader.gif">
