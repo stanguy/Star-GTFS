@@ -60,6 +60,7 @@ all_stops = valid_stops
 
 legacy[:line] = {}
 lines_stops = {}
+all_headsigns = {}
 mlog "loading routes"
 CSV.foreach( File.join( Rails.root, "/tmp/routes.txt" ),
              :headers => true,
@@ -73,6 +74,7 @@ CSV.foreach( File.join( Rails.root, "/tmp/routes.txt" ),
                            :fgcolor => line[:route_text_color] })
   legacy[:line][line[:route_id]] = new_line
   lines_stops[new_line.id] = {}
+  all_headsigns[new_line.id] = {}
 end
 
 calendar = {}
@@ -92,23 +94,23 @@ CSV.foreach( File.join( Rails.root, "/tmp/calendar.txt" ),
 end
 
 legacy[:trip] = {}
-all_headsigns = HashWithIndifferentAccess.new
+
 mlog "loading trips"
 CSV.foreach( File.join( Rails.root, "/tmp/trips.txt" ),
              :headers => true,
              :header_converters => :symbol,
              :encoding => 'UTF-8' ) do |rawline|
   line = rawline.to_hash
-  unless all_headsigns.has_key? line[:trip_headsign]
+  unless all_headsigns[legacy[:line][line[:route_id]].id].has_key? line[:trip_headsign]
     headsign = Headsign.create({ :name => line[:trip_headsign],
                                  :line_id => legacy[:line][line[:route_id]].id })
-    all_headsigns[line[:trip_headsign]] = headsign
+    all_headsigns[legacy[:line][line[:route_id]].id][line[:trip_headsign]] = headsign
   end
   trip = Trip.create({ :src_id => line[:trip_id],
                        :line_id => legacy[:line][line[:route_id]].id,
                        :calendar => calendar[line[:service_id]],
                        :src_route_id => line[:route_id],
-                       :headsign_id => all_headsigns[line[:trip_headsign]].id,
+                       :headsign_id => all_headsigns[legacy[:line][line[:route_id]].id][line[:trip_headsign]].id,
                        :block_id => line[:block_id] })
   legacy[:trip][line[:trip_id]] = {  :line => legacy[:line][line[:route_id]], :calendar => calendar[line[:service_id]], :headsign_id => trip.headsign_id, :id => trip.id }
   
