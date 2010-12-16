@@ -105,6 +105,7 @@ jQuery.Star = {};
             $(this).hide();
         });
         map = new google.maps.Map($('#map')[0], {
+            'scrollwheel': false,
             'zoom': 13,
             'center': new google.maps.LatLng( 48.11, -1.63 ),
             'mapTypeId': google.maps.MapTypeId.ROADMAP
