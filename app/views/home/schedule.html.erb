@@ -14,11 +14,11 @@
     </tr>
     <% hours.keys.sort.each do |hour| %>
     <tr>
-      <th><%= hour %></th>
+      <th><%= hour %>h</th>
       <% @all_calendars.keys.each do |calendar| %>
       <td>&nbsp;
         <% if hours[hour].has_key? calendar %>
-          <% hours[hour][calendar].sort.each do|min| %>
+          <% hours[hour][calendar].each do|min| %>
             <%= min %><br />
           <% end # mins %>
         <% end %>

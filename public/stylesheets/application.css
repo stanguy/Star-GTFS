@@ -42,7 +42,10 @@ table.schedule th, table.schedule td {
     vertical-align: top;
     text-align: right;
     width: 100px;
-    border: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    padding: 2px 0;
+    font-size: 12px;
+    line-height: 1.1;
 }
 
 div.headsign {
