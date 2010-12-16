@@ -24,7 +24,8 @@ class HomeController < ApplicationController
         stop_info[:times] = stop_times[stop.id].keys.collect do |headsign_id|
           { 
             :direction => headsigns[headsign_id],
-            :times => stop_times[stop.id][headsign_id].collect(&:arrival).map(&:to_formatted_time)
+            :times => stop_times[stop.id][headsign_id].collect(&:arrival).map(&:to_formatted_time),
+            :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :headsign_id => headsign_id })
           }
         end.reject {|x| x[:times].empty? }
       end

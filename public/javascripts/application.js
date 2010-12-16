@@ -6,6 +6,7 @@ jQuery.Star = {};
 (function($) {
     var map;
     var markers = [];
+    var infowindow = null;
     var current_marker = null;
     var default_colorbox_opts = { width: '40%', maxHeight: '80%' };
 
@@ -16,6 +17,11 @@ jQuery.Star = {};
         
     }
     function onMarkerClick() {
+        if ( null == infowindow ) {
+            infowindow = new google.maps.InfoWindow();
+        } else {
+            infowindow.close();
+        }
         if ( this.times === undefined || this.times.length == 0 ) {
             $.colorbox($.extend({href: this.schedule_url,
                 onComplete: function() {
@@ -33,12 +39,14 @@ jQuery.Star = {};
             for( var j = 0; j < this.times[i].times.length; ++j ) {
                 ul.append( $("<li></li>").append( this.times[i].times[j] ) );              
             }
-            content.append( ul ).append( $("<div></div>").addClass("clear") );
+            content.append( $('<div></div>').addClass('clear'));
+            content.append( ul ).append( 
+                $("<a></a>").addClass("dir_schedule").attr('href',this.times[i].schedule_url).text("Horaires complets") 
+            );
         }
-        var infow = new google.maps.InfoWindow({
-            content: content[0]
-        });
-        infow.open( map, this );
+        content.append( $('<div></div>').addClass('clear'));
+        infowindow.setContent( content[0] );
+        infowindow.open( map, this );
     }
     function onLineGet( d, s, x) {
         $.each( d, function( idx, point ) {
@@ -75,11 +83,24 @@ jQuery.Star = {};
         $('#heading_' + $('#heading').val() ).show();
         $.colorbox.resize(default_colorbox_opts);
     }
+    function onStopDirScheduleClick(e) {
+        e.preventDefault();
+        if ( null != infowindow ) {
+            infowindow.close();
+        }
+        $.colorbox($.extend({href: $(this).attr('href'),
+                onComplete: function() {
+                    $('div.headsign:first').show();
+                    $.colorbox.resize(default_colorbox_opts);
+                }}, default_colorbox_opts));
+
+    }
     $.Star.init= function() {
         $('#ajax-loader').ajaxSend(function(){
             $(this).show();
         });
         $('#heading').live( 'change', onHeadingChange );
+        $('a.dir_schedule').live( 'click', onStopDirScheduleClick );
         $('#ajax-loader').ajaxComplete(function(){
             $(this).hide();
         });

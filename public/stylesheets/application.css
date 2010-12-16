@@ -32,6 +32,10 @@ html, body {
 .time_display ul li:last-child {
     border-right: none;
 }
+a.dir_schedule {
+    float: right;
+    margin: 5px 0;
+}
 .clear {
     clear: both;
 }
