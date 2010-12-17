@@ -16,7 +16,7 @@ jQuery.Star = {};
     function onStopGet( d, s, x ) {
         
     }
-    function onMarkerClick() {
+    function onLineMarkerClick() {
         if ( null == infowindow ) {
             infowindow = new google.maps.InfoWindow();
         } else {
@@ -68,7 +68,7 @@ jQuery.Star = {};
             marker.times = point.times;
             marker.schedule_url = point.schedule_url;
             markers.push( marker );
-            google.maps.event.addListener( marker, 'click', onMarkerClick );
+            google.maps.event.addListener( marker, 'click', onLineMarkerClick );
         });
     }
     function onSelectLine() {
@@ -97,6 +97,29 @@ jQuery.Star = {};
                 }}, default_colorbox_opts));
 
     }
+    function onStopsGet(d,x,s) {
+        $.each( d, function( idx, point ) {
+            var myLatlng = new google.maps.LatLng( point.lat, point.lon );
+            var icon;
+            var marker = new google.maps.Marker( {
+                position: myLatlng,
+                map: map,
+                title: point.name
+            });
+            marker.stop_id = point.id;
+            markers.push( marker );
+        });
+    }
+    function onFindStops(e) {
+        $.each( markers, function( idx, marker ) {
+            marker.setMap( null );
+        });
+        var mapController = new com.maptimize.MapController(map);
+        mapController.refresh();
+        e.preventDefault();
+        /*var bounds = map.getBounds().toUrlValue();
+        $.get( $(this).attr('href'), { bb: bounds }, onStopsGet, "json" );*/
+    }
     $.Star.init= function() {
         $('#ajax-loader').ajaxSend(function(){
             $(this).show();
@@ -116,5 +139,9 @@ jQuery.Star = {};
         if ( $('#lineactions select').val() != '' ) {
             $('#lineactions select').change();
         }
+        $('#stopactions a').click( onFindStops );
+
+
+
     };
 })(jQuery);

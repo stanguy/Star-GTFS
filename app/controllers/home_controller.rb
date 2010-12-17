@@ -78,7 +78,21 @@ class HomeController < ApplicationController
     end
   end
       
-  
+  def stops
+    se = {}
+    nw = {}
+    ( se[:lat], se[:lon], nw[:lat], nw[:lon] ) = params[:bb].split(/,/)
+    stops = Stop.within( se, nw ).collect do |stop|
+      {
+        :id => stop.id,
+        :name => stop.name,
+        :lat => stop.lat,
+        :lon => stop.lon
+      }
+    end
+    render :json => stops
+  end
+      
   
 
 end

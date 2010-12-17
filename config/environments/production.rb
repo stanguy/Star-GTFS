@@ -46,4 +46,7 @@ StarGtfs::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+  config.api_keys = {
+    :MAPTIMIZE => '768198d2ae5cae0d414a3c40bad1a80d2336fc36'
+  }
 end

@@ -14,6 +14,13 @@ html, body.stargtfs {
 #lineactions select {
     margin-top: 3px;
 }
+.loader_container {
+    padding-top: 15px;
+}
+#stopactions {
+    text-align: right;
+    margin-top: 15px;
+}
 #map {
     height: 800px;
 }

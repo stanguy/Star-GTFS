@@ -22,5 +22,8 @@ StarGtfs::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
+  config.api_keys = {
+    :MAPTIMIZE => '1c4548799006881c1748573593282eb8798be5d4'
+  }
 end
 
