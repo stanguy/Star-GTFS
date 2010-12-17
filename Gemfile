@@ -33,4 +33,8 @@ gem 'jquery-rails'
 
 group :development, :test do
   gem 'rspec-rails'
+  gem 'webrat'
 end
+gem "mongrel", :git => "http://github.com/dynamix/mongrel.git"
+gem "cgi_multipart_eof_fix"
+gem "fastthread"
