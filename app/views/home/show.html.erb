@@ -9,7 +9,8 @@
   </span>
 </div>
 <div class="grid_3 omega push_3" id="stopactions">
-   <%= link_to "Trouver les arrêts!", home_stops_path %></a>
+    <input type="checkbox" name="find_stops" id="find_stops">
+      <label for="find_stops">Parcourir les arrêts</label>
 </div>
 <div id="map" class="grid_12"> </div>
 <%= init_javascript "$(document).ready($.Star.init);" %>

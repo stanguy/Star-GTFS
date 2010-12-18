@@ -1,7 +1,7 @@
 <div class="schedule_container">
 <% if @schedule.keys.count > 1 %>
     <div class="dir_select">
-      <label for="heading">Direction:</label>
+      <label for="heading">Vers:</label>
   <%= select_tag "heading", 
                 options_for_select( @headsigns.invert, @schedule.keys.first ) %>
     </div>

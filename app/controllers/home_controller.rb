@@ -36,17 +36,36 @@ class HomeController < ApplicationController
   
   def schedule
     @headsigns = {}
-    l = Line.find(params[:line_id])
-    l.headsigns.each {|h| @headsigns[h.id] = h.name }
-
-    stop_signs = StopTime.where( :line_id => params[:line_id] ).
-      where( :stop_id => params[:stop_id] )
-    if params[:headsign_id]
-      stop_signs = stop_signs.where( :headsign_id => params[:headsign_id] )
+    stop_signs = nil
+    if params[:line_id]
+      l = Line.find(params[:line_id])
+      l.headsigns.each {|h| @headsigns[h.id] = h.name }
+      
+      stop_signs = StopTime.where( :line_id => params[:line_id] ).
+        where( :stop_id => params[:stop_id] )
+      if params[:headsign_id]
+        stop_signs = stop_signs.where( :headsign_id => params[:headsign_id] )
+      end
+    else
+      stop = Stop.find(params[:stop_id])
+      @headsigns = {}
+      stop.lines.each {|l| 
+        l.headsigns.each{|h| 
+          r = "^#{l.short_name}"
+          logger.debug r
+          if h.name.match( Regexp.new(r) )
+            @headsigns[h.id] = h.name
+          else
+            @headsigns[h.id] = "#{l.short_name} #{h.name}"
+          end
+          logger.debug @headsigns[h.id]
+        }
+      }
+      stop_signs = StopTime.where( :stop_id => stop ).
+        where( :line_id => stop.lines )
     end
-
     @schedule = {}
-
+      
     @all_calendars = {}
     stop_signs.each do |st|
       unless @schedule.has_key? st.headsign_id
@@ -76,7 +95,7 @@ class HomeController < ApplicationController
     if request.xhr?
       render :layout => false and return
     end
-  end
+  end    
       
   def stops
     se = {}

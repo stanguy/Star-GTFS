@@ -1,0 +1,44 @@
+/* Marker */
+.maptimize_marker_0, .maptimize_marker_1, .maptimize_marker_2, .maptimize_marker_3 {
+  font-weight: bold;
+  text-align:center;  
+  cursor: pointer;
+  color:#FFFFFF;
+  font-size:11px;
+  font-family: arial;
+  height: 28px;
+  padding-top: 5px;
+}
+
+.maptimize_marker_0 {
+  width: 25px;
+}
+
+.maptimize_marker_1 {
+  width: 25px;
+}
+
+.maptimize_marker_2 {
+  width: 29px;
+}
+
+.maptimize_marker_3 {
+  width: 33px;
+}
+
+/* Cluster */
+.maptimize_cluster_0, .maptimize_cluster_1, .maptimize_cluster_2, .maptimize_cluster_3, .maptimize_cluster_4 {
+  font-weight: bold;
+  text-align:center;  
+  cursor: pointer;
+  color:#FFFFFF;
+  font-size:11px;
+  font-family: arial;
+}
+
+.maptimize_cluster_0 {
+  width: 60px;
+  height: 60px;
+  line-height: 65px;
+}
+

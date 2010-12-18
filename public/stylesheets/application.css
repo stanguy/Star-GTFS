@@ -32,6 +32,12 @@ html, body.stargtfs {
 #footer a.datasource{
     color: #7777CC;
     float: right;
+    margin-left: 10px;
+}
+#footer a.poweredby{
+    color: #7777CC;
+    float: right;
+    display: none;
 }
 #footer a.contact{
     color: #469A45;
@@ -70,7 +76,8 @@ a.dir_schedule {
 }
 .schedule_container div.dir_select {
     position: absolute;
-    right: 5px;
+    right: 20px;
+    top: 8px
 }
 .schedule_container .headsign h2 {
     margin: 10px;

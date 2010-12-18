@@ -3,15 +3,23 @@
 
 jQuery.Star = {};
 
+
+
+
 (function($) {
     var map;
+    var maptimizeController;
     var markers = [];
     var infowindow = null;
     var current_marker = null;
     var default_colorbox_opts = { width: '40%', maxHeight: '80%' };
 
-    var greenIcon = "/images/bus_green.png";
-    var redIcon = "/images/bus_red.png";
+    var icons = {
+        green: "/images/bus_green.png",
+        red: "/images/bus_red.png",
+        orange: "/images/bus_orange.png",
+        blue: "/images/bus_blue.png"
+    };
 
     function onStopGet( d, s, x ) {
         
@@ -54,9 +62,9 @@ jQuery.Star = {};
             var myLatlng = new google.maps.LatLng( point.lat, point.lon );
             var icon;
             if( point.times != undefined && point.times.length > 0 ) {
-                icon = greenIcon;
+                icon = icons.green;
             } else {
-                icon = redIcon;
+                icon = icons.red;
             }
             var marker = new google.maps.Marker( {
                 position: myLatlng,
@@ -110,13 +118,65 @@ jQuery.Star = {};
             markers.push( marker );
         });
     }
+    $.Star.MaptiTheme = {
+      createMarker: function(marker) {
+        return new google.maps.Marker({ position: marker.getGLatLng(), icon: icons.blue });
+      },
+ 
+      createCluster: function(cluster) {
+        var count = cluster.getPointsCount(),
+            index = parseInt(Math.log(count) / Math.log(10)),
+            options;
+        options = $.Star.MaptiTheme._getClusterOptions();
+        options = options[Math.min(options.length - 1, index)];
+        options.labelText = count;
+        return new com.maptimize.LabeledMarker(cluster.getGLatLng(), options);
+      },
+ 
+      _getClusterOptions: function() {
+        return this._clusterOptions = this._clusterOptions || [
+          { icon:       { image:            "/images/quant3.png",
+                          iconAnchor:       new google.maps.Point(25, 25) },
+            labelClass: 'maptimize_cluster_0'},                     
+          { icon:       { image:            "/images/quant2.png",
+                          iconAnchor:       new google.maps.Point(25, 25) },
+            labelClass: 'maptimize_cluster_0'},                     
+          { icon:       { image:            "/images/quant1.png",
+                          iconAnchor:       new google.maps.Point(25, 25) },
+            labelClass: 'maptimize_cluster_0'}
+          ];
+      }  
+    };
+    function onMaptiMarkerClick(marker) {
+        console.log('hello, world');
+        $.colorbox($.extend({href: '/schedule/at/' + marker.getId(),
+                onComplete: function() {
+                    $('div.headsign:first').show();
+                    $.colorbox.resize(default_colorbox_opts);
+                }}, default_colorbox_opts));
+    }
     function onFindStops(e) {
-        $.each( markers, function( idx, marker ) {
-            marker.setMap( null );
-        });
-        var mapController = new com.maptimize.MapController(map);
-        mapController.refresh();
-        e.preventDefault();
+        if ( $('#find_stops:checked').val() ) {
+            $.each( markers, function( idx, marker ) {
+                marker.setMap( null );
+            });
+            markers = [];
+            maptimizeController = new com.maptimize.MapController(map,{theme: $.Star.MaptiTheme,onMarkerClicked: onMaptiMarkerClick});
+            maptimizeController.refresh();
+            $('a.datasource').after( $('<a class="poweredby" href="http://www.maptimize.com">Powered by Maptimize!</a>') );
+            $('a.poweredby').fadeIn();
+            e.preventDefault();
+        } else if ( maptimizeController != null ) {
+            maptimizeController.deactivate();
+            $.each( maptimizeController.getClusters(), function(i,m){
+                m.getGMarker().setMap( null );
+            });
+            $.each( maptimizeController.getMarkers(), function(i,m){
+                m.getGMarker().setMap( null );
+            });
+            maptimizeController = null;
+            $('a.poweredby').fadeOut().remove();
+        }
         /*var bounds = map.getBounds().toUrlValue();
         $.get( $(this).attr('href'), { bb: bounds }, onStopsGet, "json" );*/
     }
@@ -139,7 +199,7 @@ jQuery.Star = {};
         if ( $('#lineactions select').val() != '' ) {
             $('#lineactions select').change();
         }
-        $('#stopactions a').click( onFindStops );
+        $('#stopactions input').change( onFindStops );
 
 
 
