@@ -10,8 +10,8 @@ jQuery.Star = {};
     var current_marker = null;
     var default_colorbox_opts = { width: '40%', maxHeight: '80%' };
 
-    var greenIcon = "http://www.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png";
-    var redIcon = "http://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png";
+    var greenIcon = "/images/bus_green.png";
+    var redIcon = "/images/bus_red.png";
 
     function onStopGet( d, s, x ) {
         
