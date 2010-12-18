@@ -137,13 +137,13 @@ jQuery.Star = {};
  
       _getClusterOptions: function() {
         return this._clusterOptions = this._clusterOptions || [
-          { icon:       { image:            "/images/quant3.png",
+          { icon:       { image:            "/images/quant1.png",
                           iconAnchor:       new google.maps.Point(30, 30) },
             labelClass: 'maptimize_cluster_0'},                     
           { icon:       { image:            "/images/quant2.png",
                           iconAnchor:       new google.maps.Point(30, 30) },
             labelClass: 'maptimize_cluster_0'},                     
-          { icon:       { image:            "/images/quant1.png",
+          { icon:       { image:            "/images/quant3.png",
                           iconAnchor:       new google.maps.Point(30, 30) },
             labelClass: 'maptimize_cluster_0'}
           ];
