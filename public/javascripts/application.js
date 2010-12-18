@@ -84,8 +84,10 @@ jQuery.Star = {};
             marker.setMap( null );
         });
         markers = [];
-        var url = $('#lineactions select').data('line-url');
-        $.get( url, { id: $(this).val() }, onLineGet, "json" );
+        if( $(this).val() != '' ) {
+            var url = $('#lineactions select').data('line-url');
+            $.get( url, { id: $(this).val() }, onLineGet, "json" );
+        }
     }
     function onHeadingChange() {
         $('.headsign:visible').hide();
@@ -135,20 +137,19 @@ jQuery.Star = {};
  
       _getClusterOptions: function() {
         return this._clusterOptions = this._clusterOptions || [
-          { icon:       { image:            "/images/quant3.png",
-                          iconAnchor:       new google.maps.Point(25, 25) },
+          { icon:       { image:            "/images/quant1.png",
+                          iconAnchor:       new google.maps.Point(30, 30) },
             labelClass: 'maptimize_cluster_0'},                     
           { icon:       { image:            "/images/quant2.png",
-                          iconAnchor:       new google.maps.Point(25, 25) },
+                          iconAnchor:       new google.maps.Point(30, 30) },
             labelClass: 'maptimize_cluster_0'},                     
-          { icon:       { image:            "/images/quant1.png",
-                          iconAnchor:       new google.maps.Point(25, 25) },
+          { icon:       { image:            "/images/quant3.png",
+                          iconAnchor:       new google.maps.Point(30, 30) },
             labelClass: 'maptimize_cluster_0'}
           ];
       }  
     };
     function onMaptiMarkerClick(marker) {
-        console.log('hello, world');
         $.colorbox($.extend({href: '/schedule/at/' + marker.getId(),
                 onComplete: function() {
                     $('div.headsign:first').show();
@@ -162,6 +163,7 @@ jQuery.Star = {};
             });
             markers = [];
             maptimizeController = new com.maptimize.MapController(map,{theme: $.Star.MaptiTheme,onMarkerClicked: onMaptiMarkerClick});
+            maptimizeController.setGroupingDistance(80);
             maptimizeController.refresh();
             $('a.datasource').after( $('<a class="poweredby" href="http://www.maptimize.com">Powered by Maptimize!</a>') );
             $('a.poweredby').fadeIn();
@@ -191,7 +193,7 @@ jQuery.Star = {};
         });
         map = new google.maps.Map($('#map')[0], {
             'scrollwheel': false,
-            'zoom': 13,
+            'zoom': 12,
             'center': new google.maps.LatLng( 48.11, -1.63 ),
             'mapTypeId': google.maps.MapTypeId.ROADMAP
         });
