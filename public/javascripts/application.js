@@ -84,8 +84,10 @@ jQuery.Star = {};
             marker.setMap( null );
         });
         markers = [];
-        var url = $('#lineactions select').data('line-url');
-        $.get( url, { id: $(this).val() }, onLineGet, "json" );
+        if( $(this).val() != '' ) {
+            var url = $('#lineactions select').data('line-url');
+            $.get( url, { id: $(this).val() }, onLineGet, "json" );
+        }
     }
     function onHeadingChange() {
         $('.headsign:visible').hide();
