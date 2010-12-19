@@ -7,7 +7,7 @@ module ApplicationHelper
   end
   
   def div_clear
-    tag :div, :class => 'clear'
+    content_tag :div, '', :class => 'clear'
   end
       
 

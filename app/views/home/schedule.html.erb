@@ -1,4 +1,6 @@
-<div class="schedule_container">
+<div class="schedule_container grid_12">
+<h1>Horaires à l'arrêt <%= @stop_name %></h1>
+<a href="/" class="back_to_map">Retour à la carte</a>
 <% if @schedule.keys.count > 1 %>
     <div class="dir_select">
       <label for="heading">Vers:</label>
@@ -37,9 +39,6 @@
   <%= div_clear %>
 <% end %>
 
+<%= init_javascript "$('div.headsign:first').show();" %>
 <%= init_javascript "$.Star.init();" %>
-<% if @schedule.keys.count == 1 %>
-  <%= init_javascript "$('div.headsign:first').show();" %>
-  <%= init_javascript "console.log('tamere');" %>
-<% end %>
 </div>

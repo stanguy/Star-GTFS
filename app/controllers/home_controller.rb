@@ -19,24 +19,32 @@ class HomeController < ApplicationController
       stop_times[st.stop_id][st.headsign_id] << st
     end
     data = l.stops.collect do|stop|
-      stop_info = { :name => stop.name, :id => stop.id, :lat => stop.lat, :lon => stop.lon, :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id }) }
+      stop_info = { :name => stop.name, :id => stop.id, :lat => stop.lat, :lon => stop.lon, :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true }) }
       if stop_times.has_key? stop.id
         stop_info[:times] = stop_times[stop.id].keys.collect do |headsign_id|
           { 
             :direction => headsigns[headsign_id],
             :times => stop_times[stop.id][headsign_id].collect(&:arrival).map(&:to_formatted_time),
-            :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :headsign_id => headsign_id })
+            :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :headsign_id => headsign_id, :only_path => true })
           }
         end.reject {|x| x[:times].empty? }
       end
       stop_info
     end
-    render :json => data
+    if request.xhr?
+      render :json => data
+    else
+      @line_data = data
+      @line_id = l.id
+      render :show
+    end
   end
   
   def schedule
     @headsigns = {}
     stop_signs = nil
+    stop = Stop.find(params[:stop_id])
+    @stop_name = stop.name
     if params[:line_id]
       l = Line.find(params[:line_id])
       l.headsigns.each {|h| @headsigns[h.id] = h.name }
@@ -47,7 +55,6 @@ class HomeController < ApplicationController
         stop_signs = stop_signs.where( :headsign_id => params[:headsign_id] )
       end
     else
-      stop = Stop.find(params[:stop_id])
       @headsigns = {}
       stop.lines.each {|l| 
         l.headsigns.each{|h| 
@@ -97,21 +104,4 @@ class HomeController < ApplicationController
     end
   end    
       
-  def stops
-    se = {}
-    nw = {}
-    ( se[:lat], se[:lon], nw[:lat], nw[:lon] ) = params[:bb].split(/,/)
-    stops = Stop.within( se, nw ).collect do |stop|
-      {
-        :id => stop.id,
-        :name => stop.name,
-        :lat => stop.lat,
-        :lon => stop.lon
-      }
-    end
-    render :json => stops
-  end
-      
-  
-
 end

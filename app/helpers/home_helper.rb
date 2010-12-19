@@ -5,6 +5,9 @@ module HomeHelper
     if line.fgcolor and line.bgcolor
       attrs[:style] = "color: ##{line.fgcolor}; background-color: ##{line.bgcolor}"
     end
+    if line.id == @line_id
+      attrs[:selected] = :selected
+    end
     content_tag :option, line.full_name, attrs
   end
   def line_options_for_select lines

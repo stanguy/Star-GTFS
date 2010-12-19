@@ -73,14 +73,20 @@ a.dir_schedule {
 }
 .schedule_container {
     min-width: 480px;
+    min-height: 800px; /* same as the map */
 }
 .schedule_container div.dir_select {
     position: absolute;
-    right: 20px;
-    top: 8px
+    right: 0px;
+    top: 75px
 }
 .schedule_container .headsign h2 {
     margin: 10px;
+}
+.schedule_container .back_to_map {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 .clear {
     clear: both;

@@ -1,7 +1,8 @@
+<div id='map_browser'>
 <div id="lineactions" class="grid_5">
 <%= select_tag "lines", 
                 content_tag(:option, "Sélectionnez une ligne...", { :value => ''}) + line_options_for_select( Line.all ),
-                { 'data-line-url' => home_line_path } %>
+                { 'data-line-url' => home_line_path( :id => 0) } %>
 </div>
 <div class="grid_1 loader_container">
   <span id="ajax-loader" style="display: none;">
@@ -13,4 +14,8 @@
       <label for="find_stops">Parcourir les arrêts</label>
 </div>
 <div id="map" class="grid_12"> </div>
+</div>
+<% if @line_data %>
+<%= javascript_tag "var line_data = " + @line_data.to_json %>
+<% end %>
 <%= init_javascript "$(document).ready($.Star.init);" %>
