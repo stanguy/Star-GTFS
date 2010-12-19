@@ -34,8 +34,7 @@ class StopTime < ActiveRecord::Base
     else
       where( :line_id => line_id ).
         where( "calendar & ? > 0", Calendar.from_time( now ) ).
-        where( "arrival > ?", value_now ).
-        where( "arrival < ?", ( later.hour * 60 + later.min ) * 60 + later.sec )
+        where( :arrival => value_now..value_later )
     end
   }
 
