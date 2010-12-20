@@ -111,7 +111,6 @@ jQuery.Star = {};
         }
     }
     function onHeadingChange() {
-        console.log("tamere");
         $('.headsign:visible').hide();
         $('#heading_' + $('#heading').val() ).show();
     }
