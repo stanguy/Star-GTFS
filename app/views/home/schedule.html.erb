@@ -15,7 +15,7 @@
   <h3><%= @headsigns[direction_id] %></h3>
   <%= div_clear %>
   <table class="schedule">
-    <tr>
+    <tr class="head">
       <th>&nbsp;</th>
       <% @all_calendars.keys.each do |calendar| %>
       <th><%= Calendar.range_to_str( calendar ) %></th>
@@ -28,7 +28,7 @@
       <td>&nbsp;
         <% if hours[hour].has_key? calendar %>
           <% hours[hour][calendar].each do|min| %>
-            <%= min %><br />
+            <span class="mins"><%= min %></span>
           <% end # mins %>
         <% end %>
       </td>

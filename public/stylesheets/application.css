@@ -100,14 +100,24 @@ table.schedule {
 }
 table.schedule th, table.schedule td {
     vertical-align: top;
-    text-align: right;
-    width: 100px;
     border-top: 1px solid #ddd;
-    padding: 4px 10px 0 0;
+    border-right: 1px solid #ddd;
+    padding: 5px 10px 3px 5px;
     font-size: 12px;
     line-height: 1.1;
 }
-
+table.schedule td:last-child, table.schedule th:last-child {
+    border-right: none;
+}
+table.schedule tr.head th {
+    border-top: none;
+}
+table.schedule td span.mins {
+    float: left;
+    text-align: right;
+    width: 15px;
+    margin: 0 3px;
+}
 div.headsign {
     background-color: white;
 }
