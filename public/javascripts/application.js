@@ -8,7 +8,7 @@ jQuery.Star = {};
 
 (function($) {
     var map;
-    var maptimizeController;
+    var maptimizeController = null;
     var markers = [];
     var infowindow = null;
     var current_marker = null;
@@ -181,23 +181,18 @@ jQuery.Star = {};
                 marker.setMap( null );
             });
             markers = [];
-            maptimizeController = new com.maptimize.MapController(map,{theme: $.Star.MaptiTheme,onMarkerClicked: onMaptiMarkerClick});
-            maptimizeController.setGroupingDistance(80);
-            maptimizeController.refresh();
-            $('a.datasource').after( $('<a class="poweredby" href="http://www.maptimize.com">Powered by Maptimize!</a>') );
-            $('a.poweredby').fadeIn();
+            if( maptimizeController != null ) {
+                maptimizeController.activate();
+            } else {
+                maptimizeController = new com.maptimize.MapController(map,{theme: $.Star.MaptiTheme,onMarkerClicked: onMaptiMarkerClick});
+                maptimizeController.setGroupingDistance(80);
+                maptimizeController.setClusterMinSize(3)
+                maptimizeController.refresh();
+            }
         } else if ( maptimizeController != null ) {
             goBack();
             $('#lineactions select').removeAttr('disabled');
             maptimizeController.deactivate();
-            $.each( maptimizeController.getClusters(), function(i,m){
-                m.getGMarker().setMap( null );
-            });
-            $.each( maptimizeController.getMarkers(), function(i,m){
-                m.getGMarker().setMap( null );
-            });
-            maptimizeController = null;
-            $('a.poweredby').fadeOut().remove();
         }
     }
     $.Star.initMap = function() {
