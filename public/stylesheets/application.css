@@ -1,10 +1,16 @@
-html, body.stargtfs {
+html, html body {
     height: 100%;
     background-color: #ddd;
 }
 .content {
     background-color: #fff;
     min-height: 860px;
+}
+.content h1 {
+    width: 100%;
+    background-color: #ddd;
+    padding: 20px 0;
+    font-size: 18px;
 }
 #lineactions {
     height: 30px;
@@ -71,7 +77,6 @@ a.dir_schedule {
     margin: 5px 0;
 }
 .schedule_container {
-    padding-top: 20px;
     min-width: 480px;
     min-height: 800px; /* same as the map */
 }
