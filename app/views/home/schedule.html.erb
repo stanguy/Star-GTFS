@@ -1,6 +1,7 @@
 <div class="schedule_container grid_12">
-<h1>Horaires à l'arrêt <%= @stop_name %></h1>
+<h2>Horaires à l'arrêt <%= @stop_name %></h2>
 <a href="/" class="back_to_map">Retour à la carte</a>
+<%= div_clear %>
 <% if @schedule.keys.count > 1 %>
     <div class="dir_select">
       <label for="heading">Vers:</label>
@@ -8,10 +9,10 @@
                 options_for_select( @headsigns.invert, @schedule.keys.first ) %>
     </div>
 <% end %>
-  <%= div_clear %>
 <% @schedule.each do |direction_id,hours| %>
 <div class="headsign" id="heading_<%= direction_id %>">
-  <h2><%= @headsigns[direction_id] %></h2>
+  <h3><%= @headsigns[direction_id] %></h3>
+  <%= div_clear %>
   <table class="schedule">
     <tr>
       <th>&nbsp;</th>
@@ -34,9 +35,7 @@
     </tr>
     <% end # hours%>
   </table>
-  <%= div_clear %>
 </div>
-  <%= div_clear %>
 <% end %>
 
 <%= init_javascript "$('div.headsign:first').show();" %>

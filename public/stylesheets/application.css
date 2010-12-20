@@ -71,21 +71,25 @@ a.dir_schedule {
     margin: 5px 0;
 }
 .schedule_container {
+    padding-top: 20px;
     min-width: 480px;
     min-height: 800px; /* same as the map */
 }
 .schedule_container div.dir_select {
-    position: absolute;
-    right: 0px;
-    top: 75px
-}
-.schedule_container .headsign h2 {
+    float: left;
     margin: 10px;
 }
+.schedule_container h2 {
+    float: left;
+    margin: 10px
+}
+.schedule_container .headsign h3 {
+    margin: 10px;
+    float: right;
+}
 .schedule_container .back_to_map {
-    position: absolute;
-    top: 0;
-    right: 0;
+    float: right;
+    margin: 10px;
 }
 .clear {
     clear: both;
