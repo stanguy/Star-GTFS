@@ -234,7 +234,8 @@ jQuery.Star = {};
         $('#heading').live( 'change', onHeadingChange );
         $('a.dir_schedule').live( 'click', onStopDirScheduleClick );
         $('.back_to_map').live('click', onBackToMapClick );
-        if( $('#map') ) {
+        if( $('#map').length > 0 ) {
+            console.log("map");
             $.Star.initMap();
         }
         if( $('#find_stops:checked').val() !== 'undefined' ) {

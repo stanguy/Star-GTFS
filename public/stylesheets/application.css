@@ -97,12 +97,13 @@ a.dir_schedule {
 table.schedule {
     border-collapse:collapse;
     margin: 5px auto;
+    max-width: 800px;
 }
 table.schedule th, table.schedule td {
     vertical-align: top;
     border-top: 1px solid #ddd;
     border-right: 1px solid #ddd;
-    padding: 5px 10px 3px 5px;
+    padding: 6px 10px 5px 5px;
     font-size: 12px;
     line-height: 1.1;
 }
@@ -116,8 +117,15 @@ table.schedule td span.mins {
     float: left;
     text-align: right;
     width: 15px;
-    margin: 0 3px;
+    margin: 0 4px 0 5px;
+    font-family: Courier, Courier new;
+    font-size: 13px;
 }
 div.headsign {
     background-color: white;
+}
+
+
+h1, h2, h3, h4 {
+    font-family: Georgia, Helvetica;
 }

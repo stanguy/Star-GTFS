@@ -23,12 +23,12 @@
     </tr>
     <% hours.keys.sort.each do |hour| %>
     <tr>
-      <th><%= hour %>h</th>
+      <th><%= hour % 24 %>h</th>
       <% @all_calendars.keys.each do |calendar| %>
       <td>&nbsp;
         <% if hours[hour].has_key? calendar %>
           <% hours[hour][calendar].each do|min| %>
-            <span class="mins"><%= min %></span>
+            <span class="mins"><%= "%02d" % min %></span>
           <% end # mins %>
         <% end %>
       </td>
@@ -39,6 +39,5 @@
 </div>
 <% end %>
 
-<%= init_javascript "$('div.headsign:first').show();" %>
 <%= init_javascript "$.Star.init();" %>
 </div>

@@ -83,7 +83,7 @@ class HomeController < ApplicationController
       unless @schedule.has_key? st.headsign_id
         @schedule[st.headsign_id] = {}
       end
-      ( hours, mins ) = st.arrival.to_hm
+      ( hours, mins ) = st.arrival.to_hm false
       unless @schedule[st.headsign_id].has_key? hours
         @schedule[st.headsign_id][hours] = {}
       end
@@ -92,16 +92,6 @@ class HomeController < ApplicationController
         @all_calendars[st.calendar] = 1
       end
       @schedule[st.headsign_id][hours][st.calendar] << mins
-    end
-    @schedule.each do |hs_id,hours|
-      hours.each do |hour,calendars|
-        max_cal = calendars.collect {|cal,mins| mins.count }.max
-        calendars.each do|cal,mins|
-          if mins.count < max_cal
-            mins.fill( '&mdash;'.html_safe, mins.count, max_cal - mins.count )
-          end
-        end
-      end
     end
     @headsigns.delete_if{|id,v| ! @schedule.has_key? id }
     if request.xhr?

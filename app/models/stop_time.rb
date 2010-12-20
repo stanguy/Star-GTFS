@@ -3,11 +3,11 @@ class Fixnum
   def to_formatted_time
     "%02d:%02d" % self.to_hm
   end
-  def to_hm
+  def to_hm fix_24 = true
     rem = self / 60
     mins = rem % 60
     hours = rem / 60
-    if hours >= 24
+    if hours >= 24 && fix_24
       hours -= 24
     end
     [ hours, mins ]
