@@ -1,6 +1,11 @@
 class HomeController < ApplicationController
   def show
   end
+  def stops
+    @stops = true
+    render :show
+  end
+      
 
   def line
     l = Line.find(params[:id])

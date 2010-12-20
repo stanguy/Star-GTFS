@@ -24,7 +24,9 @@ jQuery.Star = {};
 
     
     function goBack() {
-        window.location.hash = browsing_history.pop();
+        if ( browsing_history.length > 0 ) {
+            window.location.hash = browsing_history.pop();
+        }
     }
     function goTo( url ) {
         browsing_history.push( window.location.hash );
@@ -167,7 +169,11 @@ jQuery.Star = {};
     }
     function onFindStops(e) {
         if ( $('#find_stops:checked').val() ) {
+            if ( e != null ) {
+                goTo( '/stops' );
+            }
             $('#lineactions select').val('');
+            $('#lineactions select').attr('disabled', true);
             $.each( markers, function( idx, marker ) {
                 marker.setMap( null );
             });
@@ -177,8 +183,9 @@ jQuery.Star = {};
             maptimizeController.refresh();
             $('a.datasource').after( $('<a class="poweredby" href="http://www.maptimize.com">Powered by Maptimize!</a>') );
             $('a.poweredby').fadeIn();
-            e.preventDefault();
         } else if ( maptimizeController != null ) {
+            goBack();
+            $('#lineactions select').removeAttr('disabled');
             maptimizeController.deactivate();
             $.each( maptimizeController.getClusters(), function(i,m){
                 m.getGMarker().setMap( null );
@@ -233,6 +240,9 @@ jQuery.Star = {};
         $('.back_to_map').live('click', onBackToMapClick );
         if( $('#map') ) {
             $.Star.initMap();
+        }
+        if( $('#find_stops:checked').val() !== 'undefined' ) {
+            onFindStops();
         }
     };
 })(jQuery);
