@@ -37,9 +37,11 @@ jQuery.Star = {};
     }
 
     function onScheduleGet(d,s,x) {
-        $('#map_browser').after( d );
+        var sched_container = $(d);
+        sched_container.hide();
+        $('#map_browser').after( sched_container );
         $('#map_browser').hide( 'slide', { direction: 'left' }, 500 );
-        $('div.headsign:first').show('slide', {direction:'right'}, 500);
+        sched_container.show('slide', {direction:'right'}, 500);
     }
     function fetchSchedule( url ) {
         $.get( url, onScheduleGet, "html" );
@@ -109,6 +111,7 @@ jQuery.Star = {};
         }
     }
     function onHeadingChange() {
+        console.log("tamere");
         $('.headsign:visible').hide();
         $('#heading_' + $('#heading').val() ).show();
     }
@@ -214,9 +217,8 @@ jQuery.Star = {};
         e.preventDefault();
         if( canGoBack() ) {
             goBack();
-            $('div.schedule_container').hide('slide', {direction:'right'}, 500);
+            $('div.schedule_container').hide('slide', {direction:'right'}, 500, function(){$(this).remove(); });
             $('#map_browser').show( 'slide', { direction: 'left' }, 500 );
-            $('div.schedule_container').remove();
         } else {
             window.location = $(this).attr('href');
         }

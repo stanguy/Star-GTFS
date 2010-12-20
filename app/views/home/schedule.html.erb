@@ -9,8 +9,9 @@
                 options_for_select( @headsigns.invert, @schedule.keys.first ) %>
     </div>
 <% end %>
+<% first = true %>
 <% @schedule.each do |direction_id,hours| %>
-<div class="headsign" id="heading_<%= direction_id %>">
+<div class="headsign" id="heading_<%= direction_id %>" <% if first then first = false ; else %>style="display: none;"<% end %> >
   <h3><%= @headsigns[direction_id] %></h3>
   <%= div_clear %>
   <table class="schedule">

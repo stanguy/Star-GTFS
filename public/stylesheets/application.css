@@ -109,21 +109,5 @@ table.schedule th, table.schedule td {
 }
 
 div.headsign {
-    display: none;
     background-color: white;
-}
-
-#colorbox {
-    background-color: #fff;
-    border: 1px solid #ddd;
-}
-#cboxContent {
-    border-top: 1px solid #999999
-}
-#cboxTitle {
-    width: 100%;
-    text-align: center;
-}
-#cboxContent #cboxClose {
-    top: -27px;
 }
