@@ -3,6 +3,7 @@
 require 'csv'
 require 'pp'
 require 'point'
+require 'digest/sha2'
 
 ActiveRecord::Base.logger.level = Logger::Severity::UNKNOWN
 
@@ -171,6 +172,37 @@ end
 Line.all.each do |line|
   line.stops = lines_stops[line.id].keys.collect {|stop_id| all_new_stops[stop_id] }.reject{|x| x.nil? }
   line.save
+end
+
+ActiveRecord::Migration.add_index( :stop_times, [ :trip_id ] )
+
+mlog "This is gonna' be ugly"
+Line.all.each do |line|
+  keytrips = {}
+  line.trips.each do |trip|
+    signer = Digest::SHA2.new
+    trip.stop_times.order('arrival ASC').each do |st|
+      signer << st.arrival.to_s << st.stop_id.to_s
+    end
+    unless keytrips.has_key? signer.digest
+      keytrips[signer.digest] = []
+    end
+    keytrips[signer.digest] << trip.id
+  end
+  mlog "Line #{line.long_name} has #{line.trips.count} trips for #{keytrips.keys.count} digests"
+  keytrips.each do |k,ts|
+    next if ts.count == 1
+    trips = Trip.find( ts )
+    final_trip = trips.shift
+    final_trip.calendar = trips.inject(final_trip.calendar) { |acc,t| acc |= t.calendar }
+    final_trip.stop_times.update_all( { :calendar => final_trip.calendar } )
+    trips.each do |t| 
+      t.stop_times.delete_all
+      t.delete
+    end
+    final_trip.save
+  end
+  mlog "End of purge for #{line.long_name}"
 end
 
 
