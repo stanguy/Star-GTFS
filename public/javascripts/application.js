@@ -77,6 +77,7 @@ jQuery.Star = {};
         infowindow.open( map, this );
     }
     function onLineGet( d, s, x) {
+        var bounds = map.getBounds();
         $.each( d, function( idx, point ) {
             var myLatlng = new google.maps.LatLng( point.lat, point.lon );
             var icon;
@@ -91,12 +92,18 @@ jQuery.Star = {};
                 title: point.name,
                 icon: icon
             });
+            if ( bounds != undefined && ! bounds.contains( myLatlng ) ) {
+                bounds.extend( myLatlng );
+            }
             marker.stop_id = point.id;
             marker.times = point.times;
             marker.schedule_url = point.schedule_url;
             markers.push( marker );
             google.maps.event.addListener( marker, 'click', onLineMarkerClick );
         });
+        if ( bounds != undefined ) {
+            map.fitBounds( bounds );
+        }
     }
     function displayIssues() {
         var short_id = $('#lineactions select option:selected').text().split(' ', 1 );
