@@ -1,6 +1,6 @@
 h1. Star GTFS
 
-This is a Ruby on Rails application to play (or even do useful stuffs) with the GTFS dataset provided by "Keolis Rennes":http://data.keolis-rennes.com for the bus network of the city of Rennes, France. 
+This is a Ruby on Rails application to play (or even do useful stuffs) with the GTFS dataset provided by "Keolis Rennes":http://data.keolis-rennes.com for the bus network of the city of Rennes, France. You can find an instance of this application running as "Carte et horaires de bus de Rennes":http://maps.dthg.net.
 
 h2. Hey, I want to run my own instance!
 
