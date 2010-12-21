@@ -7,6 +7,8 @@ module Calendar
   SATURDAY  = 1 << 5
   SUNDAY    = 1 << 6
 
+  WEEKDAY   = MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY 
+
   CAL_STRINGS = { MONDAY => 'Lu', TUESDAY => 'Ma', WEDNESDAY => 'Me', THURSDAY => 'Je', FRIDAY => 'Ve', SATURDAY => 'Sa', SUNDAY => 'Di' }
 
   def self.from_time t

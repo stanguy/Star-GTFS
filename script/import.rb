@@ -179,7 +179,7 @@ ActiveRecord::Migration.add_index( :stop_times, [ :trip_id ] )
 mlog "This is gonna' be ugly"
 Line.all.each do |line|
   keytrips = {}
-  line.trips.each do |trip|
+  line.trips.of_week_day(Calendar::WEEKDAY).each do |trip|
     signer = Digest::SHA2.new
     trip.stop_times.order('arrival ASC').each do |st|
       signer << st.arrival.to_s << st.stop_id.to_s
