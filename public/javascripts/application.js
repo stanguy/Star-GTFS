@@ -125,6 +125,7 @@ jQuery.Star = {};
                 $('.icons img').first().show();
                 $('.icons img').first().attr('title', issues[short_id][0].title );
             } else {
+                $('.icons img').first().hide();
             }
         } else {
             goTo( '' );
