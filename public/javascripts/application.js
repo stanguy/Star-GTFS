@@ -12,6 +12,7 @@ jQuery.Star = {};
     var markers = [];
     var infowindow = null;
     var current_marker = null;
+    var issues = {};
 
     var browsing_history = [];
 
@@ -97,6 +98,19 @@ jQuery.Star = {};
             google.maps.event.addListener( marker, 'click', onLineMarkerClick );
         });
     }
+    function displayIssues() {
+        var short_id = $('#lineactions select option:selected').text().split(' ', 1 );
+        var issues_display = $('<div></div>');
+        var converter = new Showdown.converter();
+        if ( issues[short_id] == undefined ) {
+            return;
+        }
+        for( var i = 0; i < issues[short_id].length; ++i ) {
+            issues_display.append( $('<h3></h3>').text( issues[short_id][i].title ) )
+                    .append( converter.makeHtml( issues[short_id][i].body ) );
+        }
+        $(issues_display).dialog({ title: 'Erreurs sur la ligne ' + short_id });
+    }
     function onSelectLine() {
         $.each( markers, function( idx, marker ) {
             marker.setMap( null );
@@ -106,6 +120,12 @@ jQuery.Star = {};
             var url = $('#lineactions select').data('line-url').replace( /0/, $(this).val() );
             goTo( url );
             $.get( url, {}, onLineGet, "json" );
+            var short_id = $('#lineactions select option:selected').text().split(' ', 1 );
+            if( issues[short_id] != undefined ) {
+                $('.icons img').first().show();
+                $('.icons img').first().attr('title', issues[short_id][0].title );
+            } else {
+            }
         } else {
             goTo( '' );
         }
@@ -185,7 +205,7 @@ jQuery.Star = {};
             } else {
                 maptimizeController = new com.maptimize.MapController(map,{theme: $.Star.MaptiTheme,onMarkerClicked: onMaptiMarkerClick});
                 maptimizeController.setGroupingDistance(80);
-                maptimizeController.setClusterMinSize(3)
+                maptimizeController.setClusterMinSize(3);
                 maptimizeController.refresh();
             }
         } else if ( maptimizeController != null ) {
@@ -193,6 +213,29 @@ jQuery.Star = {};
             $('#lineactions select').removeAttr('disabled');
             maptimizeController.deactivate();
         }
+    }
+    function onIssuesGet(d,h,x) {
+        console.log("pouet");
+        for( var i = 0; i < d.issues.length; ++i ) {
+            if( d.issues[i].state == "closed" ) {
+                continue;
+            }
+            var title_info = d.issues[i].title.split(':');
+            var body = d.issues[i].body;
+            var title = title_info[1];
+            var lines = title_info[0].split(',');
+            for( var j = 0; j < lines.length; ++j ) {
+                if ( issues[lines[j]] == undefined ) {
+                    issues[lines[j]] = [];
+                }
+                issues[lines[j]].push( { title: title, body: body } );
+            }
+            
+        }
+    }
+    function loadIssues() {
+        var url = 'http://github.com/api/v2/json/issues/list/stanguy/star-gtfs/label/datasource?callback=?';
+        $.getJSON( url, onIssuesGet );
     }
     $.Star.initMap = function() {
         map = new google.maps.Map($('#map')[0], {
@@ -206,6 +249,7 @@ jQuery.Star = {};
             onLineGet( line_data );
         }
         $('#stopactions input').change( onFindStops );        
+        loadIssues();
     };
     function onBackToMapClick(e) {
         e.preventDefault();
@@ -230,12 +274,12 @@ jQuery.Star = {};
         $('#ajax-loader').ajaxComplete(function(){
             $(this).hide();
         });
+        $('.icons img').first().click( displayIssues );
 
         $('#heading').live( 'change', onHeadingChange );
         $('a.dir_schedule').live( 'click', onStopDirScheduleClick );
         $('.back_to_map').live('click', onBackToMapClick );
         if( $('#map').length > 0 ) {
-            console.log("map");
             $.Star.initMap();
         }
         if( $('#find_stops:checked').val() !== 'undefined' ) {

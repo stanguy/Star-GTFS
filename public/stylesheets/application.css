@@ -19,8 +19,11 @@ html, html body {
 #lineactions select {
     margin-top: 3px;
 }
-.loader_container {
+.loader_container, .icons {
     padding-top: 15px;
+}
+.icons img {
+    display: none;
 }
 #stopactions {
     text-align: right;

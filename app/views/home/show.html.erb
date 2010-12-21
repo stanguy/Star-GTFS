@@ -4,12 +4,15 @@
                 content_tag(:option, "Sélectionnez une ligne...", { :value => ''}) + line_options_for_select( Line.all ),
                 { 'data-line-url' => home_line_path( :id => 0) } %>
 </div>
+<div class="grid_1 icons">
+  <%= image_tag "alert.png" %>
+</div>
 <div class="grid_1 loader_container">
   <span id="ajax-loader" style="display: none;">
     <img src="/images/ajax-loader.gif">
   </span>
 </div>
-<div class="grid_3 omega push_3" id="stopactions">
+<div class="grid_3 omega push_2" id="stopactions">
     <%= check_box_tag "find_stops", '1', @stops %>
       <label for="find_stops">Parcourir les arrêts</label>
 </div>
