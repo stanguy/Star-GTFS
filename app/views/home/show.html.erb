@@ -1,24 +1,28 @@
-<div id='map_browser'>
-<div id="lineactions" class="grid_5">
-<%= select_tag "lines", 
-                content_tag(:option, "Sélectionnez une ligne...", { :value => ''}) + line_options_for_select( Line.all ),
+  <div id='map_browser'>
+    <div id="lineactions" class="grid_5">
+      <%= select_tag "lines", 
+            content_tag(:option, "Sélectionnez une ligne...", { :value => ''}) + line_options_for_select( Line.all ),
                 { 'data-line-url' => home_line_path( :id => 0) } %>
-</div>
-<div class="grid_1 icons">
-  <%= image_tag "alert.png" %>
-</div>
-<div class="grid_1 loader_container">
-  <span id="ajax-loader" style="display: none;">
-    <img src="/images/ajax-loader.gif">
-  </span>
-</div>
-<div class="grid_3 omega push_2" id="stopactions">
-    <%= check_box_tag "find_stops", '1', @stops %>
+    </div>
+    <div class="grid_1 icons">
+      <%= image_tag "alert.png" %>
+    </div>
+    <div class="grid_1 loader_container">
+      <span id="ajax-loader" style="display: none;">
+        <img src="/images/ajax-loader.gif">
+      </span>
+    </div>
+    <div class="grid_3 omega push_2" id="stopactions">
+      <%= check_box_tag "find_stops", '1', @stops %>
       <label for="find_stops">Parcourir les arrêts</label>
-</div>
-<div id="map" class="grid_12"> </div>
-</div>
-<% if @line_data %>
-<%= javascript_tag "var line_data = " + @line_data.to_json %>
-<% end %>
-<%= init_javascript "$(document).ready($.Star.init);" %>
+    </div>
+    <div id="map" class="grid_12"> </div>
+    <%= div_clear %>
+  </div>
+  <% if @line_data %>
+  <%= javascript_tag "var line_data = " + @line_data.to_json %>
+  <% end %>
+  <% if @selected_stop %>
+  <%= javascript_tag "var selected_stop = " + @selected_stop.to_s %> 
+  <% end %>
+  <%= init_javascript "$(document).ready($.Star.init);" %>

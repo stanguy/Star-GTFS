@@ -10,6 +10,10 @@ class HomeController < ApplicationController
   def line
     l = Line.find(params[:id])
 
+    if params[:stop_id]
+      @selected_stop = params[:stop_id]
+    end
+
     headsigns = {}
     l.headsigns.each {|h| headsigns[h.id] = h.name }
     stop_times = {}
@@ -24,7 +28,16 @@ class HomeController < ApplicationController
       stop_times[st.stop_id][st.headsign_id] << st
     end
     data = l.stops.collect do|stop|
-      stop_info = { :name => stop.name, :id => stop.id, :lat => stop.lat, :lon => stop.lon, :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true }) }
+      stop_info = { 
+        :name => stop.name, 
+        :id => stop.id, :lat => stop.lat, :lon => stop.lon, 
+        :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true }) 
+      }
+      stop_info[:others] = stop.lines.select( "id,short_name").collect{|sl| 
+        if sl.id != l.id 
+          { :id => sl.id, :name => sl.short_name } 
+        end
+      }.compact
       if stop_times.has_key? stop.id
         stop_info[:times] = stop_times[stop.id].keys.collect do |headsign_id|
           { 
@@ -63,14 +76,11 @@ class HomeController < ApplicationController
       @headsigns = {}
       stop.lines.each {|l| 
         l.headsigns.each{|h| 
-          r = "^#{l.short_name}"
-          logger.debug r
-          if h.name.match( Regexp.new(r) )
+          if h.name.match( Regexp.new( "^#{l.short_name}" ) )
             @headsigns[h.id] = h.name
           else
             @headsigns[h.id] = "#{l.short_name} #{h.name}"
           end
-          logger.debug @headsigns[h.id]
         }
       }
       stop_signs = StopTime.where( :stop_id => stop ).

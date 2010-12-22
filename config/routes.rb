@@ -1,5 +1,6 @@
 StarGtfs::Application.routes.draw do
   match "line/:id" => "home#line", :as => :home_line
+  match "line/:id/at/:stop_id" => "home#line"
   match "stops" => "home#stops"
   match "schedule/:line_id/at/:stop_id(/toward/:headsign_id)" => "home#schedule"
   match "schedule/at/:stop_id/" => "home#schedule"

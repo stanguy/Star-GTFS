@@ -12,7 +12,9 @@ jQuery.Star = {};
     var markers = [];
     var infowindow = null;
     var current_marker = null;
+    var selected_stop_id = null;
     var issues = {};
+    var ANIM_DELAY = 350;
 
     var browsing_history = [];
 
@@ -22,7 +24,10 @@ jQuery.Star = {};
         orange: "/images/bus_orange.png",
         blue: "/images/bus_blue.png"
     };
-
+    var linesInfo = {
+        baseUrl: '',
+        icons: {}
+    };
     
     function goBack() {
         if ( browsing_history.length > 0 ) {
@@ -33,6 +38,14 @@ jQuery.Star = {};
         browsing_history.push( window.location.hash );
         window.location.hash = url;
     }
+    function lastUrl() {
+        if ( browsing_history.length > 0 ){
+            
+            return browsing_history[browsing_history.length-1];
+        } else {
+            return window.location.pathname;
+        }
+    }
     function canGoBack() {
         return browsing_history.length > 0;
     }
@@ -41,15 +54,26 @@ jQuery.Star = {};
         var sched_container = $(d);
         sched_container.hide();
         $('#map_browser').after( sched_container );
-        $('#map_browser').hide( 'slide', { direction: 'left' }, 500 );
-        sched_container.show('slide', {direction:'right'}, 500);
+        $('#map_browser').hide( 'slide', { direction: 'left' }, ANIM_DELAY );
+        sched_container.show('slide', {direction:'right'}, ANIM_DELAY );
     }
     function fetchSchedule( url ) {
         $.get( url, onScheduleGet, "html" );
     }
+    function onCloseInfoWindow() {
+        goBack();
+    }
+    function onOtherLineSelect( e ) {
+        e.preventDefault();
+        infowindow.close();
+        $('#lineactions select').val(e.data.line + '');
+        selected_stop_id = e.data.stop;
+        onSelectLine();
+    }
     function onLineMarkerClick() {
         if ( null == infowindow ) {
             infowindow = new google.maps.InfoWindow();
+            google.maps.event.addListener( infowindow, 'closeclick', onCloseInfoWindow );
         } else {
             infowindow.close();
         }
@@ -67,17 +91,51 @@ jQuery.Star = {};
             for( var j = 0; j < this.times[i].times.length; ++j ) {
                 ul.append( $("<li></li>").append( this.times[i].times[j] ) );              
             }
+            ul.append( '<li>&hellip;</li>' );
             content.append( $('<div></div>').addClass('clear'));
-            content.append( ul ).append( 
+            content.append( ul )
+                   .append( $('<div></div>').addClass('clear') )
+                   .append( 
                 $("<a></a>").addClass("dir_schedule").attr('href',this.times[i].schedule_url).text("Horaires complets") 
             );
         }
         content.append( $('<div></div>').addClass('clear'));
+        if ( this.others.length > 0 ) {
+            content.append( $('<h2>Autres lignes</h2>') );
+            var ul = $('<ul></ul>').addClass("lines");
+            for( var x = 0; x < this.others.length; ++x ) {
+                var line_id = this.others[x].id ;
+                var name = this.others[x].name;
+                if ( line_id == this.stop_id ) {
+                    continue;
+                }
+                var li = $('<li></li>' );
+                var a = $('<a></a>').attr('href', '/line/' + line_id + '/at/' + this.stop_id );
+                var marker = this;
+                a.bind( 'click', { line: line_id, stop: this.stop_id }, onOtherLineSelect );
+                if ( linesInfo.icons[name] != undefined ) {
+                    a.append( $('<img>').attr( 'src', linesInfo.baseUrl + linesInfo.icons[name] ) );
+                    a.attr('title', name );
+                } else {
+                    a.text( name );
+                }
+                li.append( a );
+                ul.append( li );
+            }
+            content.append( ul );
+        }
+        content.append( $('<div></div>').addClass('clear'));
         infowindow.setContent( content[0] );
+        if( lastUrl().match( /\/at\// ) ) {
+            goTo( lastUrl().replace( /([0-9]+)$/, this.stop_id ) );
+        } else { 
+            goTo( lastUrl() + '/at/' + this.stop_id );       
+        }
         infowindow.open( map, this );
     }
     function onLineGet( d, s, x) {
-        var bounds = map.getBounds();
+        var bounds = null;
+        var selected_marker = null;
         $.each( d, function( idx, point ) {
             var myLatlng = new google.maps.LatLng( point.lat, point.lon );
             var icon;
@@ -92,17 +150,26 @@ jQuery.Star = {};
                 title: point.name,
                 icon: icon
             });
-            if ( bounds != undefined && ! bounds.contains( myLatlng ) ) {
+            if ( bounds == undefined ) {
+                bounds = new google.maps.LatLngBounds( myLatlng, myLatlng );
+            } else if ( ! bounds.contains( myLatlng ) ) {
                 bounds.extend( myLatlng );
             }
             marker.stop_id = point.id;
             marker.times = point.times;
             marker.schedule_url = point.schedule_url;
+            marker.others = point.others;
             markers.push( marker );
             google.maps.event.addListener( marker, 'click', onLineMarkerClick );
+            if ( selected_stop_id != undefined && point.id == selected_stop_id ) {
+                selected_marker = marker;
+            }
         });
-        if ( bounds != undefined ) {
-            map.fitBounds( bounds );
+        if ( map.getBounds() != undefined && ! map.getBounds().intersects( bounds ) ) {
+            map.panToBounds( bounds );
+        }
+        if ( selected_marker != null ) {
+            google.maps.event.trigger( selected_marker, 'click' );
         }
     }
     function displayIssues() {
@@ -123,8 +190,8 @@ jQuery.Star = {};
             marker.setMap( null );
         });
         markers = [];
-        if( $(this).val() != '' ) {
-            var url = $('#lineactions select').data('line-url').replace( /0/, $(this).val() );
+        if( $('#lineactions select').val() != '' ) {
+            var url = $('#lineactions select').data('line-url').replace( /0/, $('#lineactions select').val() );
             goTo( url );
             $.get( url, {}, onLineGet, "json" );
             var short_id = $('#lineactions select option:selected').text().split(' ', 1 );
@@ -144,9 +211,6 @@ jQuery.Star = {};
     }
     function onStopDirScheduleClick(e) {
         e.preventDefault();
-        if ( null != infowindow ) {
-            infowindow.close();
-        }
         goTo( $(this).attr('href') );
         fetchSchedule( $(this).attr('href') );
     }
@@ -223,7 +287,6 @@ jQuery.Star = {};
         }
     }
     function onIssuesGet(d,h,x) {
-        console.log("pouet");
         for( var i = 0; i < d.issues.length; ++i ) {
             if( d.issues[i].state == "closed" ) {
                 continue;
@@ -245,6 +308,22 @@ jQuery.Star = {};
         var url = 'http://github.com/api/v2/json/issues/list/stanguy/star-gtfs/label/datasource?callback=?';
         $.getJSON( url, onIssuesGet );
     }
+    function onAPILinesGet(d,h,x) {
+        linesInfo.baseUrl = d.opendata.answer.data.baseurl;
+        var lines = d.opendata.answer.data.line;
+        for( var i = 0; i < lines.length; ++i ) {
+            linesInfo.icons[lines[i].name] = lines[i].picto;
+        }
+    }
+    function loadLines() {
+        var API_BASE_URL = 'http://data.keolis-rennes.com/json/';
+        var params = {
+            version: '2.0',
+            key: 'AO7UR4OL1ICTKWL',
+            cmd: 'getlines'
+        };
+        $.getJSON( API_BASE_URL, params, onAPILinesGet );
+    }
     $.Star.initMap = function() {
         map = new google.maps.Map($('#map')[0], {
             'scrollwheel': false,
@@ -258,13 +337,14 @@ jQuery.Star = {};
         }
         $('#stopactions input').change( onFindStops );        
         loadIssues();
+        loadLines();
     };
     function onBackToMapClick(e) {
         e.preventDefault();
         if( canGoBack() ) {
             goBack();
-            $('div.schedule_container').hide('slide', {direction:'right'}, 500, function(){$(this).remove(); });
-            $('#map_browser').show( 'slide', { direction: 'left' }, 500 );
+            $('div.schedule_container').hide('slide', {direction:'right'}, ANIM_DELAY, function(){$(this).remove(); });
+            $('#map_browser').show( 'slide', { direction: 'left' }, ANIM_DELAY );
         } else {
             window.location = $(this).attr('href');
         }
@@ -274,6 +354,9 @@ jQuery.Star = {};
         if ( window.location.hash != '' && window.location.hash != null ) {
             window.location = window.location.hash.substr(1);
             return;
+        }
+        if( typeof selected_stop != 'undefined' ) {
+            selected_stop_id = selected_stop;
         }
 
         $('#ajax-loader').ajaxSend(function(){
