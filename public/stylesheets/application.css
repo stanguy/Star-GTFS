@@ -105,6 +105,15 @@ a.dir_schedule {
     float: right;
     margin: 10px;
 }
+.schedule_container .accordion h3 {
+    padding-left: 30px;
+    color: #000;
+}
+.schedule_container .accordion h3.ui-state-hover {
+    background-image: none;
+    background-color: #ddd;
+    border-color: #999;
+}
 .clear {
     clear: both;
 }

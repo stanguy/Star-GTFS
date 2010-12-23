@@ -56,6 +56,7 @@ jQuery.Star = {};
         $('#map_browser').after( sched_container );
         $('#map_browser').hide( 'slide', { direction: 'left' }, ANIM_DELAY );
         sched_container.show('slide', {direction:'right'}, ANIM_DELAY );
+        $('.accordion').accordion();
     }
     function fetchSchedule( url ) {
         $.get( url, onScheduleGet, "html" );
