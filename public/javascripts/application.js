@@ -54,6 +54,7 @@ jQuery.Star = {};
         var sched_container = $(d);
         sched_container.hide();
         $('#map_browser').after( sched_container );
+        fillOtherLines();
         $('#map_browser').hide( 'slide', { direction: 'left' }, ANIM_DELAY );
         sched_container.show('slide', {direction:'right'}, ANIM_DELAY );
         $('.accordion').accordion();
@@ -309,12 +310,25 @@ jQuery.Star = {};
         var url = 'http://github.com/api/v2/json/issues/list/stanguy/star-gtfs/label/datasource?callback=?';
         $.getJSON( url, onIssuesGet );
     }
+    function fillOtherLines() {
+        if( $('ul.other_lines') ) {
+            $('ul.other_lines li a').each( function() {
+                var name = $(this).text();
+                if ( linesInfo.icons[name] != undefined ) {
+                    $(this).html(
+                        $('<img>').attr('src', linesInfo.baseUrl + linesInfo.icons[name] )
+                    );
+                }
+            });
+        }
+    }
     function onAPILinesGet(d,h,x) {
         linesInfo.baseUrl = d.opendata.answer.data.baseurl;
         var lines = d.opendata.answer.data.line;
         for( var i = 0; i < lines.length; ++i ) {
             linesInfo.icons[lines[i].name] = lines[i].picto;
         }
+        fillOtherLines();
     }
     function loadLines() {
         var API_BASE_URL = 'http://data.keolis-rennes.com/json/';
@@ -338,7 +352,6 @@ jQuery.Star = {};
         }
         $('#stopactions input').change( onFindStops );        
         loadIssues();
-        loadLines();
     };
     function onBackToMapClick(e) {
         e.preventDefault();
@@ -377,5 +390,6 @@ jQuery.Star = {};
         if( $('#find_stops:checked').val() !== 'undefined' ) {
             onFindStops();
         }
+        loadLines();
     };
 })(jQuery);

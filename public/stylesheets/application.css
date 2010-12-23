@@ -114,6 +114,31 @@ a.dir_schedule {
     background-color: #ddd;
     border-color: #999;
 }
+.schedule_container ul.other_lines {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.schedule_container ul.other_lines li {
+    padding: 2px 10px;
+    float: left;
+    border-right: 1px solid #ddd;
+    height: 21px; line-height: 21px;
+    width: 30px;
+    font-size: 10px;
+}
+.schedule_container ul.other_lines li:last-child {
+    border-right: none;
+}
+.schedule_container div.other_lines {
+    border: 1px solid #ddd;
+    background-color: #eee;
+    margin-top: 10px; margin-bottom: 10px;
+}
+.schedule_container div.other_lines h3 {
+    text-align: center;
+    margin: 5px 0;
+}
 .clear {
     clear: both;
 }

@@ -63,6 +63,8 @@ class HomeController < ApplicationController
     stop_signs = nil
     stop = Stop.find(params[:stop_id])
     @stop_name = stop.name
+    @stop_id = stop.id
+    @other_lines = nil
     if params[:line_id]
       l = Line.find(params[:line_id])
       l.headsigns.each {|h| @headsigns[h.id] = h.name }
@@ -72,6 +74,11 @@ class HomeController < ApplicationController
       if params[:headsign_id]
         stop_signs = stop_signs.where( :headsign_id => params[:headsign_id] )
       end
+      @other_lines = stop.lines.select( "id,short_name").collect{|sl| 
+        if sl.id != l.id 
+          { :id => sl.id, :name => sl.short_name } 
+        end
+      }.compact
     else
       @headsigns = {}
       stop.lines.each {|l| 
