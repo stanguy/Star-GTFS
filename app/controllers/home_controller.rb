@@ -17,14 +17,17 @@ class HomeController < ApplicationController
     headsigns = {}
     l.headsigns.each {|h| headsigns[h.id] = h.name }
     stop_times = {}
-    origina_stop_times = StopTime.coming(l.id).order(:arrival)
-    origina_stop_times.each do |st|
+    bearings = {}
+    original_stop_times = StopTime.coming(l.id).includes(:trip).order(:arrival)
+    original_stop_times.each do |st|
       stop_times[st.stop_id] = {}
+      bearings[st.stop_id] = {}
       headsigns.keys.each do|k|
         stop_times[st.stop_id][k] = []
+        bearings[st.stop_id][k] = st.trip.bearing
       end
     end
-    origina_stop_times.each do |st|
+    original_stop_times.each do |st|
       stop_times[st.stop_id][st.headsign_id] << st
     end
     data = l.stops.collect do|stop|
@@ -42,7 +45,9 @@ class HomeController < ApplicationController
         stop_info[:times] = stop_times[stop.id].keys.collect do |headsign_id|
           { 
             :direction => headsigns[headsign_id],
+            :bearing => bearings[stop.id][headsign_id],
             :times => stop_times[stop.id][headsign_id].collect(&:arrival).map(&:to_formatted_time),
+            
             :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :headsign_id => headsign_id, :only_path => true })
           }
         end.reject {|x| x[:times].empty? }

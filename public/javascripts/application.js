@@ -95,7 +95,9 @@ jQuery.Star = {};
             $("<h2></h2>").append(this.getTitle())
         ).addClass( 'time_display');
         for( var i = 0; i < this.times.length; ++i ) {
-            content.append( $("<h3></h3>").append( this.times[i].direction ) );
+            content.append( $("<h3></h3>")
+                            .append( $('<span></span>' ).addClass( "bearing ui-icon ui-icon-arrow-1-" + this.times[i].bearing.toLowerCase() ) )
+                            .append( this.times[i].direction ) );
             var ul = $("<ul></ul>");
             for( var j = 0; j < this.times[i].times.length; ++j ) {
                 ul.append( $("<li></li>").append( this.times[i].times[j] ) );              
