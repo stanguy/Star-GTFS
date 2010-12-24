@@ -19,10 +19,17 @@ jQuery.Star = {};
     var browsing_history = [];
 
     var icons = {
-        green: "/images/bus_green.png",
-        red: "/images/bus_red.png",
-        orange: "/images/bus_orange.png",
-        blue: "/images/bus_blue.png"
+        bus: {
+            green: "/images/bus_green.png",
+            red: "/images/bus_red.png",
+            orange: "/images/bus_orange.png",
+            blue: "/images/bus_blue.png"
+        },
+        point: {
+            green: "/images/point_green.png",
+            red: "/images/point_red.png",
+            orange: "/images/point_orange.png"          
+        }
     };
     var linesInfo = {
         baseUrl: '',
@@ -141,10 +148,11 @@ jQuery.Star = {};
         $.each( d, function( idx, point ) {
             var myLatlng = new google.maps.LatLng( point.lat, point.lon );
             var icon;
+            var icon_type = ( point.others != undefined && point.others.length > 0 ) ? "bus" : "point";
             if( point.times != undefined && point.times.length > 0 ) {
-                icon = icons.green;
+                icon = icons[icon_type].green;
             } else {
-                icon = icons.red;
+                icon = icons[icon_type].red;
             }
             var marker = new google.maps.Marker( {
                 position: myLatlng,
