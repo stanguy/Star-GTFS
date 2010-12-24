@@ -205,6 +205,15 @@ Line.all.each do |line|
   mlog "End of purge for #{line.long_name}"
 end
 
+Trip.all.each do |trip|
+  start = trip.stop_times.order(:arrival).first.stop
+  stop = trip.stop_times.order(:arrival).last.stop
+  bearing = start.to_point.bearing( stop.to_point )
+  next if bearing.nil?
+  base_dir = bearing > 0 ? 'E' : 'W'
+  dirs = [ 'N', 'N' + base_dir, 'N' + base_dir, base_dir, base_dir, 'S' + base_dir, 'S' + base_dir, 'S' ] 
+  puts trip.headsign.name + " " + dirs[ (bearing.abs * 8 / 180).floor ]
+end
 
 if in_memory_database?
   mlog "Dumping memory to file"

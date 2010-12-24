@@ -8,4 +8,7 @@ class Stop < ActiveRecord::Base
     where( :lon => (se[:lon])..(nw[:lon]) )
   }
 
+  def to_point
+    Point.new( self.lat, self.lon )
+  end
 end
