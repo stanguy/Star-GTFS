@@ -85,7 +85,19 @@ def line_usage short_name
   end
   return :special
 end
-    
+
+
+mlog "loading old routes"
+long_names_for_lines = {}
+if File.exists? File.join( Rails.root, "/tmp/routes_detailed.txt" )
+  CSV.foreach( File.join( Rails.root, "/tmp/routes_detailed.txt" ),
+               :headers => true,
+               :header_converters => :symbol,
+               :encoding => 'UTF-8' ) do |rawline|
+    line = rawline.to_hash
+    long_names_for_lines[ line[:route_short_name] ] = line[:route_long_name]
+  end
+end
 
 legacy[:line] = {}
 lines_stops = {}
@@ -99,7 +111,7 @@ ActiveRecord::Base.transaction do
     line = rawline.to_hash
     new_line = Line.create({ :src_id => line[:route_id],
                              :short_name => line[:route_short_name],
-                             :long_name => line[:route_long_name],
+                             :long_name => long_names_for_lines.has_key?( line[:route_short_name] ) ? long_names_for_lines[line[:route_short_name]] :  line[:route_long_name],
                              :bgcolor => line[:route_color],
                              :fgcolor => line[:route_text_color],
                              :usage => line_usage( line[:route_short_name] ) })
@@ -134,7 +146,7 @@ ActiveRecord::Base.transaction do
                :encoding => 'UTF-8' ) do |rawline|
     line = rawline.to_hash
     unless all_headsigns[legacy[:line][line[:route_id]].id].has_key? line[:trip_headsign]
-      headsign = Headsign.create({ :name => line[:trip_headsign],
+      headsign = Headsign.create({ :name => line[:trip_headsign].gsub( /.*\| /, '' ),
                                    :line_id => legacy[:line][line[:route_id]].id })
       all_headsigns[legacy[:line][line[:route_id]].id][line[:trip_headsign]] = headsign
     end
