@@ -21,33 +21,33 @@ class HomeController < ApplicationController
     original_stop_times = StopTime.coming(l.id).includes(:trip).order(:arrival)
     original_stop_times.each do |st|
       stop_times[st.stop_id] = {}
-      bearings[st.stop_id] = {}
       headsigns.keys.each do|k|
         stop_times[st.stop_id][k] = []
-        bearings[st.stop_id][k] = st.trip.bearing
       end
     end
     original_stop_times.each do |st|
       stop_times[st.stop_id][st.headsign_id] << st
+      unless bearings.has_key? st.headsign_id
+        bearings[st.headsign_id] = st.trip.bearing
+      end
     end
     data = l.stops.collect do|stop|
-      stop_info = { 
-        :name => stop.name, 
-        :id => stop.id, :lat => stop.lat, :lon => stop.lon, 
-        :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true }) 
+      stop_info = {
+        :name => stop.name,
+        :id => stop.id, :lat => stop.lat, :lon => stop.lon,
+        :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true })
       }
-      stop_info[:others] = stop.lines.select( "id,short_name").collect{|sl| 
-        if sl.id != l.id 
-          { :id => sl.id, :name => sl.short_name } 
+      stop_info[:others] = stop.lines.select( "id,short_name").collect{|sl|
+        if sl.id != l.id
+          { :id => sl.id, :name => sl.short_name }
         end
       }.compact
       if stop_times.has_key? stop.id
         stop_info[:times] = stop_times[stop.id].keys.collect do |headsign_id|
-          { 
+          {
             :direction => headsigns[headsign_id],
-            :bearing => bearings[stop.id][headsign_id],
+            :bearing => bearings[headsign_id],
             :times => stop_times[stop.id][headsign_id].collect(&:arrival).map(&:to_formatted_time),
-            
             :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :headsign_id => headsign_id, :only_path => true })
           }
         end.reject {|x| x[:times].empty? }
