@@ -21,14 +21,14 @@
   <table class="schedule">
     <tr class="head">
       <th>&nbsp;</th>
-      <% @all_calendars.keys.sort.each do |calendar| %>
+      <% @all_calendars[direction_id].keys.sort.each do |calendar| %>
       <th><%= Calendar.range_to_str( calendar ) %></th>
       <% end %>
     </tr>
     <% hours.keys.sort.each do |hour| %>
     <tr>
       <th><%= hour % 24 %>h</th>
-      <% @all_calendars.keys.sort.each do |calendar| %>
+      <% @all_calendars[direction_id].keys.sort.each do |calendar| %>
       <td>&nbsp;
         <% if hours[hour].has_key? calendar %>
           <% hours[hour][calendar].each do|min| %>

@@ -1,11 +1,11 @@
 class HomeController < ApplicationController
   def show
   end
+
   def stops
     @stops = true
     render :show
   end
-      
 
   def line
     l = Line.find(params[:id])
@@ -73,21 +73,21 @@ class HomeController < ApplicationController
     if params[:line_id]
       l = Line.find(params[:line_id])
       l.headsigns.each {|h| @headsigns[h.id] = h.name }
-      
+
       stop_signs = StopTime.where( :line_id => params[:line_id] ).
         where( :stop_id => params[:stop_id] )
       if params[:headsign_id]
         stop_signs = stop_signs.where( :headsign_id => params[:headsign_id] )
       end
-      @other_lines = stop.lines.select( "id,short_name").collect{|sl| 
-        if sl.id != l.id 
-          { :id => sl.id, :name => sl.short_name } 
+      @other_lines = stop.lines.select( "id,short_name").collect{|sl|
+        if sl.id != l.id
+          { :id => sl.id, :name => sl.short_name }
         end
       }.compact
     else
       @headsigns = {}
-      stop.lines.each {|l| 
-        l.headsigns.each{|h| 
+      stop.lines.each {|l|
+        l.headsigns.each{|h|
           if h.name.match( Regexp.new( "^#{l.short_name}" ) )
             @headsigns[h.id] = h.name
           else
@@ -99,11 +99,12 @@ class HomeController < ApplicationController
         where( :line_id => stop.lines )
     end
     @schedule = {}
-      
     @all_calendars = {}
+
     stop_signs.each do |st|
       unless @schedule.has_key? st.headsign_id
         @schedule[st.headsign_id] = {}
+        @all_calendars[st.headsign_id] = {}
       end
       ( hours, mins ) = st.arrival.to_hm false
       unless @schedule[st.headsign_id].has_key? hours
@@ -111,7 +112,7 @@ class HomeController < ApplicationController
       end
       unless @schedule[st.headsign_id][hours].has_key? st.calendar
         @schedule[st.headsign_id][hours][st.calendar] = []
-        @all_calendars[st.calendar] = 1
+        @all_calendars[st.headsign_id][st.calendar] = 1
       end
       @schedule[st.headsign_id][hours][st.calendar] << mins
     end
@@ -119,6 +120,5 @@ class HomeController < ApplicationController
     if request.xhr?
       render :layout => false and return
     end
-  end    
-      
+  end
 end
