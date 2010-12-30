@@ -1,6 +1,13 @@
 #! /usr/bin/env ruby
 
-require 'csv'
+if RUBY_VERSION.match( /^1\.8/ )
+  require 'fastercsv'
+  class CSV < FasterCSV
+  end
+else
+  require 'csv'
+end
+
 require 'pp'
 require 'point'
 require 'digest/sha2'
@@ -15,6 +22,7 @@ end
 legacy = {}
 
 all_stops = {}
+cities = {}
 
 mlog "loading stops"
 CSV.foreach( File.join( Rails.root, "/tmp/stops.txt" ),
@@ -59,6 +67,26 @@ all_stops.each do |shortname,stops|
 end
 all_stops = valid_stops
 
+def line_usage short_name
+  if short_name.match(/^\d+$/)
+    num_id = short_name.to_i
+    if num_id.between?( 40, 49 ) || num_id.between?( 150, 200 ) 
+      return :express
+    end
+    if num_id.between?( 50, 100 )
+      return :suburban
+    end
+    if num_id.between?( 1, 39 )
+      return :urban
+    end
+  end
+  if [ "40ex", "KL" ].include? short_name
+    return :express
+  end
+  return :special
+end
+    
+
 legacy[:line] = {}
 lines_stops = {}
 all_headsigns = {}
@@ -73,7 +101,8 @@ ActiveRecord::Base.transaction do
                              :short_name => line[:route_short_name],
                              :long_name => line[:route_long_name],
                              :bgcolor => line[:route_color],
-                             :fgcolor => line[:route_text_color] })
+                             :fgcolor => line[:route_text_color],
+                             :usage => line_usage( line[:route_short_name] ) })
     legacy[:line][line[:route_id]] = new_line
     lines_stops[new_line.id] = {}
     all_headsigns[new_line.id] = {}
@@ -137,9 +166,14 @@ ActiveRecord::Base.transaction do
       counts = names.inject(Hash.new(0)) {|h,i| h[i] += 1; h }
       real_name = counts.keys.sort { |a,b| counts[a] <=> counts[b] }.last
     end
+    city_name = stops.first[:stop_desc]
+    unless cities.has_key? city_name
+      cities[city_name] = City.create({ :name => city_name })
+    end
     new_stop = Stop.create({ :name => real_name, 
                              :lat => average( stops.collect{|s| s[:stop_lat].to_f } ),
-                             :lon => average( stops.collect{|s| s[:stop_lon].to_f } ) })
+                             :lon => average( stops.collect{|s| s[:stop_lon].to_f } ),
+                             :city_id => cities[city_name].id })
     stops.each do |stop|
       new_stop.stop_aliases.create({ :src_id => stop[:stop_id],
                                      :src_code => stop[:stop_code],

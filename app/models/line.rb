@@ -10,19 +10,15 @@ class Line < ActiveRecord::Base
   end
   
   def is_express?
-    if short_name.match(/^\d+$/)
-      num_id = short_name.to_i
-      return num_id.between?( 40, 49 ) || num_id.between?( 150, 200 ) 
-    end
-    [ "40ex", "KL" ].include? short_name
+    usage == "express"
   end
   def is_suburban?
-    short_name.match(/^\d+$/) && short_name.to_i.between?( 50, 100 )
+    usage == "suburban"
   end
   def is_urban?
-    short_name.match(/^\d+$/) && short_name.to_i.between?( 1, 39 )
+    usage == "urban"
   end
   def is_special?
-    ! ( is_express? || is_suburban? || is_urban? )
+    usage == "special"
   end
 end

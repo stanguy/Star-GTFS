@@ -10,7 +10,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101215201259) do
+ActiveRecord::Schema.define(:version => 20101225143850) do
+
+  create_table "cities", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "headsigns", :force => true do |t|
     t.string   "name"
@@ -27,6 +33,7 @@ ActiveRecord::Schema.define(:version => 20101215201259) do
     t.string   "fgcolor"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "usage"
   end
 
   create_table "lines_stops", :id => false, :force => true do |t|
@@ -57,7 +64,7 @@ ActiveRecord::Schema.define(:version => 20101215201259) do
     t.datetime "updated_at"
   end
 
-  add_index "stop_times", ["line_id", "calendar", "arrival"], :name => "index_stop_times_on_line_id_and_calendar_and_arrival"
+#  add_index "stop_times", ["trip_id"], :name => "index_stop_times_on_trip_id"
 
   create_table "stops", :force => true do |t|
     t.string   "name"
@@ -65,6 +72,8 @@ ActiveRecord::Schema.define(:version => 20101215201259) do
     t.float    "lon"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lines_count", :default => 0
+    t.integer  "city_id"
   end
 
   create_table "trips", :force => true do |t|
@@ -76,6 +85,7 @@ ActiveRecord::Schema.define(:version => 20101215201259) do
     t.integer  "block_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "bearing"
   end
 
 end
