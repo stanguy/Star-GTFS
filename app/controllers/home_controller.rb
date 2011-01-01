@@ -31,15 +31,22 @@ class HomeController < ApplicationController
         bearings[st.headsign_id] = st.trip.bearing
       end
     end
+    
+    other_lines = {}
+    Line.
+      select( "id,short_name").
+      where( :id => l.stops.collect(&:line_ids_cache).
+                      map {|ids| ids.split(',') }.flatten.uniq ).
+      each { |vl| other_lines[vl.id] = vl.short_name }
     data = l.stops.collect do|stop|
       stop_info = {
         :name => stop.name,
         :id => stop.id, :lat => stop.lat, :lon => stop.lon,
         :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true })
       }
-      stop_info[:others] = stop.lines.select( "id,short_name").collect{|sl|
-        if sl.id != l.id
-          { :id => sl.id, :name => sl.short_name }
+      stop_info[:others] = stop.line_ids_cache.split(',').collect{|olid|
+        if olid != l.id
+          { :id => olid, :name => other_lines[olid.to_i] }
         end
       }.compact
       if stop_times.has_key? stop.id

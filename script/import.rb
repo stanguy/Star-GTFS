@@ -220,18 +220,28 @@ ActiveRecord::Base.transaction do
     lines_stops[st.line_id][st.stop_id] = 1
   end
 end
+mlog "Linking lines and stops"
 ActiveRecord::Base.transaction do
   Line.all.each do |line|
     line.stops = lines_stops[line.id].keys.collect {|stop_id| all_new_stops[stop_id] }.reject{|x| x.nil? }
     line.save
   end
 end
+mlog "Generating stop line cache"
+ActiveRecord::Base.transaction do
+  Stop.all.each do |stop|
+    stop.line_ids_cache = stop.lines.collect(&:id).join(",")
+    stop.save
+  end
+end
 
+mlog "Adding index for stop_times/trips"
 ActiveRecord::Migration.add_index( :stop_times, [ :trip_id ] )
 
 mlog "This is gonna' be ugly"
 Line.all.each do |line|
   keytrips = {}
+ 
   line.trips.of_week_day(Calendar::WEEKDAY).each do |trip|
     signer = Digest::SHA2.new
     trip.stop_times.order('arrival ASC').each do |st|
