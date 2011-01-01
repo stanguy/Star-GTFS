@@ -241,7 +241,7 @@ jQuery.Star = {};
     }
     $.Star.MaptiTheme = {
       createMarker: function(marker) {
-        return new google.maps.Marker({ position: marker.getGLatLng(), icon: icons.blue });
+        return new google.maps.Marker({ position: marker.getGLatLng(), icon: icons.bus.blue });
       },
  
       createCluster: function(cluster) {
