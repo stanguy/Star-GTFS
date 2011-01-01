@@ -118,7 +118,7 @@ a.dir_schedule {
     border-color: #999;
 }
 .schedule_container ul.other_lines {
-    padding: 0;
+    padding: 0 0 0 5px;
     margin: 0;
     list-style: none;
 }
@@ -137,6 +137,7 @@ a.dir_schedule {
     border: 1px solid #ddd;
     background-color: #eee;
     margin-top: 10px; margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 .schedule_container div.other_lines h3 {
     text-align: center;
