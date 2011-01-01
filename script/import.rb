@@ -199,7 +199,24 @@ ActiveRecord::Base.transaction do
 end
 mlog "loading stop_times"
 
+
+def flush stop_times
+  return if stop_times.empty?
+  sql = <<SQL
+  INSERT INTO stop_times 
+    ( stop_id, line_id, trip_id, headsign_id, calendar, arrival, departure )
+  VALUES
+SQL
+  sql += stop_times.collect do |stoptime|
+    "(" + [ stoptime.stop_id, stoptime.line_id, stoptime.trip_id, stoptime.headsign_id, stoptime.calendar, stoptime.arrival, stoptime.departure ].join(",") + ")"
+  end.join(",")
+  ActiveRecord::Base.connection.execute( sql )
+  stop_times.clear
+end
+    
+
 ActiveRecord::Base.transaction do
+  all_stop_times = []
   CSV.foreach( File.join( Rails.root, "/tmp/stop_times.txt" ),
                :headers => true,
                :header_converters => :symbol,
@@ -209,7 +226,8 @@ ActiveRecord::Base.transaction do
       #    puts "Missing trip #{line[:trip_id]}"
       next
     end
-    st = StopTime.create({ :stop_id => legacy[:stops][line[:stop_id]],
+    # candidate for inlining
+    st = StopTime.new({ :stop_id => legacy[:stops][line[:stop_id]],
                            :line_id => legacy[:trip][line[:trip_id]][:line].id,
                            :trip_id => legacy[:trip][line[:trip_id]][:id],
                            :headsign_id => legacy[:trip][line[:trip_id]][:headsign_id],
@@ -217,9 +235,16 @@ ActiveRecord::Base.transaction do
                            :arrival => line[:arrival_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i },
                            :departure => line[:departure_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i }
                          })
+    all_stop_times.push( st )
     lines_stops[st.line_id][st.stop_id] = 1
+    if all_stop_times.length > 1000
+      flush all_stop_times
+    end
   end
+  flush all_stop_times
+  ActiveRecord::Base.connection.execute( "UPDATE stop_times SET created_at = now(), updated_at = now()" )
 end
+
 mlog "Linking lines and stops"
 ActiveRecord::Base.transaction do
   Line.all.each do |line|
