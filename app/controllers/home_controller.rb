@@ -72,7 +72,13 @@ class HomeController < ApplicationController
     @other_lines = nil
     if params[:line_id]
       l = Line.find(params[:line_id])
-      l.headsigns.each {|h| @headsigns[h.id] = h.name }
+      l.headsigns.each {|h| 
+          if h.name.match( Regexp.new( "^#{l.short_name} " ) )
+            @headsigns[h.id] = h.name
+          else
+            @headsigns[h.id] = "#{l.short_name} vers #{h.name}"
+          end
+      }
 
       stop_signs = StopTime.where( :line_id => params[:line_id] ).
         where( :stop_id => params[:stop_id] )
@@ -88,10 +94,10 @@ class HomeController < ApplicationController
       @headsigns = {}
       stop.lines.each {|l|
         l.headsigns.each{|h|
-          if h.name.match( Regexp.new( "^#{l.short_name}" ) )
+          if h.name.match( Regexp.new( "^#{l.short_name} " ) )
             @headsigns[h.id] = h.name
           else
-            @headsigns[h.id] = "#{l.short_name} #{h.name}"
+            @headsigns[h.id] = "#{l.short_name} vers #{h.name}"
           end
         }
       }
