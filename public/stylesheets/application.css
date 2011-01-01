@@ -165,6 +165,9 @@ table.schedule td:last-child, table.schedule th:last-child {
 table.schedule tr.head th {
     border-top: none;
 }
+table.schedule tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
 table.schedule td span.mins {
     float: left;
     text-align: right;
