@@ -6,9 +6,7 @@ gem 'rails', '3.0.3'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'fastercsv', :platforms => :ruby_18
-gem 'sqlite3-ruby', :require => 'sqlite3'
-#gem 'mysql'
-#gem 'pg'
+gem 'pg'
 gem 'jquery-rails'
 
 # Use unicorn as the web server
@@ -35,6 +33,8 @@ gem 'jquery-rails'
 # end
 
 group :development, :test do
+  gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'silent-postgres'
   gem 'rspec-rails'
   gem 'webrat'
   gem 'factory_girl_rails'
