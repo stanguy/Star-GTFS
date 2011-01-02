@@ -1,15 +1,26 @@
 div.container_12 {
-    width: 480px;
+    width: 320px;
+    min-height: 400px;
+}
+div.schedule_container {
+    width: 320px;
+    min-width: 320px;
+    margin: 0;
 }
 #map {
-    height: 430px;
+    height: 310px;
 }
 .content .handheld_hint {
     display: inline;
 }
-
+table.schedule {
+    max-width: 320px;
+}
 div.content .grid_12 {
-    width: 470px;
+    width: 310px;
+}
+.container_12 .grid_6 {
+    width: 300px;
 }
 div.push_2,.other_lines.push_3 {
     left: 0;
@@ -27,6 +38,19 @@ ul {
 }
 ul li {
     margin: 10px 0 10px 0;
+}
+.ui-accordion .ui-accordion-content {
+  padding-left: 0;
+  padding-right: 0;
+  width: 320px;
+  border-left: 0; border-right: 0;
+}
+.ui-accordion {
+  width: 320px;
+}
+.schedule_container .accordion h3 {
+  width: 290px;
+  border-left: 0; border-right: 0;
 }
 .grid_1,
 .grid_2,
