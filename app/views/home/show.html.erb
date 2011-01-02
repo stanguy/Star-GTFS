@@ -1,3 +1,13 @@
+  <div class="handheld_hint">
+    <p>Pour un meilleur affichage sur votre mobile, vous pouvez utiliser un affichage textuel des horaires à votre arrêt:</p>
+    <ul>
+      <li><%= link_to "Lignes urbaines", { :controller => "lines", :action => "index", :id_or_type => :urban } %></li>
+      <li><%= link_to "Lignes sub-urbaines", { :controller => "lines", :action => "index", :id_or_type => :suburban } %></li>
+      <li><%= link_to "Lignes express", { :controller => "lines", :action => "index", :id_or_type => :express } %></li>
+      <li><%= link_to "Lignes spéciales", { :controller => "lines", :action => "index", :id_or_type => :special } %></li>
+      <li><%= link_to "Toutes les lignes", { :controller => "lines", :action => "index", :id_or_type => :all } %></li>
+    </ul>
+  </div>
   <div id='map_browser'>
     <div id="lineactions" class="grid_5">
       <%= select_tag "lines", 

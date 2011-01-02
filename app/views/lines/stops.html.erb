@@ -1,0 +1,5 @@
+  <ul>
+    <% @stops.each do |stop| %>
+    <li><%= link_to stop.name, { :controller => "home", :action => "schedule", :line_id => @line.id, :stop_id => stop.id } %></li>
+    <% end %>
+  </ul>

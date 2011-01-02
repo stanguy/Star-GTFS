@@ -5,6 +5,9 @@ class Line < ActiveRecord::Base
   has_many :trips
   has_many :headsigns
 
+  scope :by_usage, lambda{ |what_usage|
+    ( ( what_usage == :all ) ? scoped : where( :usage => what_usage ) ).order('short_name ASC')
+  }
   def full_name
     short_name + " " + long_name
   end

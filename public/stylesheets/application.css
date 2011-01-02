@@ -2,6 +2,9 @@ html, html body {
     height: 100%;
     background-color: #ddd;
 }
+.content .handheld_hint {
+    display: none;
+}
 .content {
     background-color: #fff;
     min-height: 860px;

@@ -1,0 +1,5 @@
+  <ul>
+    <% @lines.each do |line| %>
+    <li><%= link_to line.full_name, { :id_or_type => line.id } %></li>
+    <% end %>
+  </ul>
