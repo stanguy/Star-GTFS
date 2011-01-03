@@ -36,18 +36,15 @@ class HomeController < ApplicationController
     Line.
       select( "id,short_name").
       where( :id => l.stops.collect(&:line_ids_cache).
-                      map {|ids| ids.split(',') }.flatten.uniq ).
-      each { |vl| other_lines[vl.id] = vl.short_name }
+                      map {|ids| ids.split(',') }.flatten.uniq ).each { |vl| other_lines[vl.id] = vl.short_name }
     data = l.stops.collect do|stop|
       stop_info = {
         :name => stop.name,
         :id => stop.id, :lat => stop.lat, :lon => stop.lon,
         :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true })
       }
-      stop_info[:others] = stop.line_ids_cache.split(',').collect{|olid|
-        if olid != l.id
-          { :id => olid, :name => other_lines[olid.to_i] }
-        end
+      stop_info[:others] = stop.line_ids_cache.split(',').delete_if{|olid| olid.to_i == l.id }.collect{|olid|
+        { :id => olid, :name => other_lines[olid.to_i] }
       }.compact
       if stop_times.has_key? stop.id
         stop_info[:times] = stop_times[stop.id].keys.collect do |headsign_id|
