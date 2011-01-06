@@ -162,6 +162,9 @@ table.schedule th, table.schedule td {
     font-size: 12px;
     line-height: 1.1;
 }
+table.schedule td.current {
+    background-color: #fee;
+}
 table.schedule td:last-child, table.schedule th:last-child {
     border-right: none;
 }

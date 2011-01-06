@@ -29,7 +29,7 @@
     <tr>
       <th><%= hour % 24 %>h</th>
       <% @all_calendars[direction_id].keys.sort.each do |calendar| %>
-      <td>&nbsp;
+      <td<% if ( calendar & Calendar.from_time( Time.zone.now ) > 0 ) and ( hour == Time.zone.now.hour ) %> class="current"<% end %>>&nbsp;
         <% if hours[hour].has_key? calendar %>
           <% hours[hour][calendar].each do|min| %>
             <span class="mins"><%= "%02d" % min %></span>
