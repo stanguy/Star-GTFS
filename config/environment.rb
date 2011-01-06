@@ -7,7 +7,7 @@ StarGtfs::Application.initialize!
 
 def in_memory_database?
 #  puts
-  ActiveRecord::Base.connection.class == ActiveRecord::ConnectionAdapters::SQLite3Adapter and
+  ActiveRecord::Base.connection.class.to_s == "ActiveRecord::ConnectionAdapters::SQLite3Adapter" and
     StarGtfs::Application.config.database_configuration[Rails.env]['database'] == ':memory:'
 end
 

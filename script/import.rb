@@ -11,8 +11,10 @@ end
 require 'pp'
 require 'point'
 require 'digest/sha2'
+require 'yajl/http_stream'
 
 ActiveRecord::Base.logger.level = Logger::Severity::UNKNOWN
+NB_RECORDS_TO_INSERT = ActiveRecord::Base.connection.class.to_s == "ActiveRecord::ConnectionAdapters::SQLite3Adapter" ? 1 : 1000
 
 def mlog msg
   puts Time.now.to_s(:db) + " " + msg
@@ -67,24 +69,24 @@ all_stops.each do |shortname,stops|
 end
 all_stops = valid_stops
 
-def line_usage short_name
-  if short_name.match(/^\d+$/)
-    num_id = short_name.to_i
-    if num_id.between?( 40, 49 ) || num_id.between?( 150, 200 ) 
-      return :express
-    end
-    if num_id.between?( 50, 100 )
-      return :suburban
-    end
-    if num_id.between?( 1, 39 )
-      return :urban
-    end
-  end
-  if [ "40ex", "KL" ].include? short_name
-    return :express
-  end
-  return :special
+def line_usage line
+  return :urban if [ 'Urbaine', 'Inter-quartiers', 'Majeure' ].include? line[:route_desc] 
+  return :express if 'Express' == line[:route_desc]
+  return :suburban if [ 'Intercommunale', 'Suburbaine' ].include? line[:route_desc]
+  :special
 end
+
+def shorten_long_name line
+  basename = line[:route_long_name]
+  basename.split( '<>' ).map(&:strip).collect do |destination|
+    if m = destination.match( /^([^\/(]*) [\/(]/ )
+      m[1]
+    else
+      destination
+    end
+  end.join( ' - ' )
+end
+    
 
 
 mlog "loading old routes"
@@ -99,6 +101,15 @@ if File.exists? File.join( Rails.root, "/tmp/routes_detailed.txt" )
   end
 end
 
+mlog "loading line icons"
+Uri_lines = URI.parse( "http://data.keolis-rennes.com/json/?version=2.0&key=AO7UR4OL1ICTKWL&cmd=getlines" )
+result = Yajl::HttpStream.get( Uri_lines )
+lines_base_url = result['opendata']['answer']['data']['baseurl']
+lines_picto_urls = {}
+result['opendata']['answer']['data']['line'].each do|line|
+  lines_picto_urls[line['name']] = lines_base_url + line['picto']
+end
+  
 legacy[:line] = {}
 lines_stops = {}
 all_headsigns = {}
@@ -112,9 +123,11 @@ ActiveRecord::Base.transaction do
     new_line = Line.create({ :src_id => line[:route_id],
                              :short_name => line[:route_short_name],
                              :long_name => long_names_for_lines.has_key?( line[:route_short_name] ) ? long_names_for_lines[line[:route_short_name]] :  line[:route_long_name],
+                             :short_long_name => shorten_long_name( line ),
                              :bgcolor => line[:route_color],
                              :fgcolor => line[:route_text_color],
-                             :usage => line_usage( line[:route_short_name] ) })
+                             :usage => line_usage( line ),
+                             :picto_url => lines_picto_urls[line[:route_short_name]]})
     legacy[:line][line[:route_id]] = new_line
     lines_stops[new_line.id] = {}
     all_headsigns[new_line.id] = {}
@@ -237,12 +250,17 @@ ActiveRecord::Base.transaction do
                          })
     all_stop_times.push( st )
     lines_stops[st.line_id][st.stop_id] = 1
-    if all_stop_times.length > 1000
+    if all_stop_times.length >= NB_RECORDS_TO_INSERT
       flush all_stop_times
     end
   end
   flush all_stop_times
-  ActiveRecord::Base.connection.execute( "UPDATE stop_times SET created_at = now(), updated_at = now()" )
+  
+  if ActiveRecord::Base.connection.class.to_s == "ActiveRecord::ConnectionAdapters::SQLite3Adapter"
+    ActiveRecord::Base.connection.execute( "UPDATE stop_times SET created_at = datetime('now'), updated_at = datetime('now')" )
+  else
+    ActiveRecord::Base.connection.execute( "UPDATE stop_times SET created_at = now(), updated_at = now()" )
+  end
 end
 
 mlog "Linking lines and stops"

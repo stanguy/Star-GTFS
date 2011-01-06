@@ -6,6 +6,7 @@ gem 'rails', '3.0.3'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'fastercsv', :platforms => :ruby_18
+gem 'yajl-ruby'
 gem 'pg'
 gem 'jquery-rails'
 
