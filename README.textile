@@ -12,10 +12,24 @@ The @import.rb@ script takes the various csv files and put some parts into a dat
 
 You can now start your server and point your browser at your usual URL (say, http://localhost:3000/).
 
-At the time being, the application only uses a SQLite3 database and some people may gasp in horror, but apart from the import process, there's not a single data write/modification, so it should be powerful enough while still being probably the fastest solution for the import process using ActiveRecord (gotta love this inmemory setting).
+At the time being, the application uses a SQLite3 database and some people may gasp in horror, but apart from the import process, there's not a single data write/modification, so it should be powerful enough while still being probably the fastest solution for the import process using ActiveRecord (gotta love this inmemory setting).
+
+PostgreSQL is also supported although a tiny bit slower for the import process.
+
+h2. Hey, what have you done to the data? 
+
+I know the license (in theory), doesn't really allow me to do everything there, but my import process does a few things more than just importing raw CSV rows.
+
+ * Agglomeration of "stops". The STAR GTFS data set seems to have this little thing that makes stops of the same station different stops GTFS-speaking. And some stations are really detailled and spread out in different stops for differents lines. And it sucks. So I take all the stops that almost bear the same name and are close enough to have only one stop instead;
+ * As said earlier, linking directly routes, stops and stop_times instead of going through trips;
+ * Reducing the number of calendars. Each calendar of this GTFS data set only covers a day even though trips are repeated. So I try to find all trips that look the same (same stops sequence and timing) to only keep one of each (but I don't do so for the week-end trips, as it looks better that way);
+ * Stripping line names. Not visible on the web version, but I reduce the length and complexity of line names for the mobile version, while we're at it;
+ * Computing the bearing of trips. "this line goes to Wherevercity, but does it go North or South?" Well, here's the answer (that's a small bonus, but I love small bonuses);
+ * Geekification of calendar. Having 7 columns to store related booleans sucks. Look, Ma', I know binary operators! (given the fact that the calendar here is under-used, this allows me to drop the calendar altogether and only use one byte to store this information);
+
 
 h1. License
 
-All the code in this repository, unless otherwise noted is under AGPL v3.
+All the code in this repository, unless otherwise noted is under AGPL v3. (as far as I understand, that means "do (almost) whatever you want if you do opensource too, but if you do services (aka, a web app) with it as closed source, you'll hurk small kitties" (and you don't want to hurt small kitties, do you?)
 
-The Vincenty distance computation method is derived from a work by Chris Veness, licensed under CC-BY.
+The Vincenty distance and bearing computation method is derived from a work by Chris Veness, licensed under CC-BY.
