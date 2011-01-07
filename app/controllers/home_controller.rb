@@ -32,6 +32,15 @@ class HomeController < ApplicationController
       end
     end
     
+    stops_of_trip = nil
+    if params[:trip_id]
+      ref_trip = Trip.find(params[:trip_id])
+      stops_of_trip = {}
+      ref_trip.stop_times.each do |st|
+        stops_of_trip[st.stop_id] = st.arrival.to_formatted_time
+      end
+    end
+    
     other_lines = {}
     Line.
       select( "id,short_name").
@@ -41,8 +50,10 @@ class HomeController < ApplicationController
       stop_info = {
         :name => stop.name,
         :id => stop.id, :lat => stop.lat, :lon => stop.lon,
-        :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true })
+        :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true }),
+        
       }
+      stop_info[:trip_time] = stops_of_trip[stop.id] unless stops_of_trip.nil?
       stop_info[:others] = stop.line_ids_cache.split(',').delete_if{|olid| olid.to_i == l.id }.collect{|olid|
         { :id => olid, :name => other_lines[olid.to_i] }
       }.compact
@@ -51,7 +62,7 @@ class HomeController < ApplicationController
           {
             :direction => headsigns[headsign_id],
             :bearing => bearings[headsign_id],
-            :times => stop_times[stop.id][headsign_id].collect(&:arrival).map(&:to_formatted_time),
+            :times => stop_times[stop.id][headsign_id].collect {|st| { :t => st.arrival.to_formatted_time, :tid => st.trip_id } },
             :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :headsign_id => headsign_id, :only_path => true })
           }
         end.reject {|x| x[:times].empty? }

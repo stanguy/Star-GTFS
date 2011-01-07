@@ -79,6 +79,10 @@ jQuery.Star = {};
         selected_stop_id = e.data.stop;
         onSelectLine();
     }
+    function onLineStopTimeFollowup( e ) {
+        var url = $('#lineactions select').data('line-url').replace( /0/, $('#lineactions select').val() );
+        $.get( url, { trip_id: $(this).data('id') }, onLineGet, "json" );
+    }
     function onLineMarkerClick() {
         if ( null == infowindow ) {
             infowindow = new google.maps.InfoWindow();
@@ -100,7 +104,10 @@ jQuery.Star = {};
                             .append( this.times[i].direction ) );
             var ul = $("<ul></ul>");
             for( var j = 0; j < this.times[i].times.length; ++j ) {
-                ul.append( $("<li></li>").append( this.times[i].times[j] ) );              
+                ul.append( 
+                    $("<li></li>").append( this.times[i].times[j].t )
+                                  .append( $('<span> &rarr;</span>').data('id',this.times[i].times[j].tid ).click( onLineStopTimeFollowup ) )   
+                );
             }
             ul.append( '<li>&hellip;</li>' );
             content.append( $('<div></div>').addClass('clear'));
@@ -145,6 +152,11 @@ jQuery.Star = {};
         infowindow.open( map, this );
     }
     function onLineGet( d, s, x) {
+        $.each( markers, function( idx, marker ) {
+            marker.setMap( null );
+        });
+        markers = [];
+        
         var bounds = null;
         var selected_marker = null;
         $.each( d, function( idx, point ) {
@@ -156,12 +168,25 @@ jQuery.Star = {};
             } else {
                 icon = icons[icon_type].red;
             }
-            var marker = new google.maps.Marker( {
-                position: myLatlng,
-                map: map,
-                title: point.name,
-                icon: icon
-            });
+            var marker ;
+            if ( point.trip_time == undefined ) {
+                marker = new google.maps.Marker( {
+                    position: myLatlng,
+                    map: map,
+                    title: point.name,
+                    icon: icon
+                });
+            } else {
+                marker = new MarkerWithLabel( {
+                    position: myLatlng,
+                    map: map,
+                    title: point.name,
+                    icon: icon,
+                    labelContent: point.trip_time,
+                    labelAnchor: new google.maps.Point(19, 0),
+                    labelClass: "timeLabel"
+                });
+            }   
             if ( bounds == undefined ) {
                 bounds = new google.maps.LatLngBounds( myLatlng, myLatlng );
             } else if ( ! bounds.contains( myLatlng ) ) {
@@ -198,10 +223,6 @@ jQuery.Star = {};
         $(issues_display).dialog({ title: 'Erreurs sur la ligne ' + short_id });
     }
     function onSelectLine() {
-        $.each( markers, function( idx, marker ) {
-            marker.setMap( null );
-        });
-        markers = [];
         if( $('#lineactions select').val() != '' ) {
             var url = $('#lineactions select').data('line-url').replace( /0/, $('#lineactions select').val() );
             goTo( url );
