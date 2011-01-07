@@ -16,8 +16,13 @@ module Calendar
   end
 
   def self.range_to_str c
-    days = (0..6).collect {|ds| d = ( 1 << ds ); ( c & d > 0 ) ? CAL_STRINGS[d] : nil }.delete_if &:nil?
-    days.join ","
+    case c
+    when WEEKDAY
+      [ CAL_STRINGS[MONDAY], CAL_STRINGS[FRIDAY] ].join('-')
+    else
+      days = (0..6).collect {|ds| d = ( 1 << ds ); ( c & d > 0 ) ? CAL_STRINGS[d] : nil }.delete_if &:nil?
+      days.join ","
+    end
   end
       
       
