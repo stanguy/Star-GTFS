@@ -75,9 +75,8 @@ jQuery.Star = {};
     function onOtherLineSelect( e ) {
         e.preventDefault();
         infowindow.close();
-        $('#lineactions select').val(e.data.line + '');
         selected_stop_id = e.data.stop;
-        onSelectLine();
+        $('#lines .list li a[data-short="' + e.data.line + '"]').click();
     }
     function onLineStopTimeFollowup( e ) {
         var url = $('#lineactions select').data('line-url').replace( /0/, $('#lineactions select').val() );
@@ -122,15 +121,11 @@ jQuery.Star = {};
             content.append( $('<h2>Autres lignes</h2>') );
             var ul = $('<ul></ul>').addClass("lines");
             for( var x = 0; x < this.others.length; ++x ) {
-                var line_id = this.others[x].id ;
                 var name = this.others[x].name;
-                if ( line_id == this.stop_id ) {
-                    continue;
-                }
                 var li = $('<li></li>' );
-                var a = $('<a></a>').attr('href', '/line/' + line_id + '/at/' + this.stop_id );
+                var a = $('<a></a>').attr('href', '/line/' + name + '/at/' + this.stop_id );
                 var marker = this;
-                a.bind( 'click', { line: line_id, stop: this.stop_id }, onOtherLineSelect );
+                a.bind( 'click', { line: name, stop: this.stop_id }, onOtherLineSelect );
                 if ( linesInfo.icons[name] != undefined ) {
                     a.append( $('<img>').attr( 'src', linesInfo.baseUrl + linesInfo.icons[name] ) );
                     a.attr('title', name );
@@ -222,20 +217,19 @@ jQuery.Star = {};
         }
         $(issues_display).dialog({ title: 'Erreurs sur la ligne ' + short_id });
     }
-    function onSelectLine() {
-        if( $('#lineactions select').val() != '' ) {
-            var url = $('#lineactions select').data('line-url').replace( /0/, $('#lineactions select').val() );
-            goTo( url );
-            $.get( url, {}, onLineGet, "json" );
-            var short_id = $('#lineactions select option:selected').text().split(' ', 1 );
-            if( issues[short_id] != undefined ) {
-                $('.icons img').first().show();
-                $('.icons img').first().attr('title', issues[short_id][0].title );
-            } else {
-                $('.icons img').first().hide();
-            }
+    function onSelectLine(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        $('#lines .list li.selected').removeClass('selected');
+        $(this).closest('li').addClass('selected');
+        goTo( url );
+        $.get( url, {}, onLineGet, "json" );
+        var short_id = $(this).data('short');
+        if( issues[short_id] != undefined ) {
+            $('.icons img').first().show();
+            $('.icons img').first().attr('title', issues[short_id][0].title );
         } else {
-            goTo( '' );
+            $('.icons img').first().hide();
         }
     }
     function onHeadingChange() {
@@ -377,7 +371,7 @@ jQuery.Star = {};
             'center': new google.maps.LatLng( 48.11, -1.63 ),
             'mapTypeId': google.maps.MapTypeId.ROADMAP
         });            
-        $('#lineactions select').change(onSelectLine);
+        $('#lines .list a').click(onSelectLine);
         if ( typeof line_data !== 'undefined' ) {
             onLineGet( line_data );
         }
@@ -400,6 +394,7 @@ jQuery.Star = {};
             window.location = window.location.hash.substr(1);
             return;
         }
+        $('#lines').tabs({event: 'mouseover'});
         if( typeof selected_stop != 'undefined' ) {
             selected_stop_id = selected_stop;
         }

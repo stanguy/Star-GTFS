@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110101092025) do
+ActiveRecord::Schema.define(:version => 20110108200751) do
 
   create_table "cities", :force => true do |t|
     t.string   "name"
@@ -34,6 +34,9 @@ ActiveRecord::Schema.define(:version => 20110101092025) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "usage"
+    t.string   "picto_url"
+    t.string   "short_long_name"
+    t.string   "slug"
   end
 
   create_table "lines_stops", :id => false, :force => true do |t|
@@ -64,9 +67,8 @@ ActiveRecord::Schema.define(:version => 20110101092025) do
     t.datetime "updated_at"
   end
 
-## Schema is used before import, thus index will be added "later"
-#  add_index "stop_times", ["line_id", "calendar", "arrival"], :name => "index_stop_times_on_line_id_and_calendar_and_arrival"
-#  add_index "stop_times", ["trip_id"], :name => "index_stop_times_on_trip_id"
+  add_index "stop_times", ["line_id", "calendar", "arrival"], :name => "stop_times_line_id_calendar_arrival"
+  add_index "stop_times", ["trip_id"], :name => "index_stop_times_on_trip_id"
 
   create_table "stops", :force => true do |t|
     t.string   "name"

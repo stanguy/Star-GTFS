@@ -15,13 +15,49 @@ html, html body {
     padding: 20px 0;
     font-size: 18px;
 }
-#lineactions {
-    height: 30px;
-    margin-top: 10px;
+#lines {
+    border: 0;
 }
-#lineactions select {
-    margin-top: 3px;
+#lines .ui-tabs-nav li a {
+    padding: 0.2em 0.5em 0;
 }
+#lines .list ul {
+    list-style: none;
+}
+#lines .list {
+    padding: 0.2em 1em 0;
+}
+#lines .list ul li span {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+}
+#lines .list ul li {
+    float: left;
+    display: inline-block;
+    width: 29px;
+    height: 25px;
+    line-height: 20px;
+    font-size: 11px;
+    text-align: center;
+    padding-top: 4px;
+    margin-right: 3px;
+}
+#lines .list ul li.selected {
+    border: 1px solid #500;
+    padding-top: 3px;
+    width: 27px;
+}
+#lines .list ul li img {
+    width: 21px;
+    height: 21px;
+}
+#lines .list ul li.as_text {
+    width: auto;
+    margin-right: 10px;
+    font-size: 13px;
+}
+
 .loader_container, .icons {
     padding-top: 15px;
 }

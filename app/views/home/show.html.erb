@@ -1,38 +1,32 @@
-  <div class="handheld_hint">
-    <p>Pour un meilleur affichage sur votre mobile, vous pouvez utiliser un affichage textuel des horaires à votre arrêt:</p>
+  
+<% lines = Line.all
+   lines_groupes = [ lines.select(&:is_urban?   ),
+                     lines.select(&:is_suburban?),
+                     lines.select(&:is_express? ),
+                     lines.select(&:is_special? ) ] %>
+
+<div id='map_browser'>
+  <div id="lines">
     <ul>
-      <li><%= link_to "Lignes urbaines", { :controller => "lines", :action => "index", :id_or_type => :urban } %></li>
-      <li><%= link_to "Lignes sub-urbaines", { :controller => "lines", :action => "index", :id_or_type => :suburban } %></li>
-      <li><%= link_to "Lignes express", { :controller => "lines", :action => "index", :id_or_type => :express } %></li>
-      <li><%= link_to "Lignes spéciales", { :controller => "lines", :action => "index", :id_or_type => :special } %></li>
-      <li><%= link_to "Toutes les lignes", { :controller => "lines", :action => "index", :id_or_type => :all } %></li>
+      <li><a href="#urban">Lignes urbaines</a></li>
+      <li><a href="#suburban">Lignes suburbaines</a></li>
+      <li><a href="#express">Lignes express</a></li>
+      <li><a href="#special">Lignes spéciales</a></li>
     </ul>
+    <div id="urban" class="list">
+      <%= render :partial => 'lines', :object => lines_groupes[0] %>
+    </div>
+    <div id="suburban" class="list">
+      <%= render :partial => 'lines', :object => lines_groupes[1] %>
+    </div>
+    <div id="express" class="list">
+      <%= render :partial => 'lines', :object => lines_groupes[2] %>
+    </div>
+    <div id="special" class="list">
+      <%= render :partial => 'lines', :object => lines_groupes[3] %>
+    </div>
   </div>
-  <div id='map_browser'>
-    <div id="lineactions" class="grid_5">
-      <%= select_tag "lines", 
-            content_tag(:option, "Sélectionnez une ligne...", { :value => ''}) + line_options_for_select( Line.all ),
-                { 'data-line-url' => home_line_path( :id => 0) } %>
-    </div>
-    <div class="grid_1 icons">
-      <%= image_tag "alert.png" %>
-    </div>
-    <div class="grid_1 loader_container">
-      <span id="ajax-loader" style="display: none;">
-        <img src="/images/ajax-loader.gif">
-      </span>
-    </div>
-    <div class="grid_3 omega push_2" id="stopactions">
-      <%= check_box_tag "find_stops", '1', @stops %>
-      <label for="find_stops">Parcourir les arrêts</label>
-    </div>
-    <div id="map" class="grid_12"> </div>
-    <%= div_clear %>
-  </div>
-  <% if @line_data %>
-  <%= javascript_tag "var line_data = " + @line_data.to_json %>
-  <% end %>
-  <% if @selected_stop %>
-  <%= javascript_tag "var selected_stop = " + @selected_stop.to_s %> 
-  <% end %>
-  <%= init_javascript "$(document).ready($.Star.init);" %>
+  <div id="map" class="grid_12"> </div>
+  <%= div_clear %>
+</div>
+  <% init_javascript "$.Star.init();$('#lines').tabs({event: 'mouseover'});" %>

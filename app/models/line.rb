@@ -1,5 +1,7 @@
 class Line < ActiveRecord::Base
 
+  acts_as_url :long_name, :url_attribute => :slug
+
   has_and_belongs_to_many :stops
   has_many :stop_times
   has_many :trips
@@ -24,4 +26,17 @@ class Line < ActiveRecord::Base
   def is_special?
     usage == "special"
   end
+
+  def self.by_short_name str
+    if m = str.match( /^([^_]*)_/ )
+      str = m[1]
+    end
+    first( :conditions => { :short_name => m[1] } )
+  end
+      
+
+  def to_param
+    [ short_name, slug ].join('_')
+  end
+      
 end

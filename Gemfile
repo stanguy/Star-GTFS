@@ -7,8 +7,10 @@ gem 'rails', '3.0.3'
 
 gem 'fastercsv', :platforms => :ruby_18
 gem 'yajl-ruby'
-gem 'pg'
+#gem 'pg'
 gem 'jquery-rails'
+
+gem 'stringex'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -35,7 +37,7 @@ gem 'jquery-rails'
 
 group :development, :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
-  gem 'silent-postgres'
+#  gem 'silent-postgres'
   gem 'rspec-rails'
   gem 'webrat'
   gem 'factory_girl_rails'
