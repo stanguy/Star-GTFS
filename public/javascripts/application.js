@@ -395,6 +395,9 @@ jQuery.Star = {};
             return;
         }
         $('#lines').tabs({event: 'mouseover'});
+        $('#lines .list a').each( function() {
+          $(this).attr('title', $(this).children('span').text() );
+        });
         if( typeof selected_stop != 'undefined' ) {
             selected_stop_id = selected_stop;
         }
