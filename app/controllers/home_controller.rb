@@ -55,7 +55,7 @@ class HomeController < ApplicationController
       }
       stop_info[:trip_time] = stops_of_trip[stop.id] unless stops_of_trip.nil?
       stop_info[:others] = stop.line_ids_cache.split(',').delete_if{|olid| olid.to_i == l.id }.collect{|olid|
-        { :name => other_lines[olid.to_i] }
+        other_lines[olid.to_i]
       }.compact
       if stop_times.has_key? stop.id
         stop_info[:times] = stop_times[stop.id].keys.collect do |headsign_id|

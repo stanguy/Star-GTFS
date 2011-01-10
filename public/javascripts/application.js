@@ -79,7 +79,7 @@ jQuery.Star = {};
         $('#lines .list li a[data-short="' + e.data.line + '"]').click();
     }
     function onLineStopTimeFollowup( e ) {
-        var url = $('#lineactions select').data('line-url').replace( /0/, $('#lineactions select').val() );
+        var url = $('#lines .list li.selected a').attr('href');
         $.get( url, { trip_id: $(this).data('id') }, onLineGet, "json" );
     }
     function onLineMarkerClick() {
@@ -121,7 +121,7 @@ jQuery.Star = {};
             content.append( $('<h2>Autres lignes</h2>') );
             var ul = $('<ul></ul>').addClass("lines");
             for( var x = 0; x < this.others.length; ++x ) {
-                var name = this.others[x].name;
+                var name = this.others[x];
                 var li = $('<li></li>' );
                 var a = $('<a></a>').attr('href', '/line/' + name + '/at/' + this.stop_id );
                 var marker = this;
@@ -374,13 +374,35 @@ jQuery.Star = {};
         $('#lines .list a').click(onSelectLine);
         if ( $('#line_data').length > 0 ) {
             var line_data = [];
-            $('#line_data a').each( function() {
-                var stop = $(this);
+            $('#line_data').children('li').each( function() {
+                var stop = $(this).find('h2 a');
+                var others = stop.data('others') + '';
+                if ( others !== '' ) {
+                    others = others.split(',');
+                } else {
+                    others = [];
+                }
+                var times = [];
+                $(this).children('div').each( function() {
+                    var direction = $(this).find('h3 a');
+                    var stop_times = [];
+                    $(this).children('span').each( function() {
+                        stop_times.push({ t: $(this).text(), tid: $(this).data('tid')});
+                    });
+                    times.push({
+                        direction: direction.text(),
+                        bearing: direction.data('bearing'),
+                        schedule_url: direction.attr('href'),
+                        times: stop_times
+                    });
+                });
                 line_data.push({ name: stop.text(), 
                                    id: stop.data('id'), 
                                   lat: stop.data('lat'), 
                                   lon: stop.data('lon'),
-                         schedule_url: stop.data('href') } );
+                         schedule_url: stop.data('href'),
+                               others: others,
+                                times: times } );
             });
             onLineGet( line_data );
         }

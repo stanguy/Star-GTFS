@@ -2,7 +2,20 @@
 <% if @line_data %>
   <ul id='line_data'>
     <% @line_data.each do |stop| %>
-      <li><%= link_to stop[:name], stop[:schedule_url], { 'data-id' => stop[:id], 'data-lat' => stop[:lat], 'data-lon' => stop[:lon] } %>
+      <li>
+        <h2><%= link_to stop[:name], stop[:schedule_url], { 'data-id' => stop[:id], 'data-lat' => stop[:lat], 'data-lon' => stop[:lon], 'data-others' => stop[:others].join(',') } %></h2>
+        <% if stop.has_key? :times %>
+          <% stop[:times].each do |trip| %>
+            <div>
+              <%= content_tag( :h3, 
+                               link_to( trip[:direction], trip[:schedule_url], 'data-bearing' => trip[:bearing] ) ) %>
+              <% trip[:times].each do |time| %>
+                <%= content_tag( :span, time[:t], 'data-tid' => time[:tid] ) %>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      </li>
     <% end%>
   </ul>
 <% end %>
@@ -36,4 +49,4 @@
   <div id="map" class="grid_12"> </div>
   <%= div_clear %>
 </div>
-  <% init_javascript "$.Star.init();$('#lines').tabs({event: 'mouseover'});" %>
+  <% init_javascript "$.Star.init();" %>
