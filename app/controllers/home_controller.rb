@@ -74,6 +74,7 @@ class HomeController < ApplicationController
     else
       @line_data = data
       @line_id = l.id
+      @title = l.full_name
       render :show
     end
   end

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Carte et horaires des bus de Rennes (STAR)</title>
+    <title><% if @title %><%= @title %>, <% end %>Carte et horaires des bus de Rennes (STAR)</title>
     <%= stylesheet_link_tag [ 'reset', '960gs', 'jquery-ui', 'maptimize', 'application' ], :media => "screen" %>
     <%= stylesheet_link_tag [ 'handheld' ], :media => 'handheld, mobile, only screen and (max-device-width:480px)' %>
     <%= csrf_meta_tag %>
