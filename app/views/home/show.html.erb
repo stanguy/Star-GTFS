@@ -1,4 +1,11 @@
-  
+
+<% if @line_data %>
+  <ul id='line_data'>
+    <% @line_data.each do |stop| %>
+      <li><%= link_to stop[:name], stop[:schedule_url], { 'data-id' => stop[:id], 'data-lat' => stop[:lat], 'data-lon' => stop[:lon] } %>
+    <% end%>
+  </ul>
+<% end %>
 <% lines = Line.all
    lines_groupes = [ lines.select(&:is_urban?   ),
                      lines.select(&:is_suburban?),

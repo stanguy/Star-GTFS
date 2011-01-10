@@ -15,6 +15,9 @@ html, html body {
     padding: 20px 0;
     font-size: 18px;
 }
+#line_data {
+    display: none;
+}
 #lines {
     border: 0;
 }

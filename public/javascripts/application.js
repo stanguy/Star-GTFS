@@ -372,7 +372,16 @@ jQuery.Star = {};
             'mapTypeId': google.maps.MapTypeId.ROADMAP
         });            
         $('#lines .list a').click(onSelectLine);
-        if ( typeof line_data !== 'undefined' ) {
+        if ( $('#line_data').length > 0 ) {
+            var line_data = [];
+            $('#line_data a').each( function() {
+                var stop = $(this);
+                line_data.push({ name: stop.text(), 
+                                   id: stop.data('id'), 
+                                  lat: stop.data('lat'), 
+                                  lon: stop.data('lon'),
+                         schedule_url: stop.data('href') } );
+            });
             onLineGet( line_data );
         }
         $('#stopactions input').change( onFindStops );        
