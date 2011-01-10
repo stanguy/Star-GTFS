@@ -1,6 +1,6 @@
 class Line < ActiveRecord::Base
 
-  acts_as_url :long_name, :url_attribute => :slug
+  acts_as_url :short_long_name, :url_attribute => :slug
 
   has_and_belongs_to_many :stops
   has_many :stop_times
