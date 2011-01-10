@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110108200751) do
+ActiveRecord::Schema.define(:version => 20110110225302) do
 
   create_table "cities", :force => true do |t|
     t.string   "name"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20110108200751) do
     t.integer  "line_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "slug"
   end
 
   create_table "lines", :force => true do |t|
@@ -78,6 +79,7 @@ ActiveRecord::Schema.define(:version => 20110108200751) do
     t.datetime "updated_at"
     t.integer  "city_id"
     t.string   "line_ids_cache"
+    t.string   "slug"
   end
 
   create_table "trips", :force => true do |t|

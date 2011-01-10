@@ -15,7 +15,7 @@ class HomeController < ApplicationController
     end
 
     headsigns = {}
-    l.headsigns.each {|h| headsigns[h.id] = h.name }
+    l.headsigns.each {|h| headsigns[h.id] = h }
     stop_times = {}
     bearings = {}
     original_stop_times = StopTime.coming(l.id).includes(:trip).order(:arrival)
@@ -49,8 +49,8 @@ class HomeController < ApplicationController
     data = l.stops.collect do|stop|
       stop_info = {
         :name => stop.name,
-        :id => stop.id, :lat => stop.lat, :lon => stop.lon,
-        :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :only_path => true }),
+        :id => stop.slug, :lat => stop.lat, :lon => stop.lon,
+        :schedule_url => url_for({ :action => 'schedule', :line_id => l, :stop_id => stop, :only_path => true }),
         
       }
       stop_info[:trip_time] = stops_of_trip[stop.id] unless stops_of_trip.nil?
@@ -60,10 +60,10 @@ class HomeController < ApplicationController
       if stop_times.has_key? stop.id
         stop_info[:times] = stop_times[stop.id].keys.collect do |headsign_id|
           {
-            :direction => headsigns[headsign_id],
+            :direction => headsigns[headsign_id].name,
             :bearing => bearings[headsign_id],
             :times => stop_times[stop.id][headsign_id].collect {|st| { :t => st.arrival.to_formatted_time, :tid => st.trip_id } },
-            :schedule_url => url_for({ :action => 'schedule', :line_id => l.id, :stop_id => stop.id, :headsign_id => headsign_id, :only_path => true })
+            :schedule_url => url_for({ :action => 'schedule', :line_id => l, :stop_id => stop, :headsign_id => headsigns[headsign_id], :only_path => true })
           }
         end.reject {|x| x[:times].empty? }
       end
@@ -82,12 +82,10 @@ class HomeController < ApplicationController
   def schedule
     @headsigns = {}
     stop_signs = nil
-    stop = Stop.find(params[:stop_id])
-    @stop_name = stop.name
-    @stop_id = stop.id
+    @stop = Stop.find_by_slug(params[:stop_id])
     @other_lines = nil
     if params[:line_id]
-      l = Line.find(params[:line_id])
+      l = Line.by_short_name(params[:line_id])
       l.headsigns.each {|h| 
           if h.name.match( Regexp.new( "^#{l.short_name} " ) )
             @headsigns[h.id] = h.name
@@ -96,19 +94,20 @@ class HomeController < ApplicationController
           end
       }
 
-      stop_signs = StopTime.where( :line_id => params[:line_id] ).
-        where( :stop_id => params[:stop_id] )
+      stop_signs = StopTime.where( :line_id => l.id ).
+        where( :stop_id => @stop.id )
       if params[:headsign_id]
-        stop_signs = stop_signs.where( :headsign_id => params[:headsign_id] )
+        headsign = Headsign.find_by_slug(params[:headsign_id])
+        stop_signs = stop_signs.where( :headsign_id => headsign.id )
       end
-      @other_lines = stop.lines.select( "id,short_name").collect{|sl|
+      @other_lines = @stop.lines.select( "id,short_name,slug").collect{|sl|
         if sl.id != l.id
-          { :id => sl.id, :name => sl.short_name }
+          sl
         end
       }.compact
     else
       @headsigns = {}
-      stop.lines.each {|l|
+      @stop.lines.each {|l|
         l.headsigns.each{|h|
           if h.name.match( Regexp.new( "^#{l.short_name} " ) )
             @headsigns[h.id] = h.name
@@ -117,8 +116,8 @@ class HomeController < ApplicationController
           end
         }
       }
-      stop_signs = StopTime.where( :stop_id => stop ).
-        where( :line_id => stop.lines )
+      stop_signs = StopTime.where( :stop_id => @stop ).
+        where( :line_id => @stop.lines )
     end
     @schedule = {}
     @all_calendars = {}

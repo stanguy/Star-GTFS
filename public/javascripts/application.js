@@ -42,13 +42,14 @@ jQuery.Star = {};
         }
     }
     function goTo( url ) {
-        browsing_history.push( window.location.hash );
+        if ( window.location.hash != '' ) {
+            browsing_history.push( window.location.hash );          
+        }
         window.location.hash = url;
     }
     function lastUrl() {
-        if ( browsing_history.length > 0 ){
-            
-            return browsing_history[browsing_history.length-1];
+        if ( window.location.hash != '' ){
+            return  window.location.hash;
         } else {
             return window.location.pathname;
         }
@@ -140,10 +141,9 @@ jQuery.Star = {};
         content.append( $('<div></div>').addClass('clear'));
         infowindow.setContent( content[0] );
         if( lastUrl().match( /\/at\// ) ) {
-            goTo( lastUrl().replace( /([0-9]+)$/, this.stop_id ) );
-        } else { 
-            goTo( lastUrl() + '/at/' + this.stop_id );       
+            goBack();
         }
+        goTo( lastUrl() + '/at/' + this.stop_id );       
         infowindow.open( map, this );
     }
     function onLineGet( d, s, x) {

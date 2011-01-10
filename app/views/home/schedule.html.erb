@@ -1,5 +1,5 @@
 <div class="schedule_container grid_12">
-<h2>Horaires à l'arrêt <%= @stop_name %></h2>
+<h2>Horaires à l'arrêt <%= @stop.name %></h2>
 <a href="/" class="back_to_map">Retour à la carte</a>
 <%= div_clear %>
 <% if @other_lines && @other_lines.length > 0 %>
@@ -7,9 +7,9 @@
       <h3>Autres lignes à cet arrêt</h3>
       <ul class="other_lines">
         <% @other_lines.each do |line| %>
-        <li><%= link_to line[:name], { :line_id => line[:id], :stop_id => @stop_id } %></li>
+        <li><%= link_to line.short_name, { :line_id => line, :stop_id => @stop } %></li>
         <% end %>
-        <li><%= link_to "Tous...", { :stop_id => @stop_id, :line_id => nil } %></li>
+        <li><%= link_to "Tous...", { :stop_id => @stop, :line_id => nil } %></li>
       </ul>
     </div>
 <%= div_clear %>
