@@ -19,6 +19,7 @@ html, html body {
     display: none;
 }
 #lines {
+    visibility: hidden;
     border: 0;
 }
 #lines .ui-tabs-nav li a {

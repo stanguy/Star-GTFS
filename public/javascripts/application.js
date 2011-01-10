@@ -425,7 +425,7 @@ jQuery.Star = {};
             window.location = window.location.hash.substr(1);
             return;
         }
-        $('#lines').tabs({event: 'mouseover'});
+        $('#lines').tabs({event: 'mouseover'}).css('visibility','visible');
         $('#lines .list a').each( function() {
           $(this).attr('title', $(this).children('span').text() );
         });
