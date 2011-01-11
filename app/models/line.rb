@@ -31,7 +31,7 @@ class Line < ActiveRecord::Base
     if m = str.match( /^([^_]*)_/ )
       str = m[1]
     end
-    first( :conditions => { :short_name => m[1] } )
+    first( :conditions => { :short_name => str } )
   end
       
 
