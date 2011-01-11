@@ -62,7 +62,6 @@ jQuery.Star = {};
         var sched_container = $(d);
         sched_container.hide();
         $('#map_browser').after( sched_container );
-        fillOtherLines();
         $('#map_browser').hide( 'slide', { direction: 'left' }, ANIM_DELAY );
         sched_container.show('slide', {direction:'right'}, ANIM_DELAY );
         $('.accordion').accordion();
@@ -128,7 +127,7 @@ jQuery.Star = {};
                 var marker = this;
                 a.bind( 'click', { line: name, stop: this.stop_id }, onOtherLineSelect );
                 if ( linesInfo.icons[name] != undefined ) {
-                    a.append( $('<img>').attr( 'src', linesInfo.baseUrl + linesInfo.icons[name] ) );
+                    a.append( $('<img>').attr( 'src', linesInfo.icons[name] ) );
                     a.attr('title', name );
                 } else {
                     a.text( name );
@@ -335,34 +334,14 @@ jQuery.Star = {};
         var url = 'http://github.com/api/v2/json/issues/list/stanguy/star-gtfs/label/datasource?callback=?';
         $.getJSON( url, onIssuesGet );
     }
-    function fillOtherLines() {
-        if( $('ul.other_lines') ) {
-            $('ul.other_lines li a').each( function() {
-                var name = $(this).text();
-                if ( linesInfo.icons[name] != undefined ) {
-                    $(this).html(
-                        $('<img>').attr('src', linesInfo.baseUrl + linesInfo.icons[name] )
-                    );
-                }
-            });
-        }
-    }
-    function onAPILinesGet(d,h,x) {
-        linesInfo.baseUrl = d.opendata.answer.data.baseurl;
-        var lines = d.opendata.answer.data.line;
-        for( var i = 0; i < lines.length; ++i ) {
-            linesInfo.icons[lines[i].name] = lines[i].picto;
-        }
-        fillOtherLines();
-    }
     function loadLines() {
-        var API_BASE_URL = 'http://data.keolis-rennes.com/json/';
-        var params = {
-            version: '2.0',
-            key: 'AO7UR4OL1ICTKWL',
-            cmd: 'getlines'
-        };
-        $.getJSON( API_BASE_URL, params, onAPILinesGet );
+        $('#lines .list a').each(function(){
+            var name = $(this).data('short');
+            var img = $(this).children('img');
+            if ( img.length > 0 ) {
+                linesInfo.icons[name] = img.attr('src');
+            }
+        });
     }
     $.Star.initMap = function() {
         map = new google.maps.Map($('#map')[0], {

@@ -7,7 +7,7 @@
       <h3>Autres lignes à cet arrêt</h3>
       <ul class="other_lines">
         <% @other_lines.each do |line| %>
-        <li><%= link_to line.short_name, { :line_id => line, :stop_id => @stop } %></li>
+          <li><%= link_to line.picto_url.blank? ? line.short_name : image_tag(line.picto_url), { :line_id => line, :stop_id => @stop } %></li>
         <% end %>
         <li><%= link_to "Tous...", { :stop_id => @stop, :line_id => nil } %></li>
       </ul>
