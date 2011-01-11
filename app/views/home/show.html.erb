@@ -34,7 +34,10 @@
       <li><a href="#special">Lignes spéciales</a></li>
       <li><a href="#help">Aide</a></li>
     </ul>
-    <div id="urban" class="list">
+    <span id="ajax-loader" style="display: none;">
+      <img src="/images/ajax-loader.gif">
+    </span>
+   <div id="urban" class="list">
       <%= render :partial => 'lines', :object => lines_groupes[0] %>
     </div>
     <div id="suburban" class="list">
