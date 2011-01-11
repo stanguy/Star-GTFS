@@ -7,7 +7,7 @@ gem 'rails', '3.0.3'
 
 gem 'fastercsv', :platforms => :ruby_18
 gem 'yajl-ruby'
-#gem 'pg'
+gem 'pg'
 gem 'jquery-rails'
 
 gem 'stringex'
