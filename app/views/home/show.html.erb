@@ -32,6 +32,7 @@
       <li><a href="#suburban">Lignes suburbaines</a></li>
       <li><a href="#express">Lignes express</a></li>
       <li><a href="#special">Lignes spéciales</a></li>
+      <li><a href="#misc">Autrement</a></li>
       <li><a href="#help">Aide</a></li>
     </ul>
     <span id="ajax-loader" style="display: none;">
@@ -48,6 +49,10 @@
     </div>
     <div id="special" class="list">
       <%= render :partial => 'lines', :object => lines_groupes[3] %>
+    </div>
+    <div id="misc">
+      <%= check_box_tag "find_stops", '1', @stops %>
+      <label for="find_stops">Parcourir les arrêts</label>
     </div>
     <div id="help">
       <div class="grid_6 alpha">

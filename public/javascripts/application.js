@@ -292,8 +292,8 @@ jQuery.Star = {};
             if ( e != null ) {
                 goTo( '/stops' );
             }
-            $('#lineactions select').val('');
-            $('#lineactions select').attr('disabled', true);
+            // TODO: disable switching tabs
+            $('#lines').tabs({ selected: 4 }).tabs("option","disabled",[0,1,2,3,5]);
             $.each( markers, function( idx, marker ) {
                 marker.setMap( null );
             });
@@ -308,7 +308,7 @@ jQuery.Star = {};
             }
         } else if ( maptimizeController != null ) {
             goBack();
-            $('#lineactions select').removeAttr('disabled');
+            $('#lines').tabs("option","disabled",[]);
             maptimizeController.deactivate();
         }
     }
@@ -385,7 +385,7 @@ jQuery.Star = {};
             });
             onLineGet( line_data );
         }
-        $('#stopactions input').change( onFindStops );        
+        $('input#find_stops').change( onFindStops );        
         loadIssues();
     };
     function onBackToMapClick(e) {
