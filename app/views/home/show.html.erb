@@ -32,6 +32,7 @@
       <li><a href="#suburban">Lignes suburbaines</a></li>
       <li><a href="#express">Lignes express</a></li>
       <li><a href="#special">Lignes spéciales</a></li>
+      <li><a href="#help">Aide</a></li>
     </ul>
     <div id="urban" class="list">
       <%= render :partial => 'lines', :object => lines_groupes[0] %>
@@ -44,6 +45,33 @@
     </div>
     <div id="special" class="list">
       <%= render :partial => 'lines', :object => lines_groupes[3] %>
+    </div>
+    <div id="help">
+      <div class="grid_6 alpha">
+        <h2>Fonctionnement de la cartographie</h2>
+        <p>La vu cartographique permets d'afficher les arrêts des différentes lignes du réseau STAR. 
+          S'ils sont disponibles, cliquer sur l'icône d'un arrêt permet d'afficher les passages à venir. 
+          À partir de là, il est possible soit d'afficher les horaires complets, soit d'éventuellement
+          consulter les horaires des correspondances à cet arrêt.</p>
+        <h2>Source de données</h2>
+        <p>Les horaires indiqués sont théoriques et fournis par Keolis Rennes / Rennes Métropole. Un traitement
+          automatique étant appliqué à ces données, merci de bien vouloir <a href="mailto:maps@dthg.net">contacter
+          l'auteur</a> en cas d'erreur ou d'incohérence.</p>
+      </div>
+      <div class="grid_6 omega">
+        <h2>Signification des icônes</h2>
+        <dl>
+          <dt><img src="/images/bus_red.png" /></dt>
+          <dd>Pas de bus dans les 2 heures à venir, plusieurs lignes desservent cet arrêt;</dd>
+          <dt><img src="/images/bus_green.png" /></dt>
+          <dd>Au moins un passage de bus dans les 2 heures à venir, plusieurs lignes desservent cet arrêt;</dd>
+          <dt><img src="/images/point_red.png" /></dt>
+          <dd>Pas de bus dans les 2 heures à venir, seule la ligne courante dessert cet arrêt;</dd>
+          <dt><img src="/images/point_green.png" /></dt>
+          <dd>Au moins un passage de bus dans les 2 heures à venir, seule la ligne courante dessert cet arrêt.</dd>
+        </dl>
+      </div>
+      <%= div_clear %>
     </div>
   </div>
   <div id="map" class="grid_12"> </div>
