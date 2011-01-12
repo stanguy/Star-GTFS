@@ -148,9 +148,9 @@ class HomeController < ApplicationController
   private
   def check_old_ids
     if params[:line_id].nil? && params[:stop_id].match(/^[0-9]*$/)
-      redirect_to( { :stop_id => Stop.find(params[:stop_id])}) and return false      
+      redirect_to( { :stop_id => Stop.find(params[:stop_id])},:status=>:moved_permanently ) and return false      
     elsif (!params[:line_id].nil?) && params[:line_id].match(/^[0-9]*$/) && params[:stop_id].match(/^[0-9]*$/)
-      redirect_to( { :line_id => Line.find(params[:line_id]), :stop_id => Stop.find(params[:stop_id])}) and return false
+      redirect_to( { :line_id => Line.find(params[:line_id]), :stop_id => Stop.find(params[:stop_id])},:status=>:moved_permanently ) and return false
     end
     
   end
