@@ -19,12 +19,6 @@
     <% end%>
   </ul>
 <% end %>
-<% lines = Line.all
-   lines_groupes = [ lines.select(&:is_urban?   ),
-                     lines.select(&:is_suburban?),
-                     lines.select(&:is_express? ),
-                     lines.select(&:is_special? ) ] %>
-
 <div id='map_browser'>
   <div id="lines">
     <ul>
@@ -38,6 +32,13 @@
     <span id="ajax-loader" style="display: none;">
       <img src="/images/ajax-loader.gif">
     </span>
+<% cache('all_lines') do %>
+<% lines = Line.all
+   lines_groupes = [ lines.select(&:is_urban?   ),
+                     lines.select(&:is_suburban?),
+                     lines.select(&:is_express? ),
+                     lines.select(&:is_special? ) ] %>
+
    <div id="urban" class="list">
       <%= render :partial => 'lines', :object => lines_groupes[0] %>
     </div>
@@ -50,6 +51,7 @@
     <div id="special" class="list">
       <%= render :partial => 'lines', :object => lines_groupes[3] %>
     </div>
+<% end %>
     <div id="misc">
       <%= check_box_tag "find_stops", '1', @stops %>
       <label for="find_stops">Parcourir les arrêts</label>
