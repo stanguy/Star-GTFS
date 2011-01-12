@@ -79,6 +79,8 @@ class HomeController < ApplicationController
     end
   end
   
+  before_filter :check_old_ids, :only => :schedule
+
   def schedule
     @headsigns = {}
     stop_signs = nil
@@ -142,4 +144,16 @@ class HomeController < ApplicationController
       render :layout => false and return
     end
   end
+
+  private
+  def check_old_ids
+    if params[:line_id].nil? && params[:stop_id].match(/^[0-9]*$/)
+      redirect_to( { :stop_id => Stop.find(params[:stop_id])}) and return false      
+    elsif (!params[:line_id].nil?) && params[:line_id].match(/^[0-9]*$/) && params[:stop_id].match(/^[0-9]*$/)
+      redirect_to( { :line_id => Line.find(params[:line_id]), :stop_id => Stop.find(params[:stop_id])}) and return false
+    end
+    
+  end
+      
+
 end
