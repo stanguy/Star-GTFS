@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class HomeController < ApplicationController
   def show
   end
@@ -87,36 +88,26 @@ class HomeController < ApplicationController
     @stop = Stop.find_by_slug(params[:stop_id])
     @other_lines = nil
     if params[:line_id]
-      l = Line.by_short_name(params[:line_id])
-      l.headsigns.each {|h| 
-          if h.name.match( Regexp.new( "^#{l.short_name} " ) )
-            @headsigns[h.id] = h.name
-          else
-            @headsigns[h.id] = "#{l.short_name} vers #{h.name}"
-          end
-      }
+      @line = Line.by_short_name(params[:line_id])
+      @title = "Horaires de la ligne #{@line.short_name} à l'arrêt #{@stop.name}"
+      process_headsigns @line
 
-      stop_signs = StopTime.where( :line_id => l.id ).
+      stop_signs = StopTime.where( :line_id => @line.id ).
         where( :stop_id => @stop.id )
       if params[:headsign_id]
         headsign = Headsign.find_by_slug(params[:headsign_id])
         stop_signs = stop_signs.where( :headsign_id => headsign.id )
       end
       @other_lines = @stop.lines.select( "id,short_name,picto_url,slug").collect{|sl|
-        if sl.id != l.id
+        if sl.id != @line.id
           sl
         end
       }.compact
     else
+      @title = "Horaires à l'arrêt #{@stop.name}"
       @headsigns = {}
       @stop.lines.each {|l|
-        l.headsigns.each{|h|
-          if h.name.match( Regexp.new( "^#{l.short_name} " ) )
-            @headsigns[h.id] = h.name
-          else
-            @headsigns[h.id] = "#{l.short_name} vers #{h.name}"
-          end
-        }
+        process_headsigns l
       }
       stop_signs = StopTime.where( :stop_id => @stop ).
         where( :line_id => @stop.lines )
@@ -153,6 +144,19 @@ class HomeController < ApplicationController
       redirect_to( { :line_id => Line.find(params[:line_id]), :stop_id => Stop.find(params[:stop_id])},:status=>:moved_permanently ) and return false
     end
     
+  end
+      
+  def process_headsigns line
+    line.headsigns.each do |h|
+      if h.name.match( Regexp.new( "^#{line.short_name} " ) )
+        @headsigns[h.id] = h.name
+      else
+        @headsigns[h.id] = "#{line.short_name} vers #{h.name}"
+      end
+      unless line.picto_url.blank?
+        @headsigns[h.id] = self.class.helpers.image_tag( line.picto_url ) + @headsigns[h.id]
+      end
+    end
   end
       
 
