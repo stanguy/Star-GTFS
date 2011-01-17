@@ -355,6 +355,9 @@ jQuery.Star = {};
             var line_data = [];
             $('#line_data').children('li').each( function() {
                 var stop = $(this).find('h2 a');
+                if ( stop.data('selected') ) {
+                    selected_stop_id = stop.data('id');
+                }
                 var others = stop.data('others') + '';
                 if ( others !== '' ) {
                     others = others.split(',');
@@ -408,9 +411,6 @@ jQuery.Star = {};
         $('#lines .list a').each( function() {
           $(this).attr('title', $(this).children('span').text() );
         });
-        if( typeof selected_stop != 'undefined' ) {
-            selected_stop_id = selected_stop;
-        }
 
         $('#ajax-loader').ajaxSend(function(){
             $(this).show();
