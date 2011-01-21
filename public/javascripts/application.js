@@ -402,6 +402,7 @@ jQuery.Star = {};
                                   lon: stop.data('lon'),
                          schedule_url: stop.attr('href'),
                                others: others,
+                            accessible: stop.data('accessible'),
                                 times: times } );
             });
             onLineGet( line_data );
