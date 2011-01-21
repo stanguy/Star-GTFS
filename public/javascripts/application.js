@@ -26,10 +26,21 @@ jQuery.Star = {};
             orange: "/images/bus_orange.png",
             blue: "/images/bus_blue.png"
         },
+        bus_access: {
+            green: "/images/bus_green_access.png",
+            red: "/images/bus_red_access.png",
+            orange: "/images/bus_orange_access.png",
+            blue: "/images/bus_blue.png"
+        },
         point: {
             green: "/images/point_green.png",
             red: "/images/point_red.png",
             orange: "/images/point_orange.png"          
+        },
+        point_access: {
+            green: "/images/point_green_access.png",
+            red: "/images/point_red_access.png",
+            orange: "/images/point_orange_access.png"          
         }
     };
     var linesInfo = {
@@ -160,6 +171,9 @@ jQuery.Star = {};
             var myLatlng = new google.maps.LatLng( point.lat, point.lon );
             var icon;
             var icon_type = ( point.others != undefined && point.others.length > 0 ) ? "bus" : "point";
+            if ( point.accessible ) {
+                icon_type = icon_type + '_access';
+            }
             if( point.times != undefined && point.times.length > 0 ) {
                 icon = icons[icon_type].green;
             } else {
