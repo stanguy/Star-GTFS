@@ -28,14 +28,19 @@ class Line < ActiveRecord::Base
   end
 
   def self.by_short_name str
-    if m = str.match( /^([^_]*)_/ )
+    slug = ''
+    if m = str.match( /^([^_]*)_(.*)$/ )
       str = m[1]
+      slug = m[2]
     end
-    l = first( :conditions => { :short_name => str } )
-    if l.nil?
+    l = all( :conditions => { :short_name => str } )
+    if l.count == 0
       raise ActiveRecord::RecordNotFound
+    elsif l.count > 1
+      l.find{|l_| l_.slug == slug }
+    else
+      l.first
     end
-    l
   end
       
 
