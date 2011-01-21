@@ -19,25 +19,36 @@ NB_RECORDS_TO_INSERT = ActiveRecord::Base.connection.class.to_s == "ActiveRecord
 def mlog msg
   puts Time.now.to_s(:db) + " " + msg
 end
-    
+
+def read_tmp_csv file
+  CSV.foreach( File.join( Rails.root, "/tmp/#{file}.txt" ),
+               :headers => true,
+               :header_converters => :symbol,
+               :encoding => 'UTF-8' ) do |line|
+    yield line.to_hash
+  end
+end    
 
 legacy = {}
 
 all_stops = {}
 cities = {}
 
+stops_accessible = Hash.new(false)
+read_tmp_csv "stops_extensions" do |line|
+  stops_accessible[line[:stop_id]] = line[:stop_accessible].to_i == 1
+end
 mlog "loading stops"
-CSV.foreach( File.join( Rails.root, "/tmp/stops.txt" ),
-             :headers => true,
-             :header_converters => :symbol,
-             :encoding => 'UTF-8' ) do |line|
-  stop = line.to_hash
+read_tmp_csv "stops"  do |stop|
   next unless stop[:stop_code].match(/^[0-9]+$/)
   name = stop[:stop_name].downcase.gsub( /[ -_\.]/, '' )
   unless all_stops.has_key? name
     all_stops[name] = []
   end
   all_stops[name] << stop
+  if not stops_accessible.has_key? stop[:stop_id]
+    puts "missing accessible key for #{stop[:stop_id]}"
+  end
 end
 
 valid_stops = {}
@@ -92,11 +103,7 @@ end
 mlog "loading old routes"
 long_names_for_lines = {}
 if File.exists? File.join( Rails.root, "/tmp/routes_detailed.txt" )
-  CSV.foreach( File.join( Rails.root, "/tmp/routes_detailed.txt" ),
-               :headers => true,
-               :header_converters => :symbol,
-               :encoding => 'UTF-8' ) do |rawline|
-    line = rawline.to_hash
+  read_tmp_csv "routes_detailed" do |line|
     long_names_for_lines[ line[:route_short_name] ] = line[:route_long_name]
   end
 end
@@ -109,17 +116,18 @@ lines_picto_urls = {}
 result['opendata']['answer']['data']['line'].each do|line|
   lines_picto_urls[line['name']] = lines_base_url + line['picto']
 end
-  
+
+lines_accessible = Hash.new(false)
+read_tmp_csv "routes_extensions" do |line|
+  lines_accessible[line[:route_id]] = line[:route_accessible].to_i == 1
+end
+
 legacy[:line] = {}
 lines_stops = {}
 all_headsigns = {}
 mlog "loading routes"
 ActiveRecord::Base.transaction do
-  CSV.foreach( File.join( Rails.root, "/tmp/routes.txt" ),
-               :headers => true,
-               :header_converters => :symbol,
-               :encoding => 'UTF-8' ) do |rawline|
-    line = rawline.to_hash
+  read_tmp_csv "routes" do |line|
     new_line = Line.create({ :src_id => line[:route_id],
                              :short_name => line[:route_short_name],
                              :long_name => long_names_for_lines.has_key?( line[:route_short_name] ) ? long_names_for_lines[line[:route_short_name]] :  line[:route_long_name],
@@ -127,7 +135,8 @@ ActiveRecord::Base.transaction do
                              :bgcolor => line[:route_color],
                              :fgcolor => line[:route_text_color],
                              :usage => line_usage( line ),
-                             :picto_url => lines_picto_urls[line[:route_short_name]]})
+                             :picto_url => lines_picto_urls[line[:route_short_name]],
+                             :accessible => lines_accessible[line[:route_id]]})
     legacy[:line][line[:route_id]] = new_line
     lines_stops[new_line.id] = {}
     all_headsigns[new_line.id] = {}
@@ -135,11 +144,7 @@ ActiveRecord::Base.transaction do
 end
 calendar = {}
 mlog "loading calendar"
-CSV.foreach( File.join( Rails.root, "/tmp/calendar.txt" ),
-             :headers => true,
-             :header_converters => :symbol,
-             :encoding => 'UTF-8' ) do |line|
-  cal = line.to_hash
+read_tmp_csv "calendar"  do |cal|
   id = cal[:service_id]
   calendar[id] = 0
   cal.keys.grep(/day$/) do|k|
@@ -153,11 +158,7 @@ legacy[:trip] = {}
 
 mlog "loading trips"
 ActiveRecord::Base.transaction do
-  CSV.foreach( File.join( Rails.root, "/tmp/trips.txt" ),
-               :headers => true,
-               :header_converters => :symbol,
-               :encoding => 'UTF-8' ) do |rawline|
-    line = rawline.to_hash
+  read_tmp_csv "trips" do |line|
     unless all_headsigns[legacy[:line][line[:route_id]].id].has_key? line[:trip_headsign]
       headsign = Headsign.create({ :name => line[:trip_headsign].gsub( /.*\| /, '' ),
                                    :line_id => legacy[:line][line[:route_id]].id })
@@ -195,24 +196,26 @@ ActiveRecord::Base.transaction do
     unless cities.has_key? city_name
       cities[city_name] = City.create({ :name => city_name })
     end
+    is_accessible = stops.collect {|s| stops_accessible[s[:stop_id]] }.uniq.count == 1 ? stops_accessible[stops.first[:stop_id]] : false
     new_stop = Stop.create({ :name => real_name, 
                              :lat => average( stops.collect{|s| s[:stop_lat].to_f } ),
                              :lon => average( stops.collect{|s| s[:stop_lon].to_f } ),
-                             :city_id => cities[city_name].id })
+                             :city_id => cities[city_name].id,
+                             :accessible => is_accessible })
     stops.each do |stop|
       new_stop.stop_aliases.create({ :src_id => stop[:stop_id],
                                      :src_code => stop[:stop_code],
                                      :src_name => stop[:stop_name],
                                      :src_lat => stop[:stop_lat],
-                                     :src_lon => stop[:stop_lon] })
+                                     :src_lon => stop[:stop_lon],
+                                     :accessible => stops_accessible[stop[:stop_id]] })
       legacy[:stops][stop[:stop_id]] = new_stop.id
     end
     all_new_stops[new_stop.id] = new_stop
   end
 end
+
 mlog "loading stop_times"
-
-
 def flush stop_times
   return if stop_times.empty?
   sql = <<SQL
@@ -230,11 +233,7 @@ end
 
 ActiveRecord::Base.transaction do
   all_stop_times = []
-  CSV.foreach( File.join( Rails.root, "/tmp/stop_times.txt" ),
-               :headers => true,
-               :header_converters => :symbol,
-               :encoding => 'UTF-8' ) do |rawline|
-    line = rawline.to_hash
+  read_tmp_csv "stop_times" do |line|
     if ! legacy[:trip].has_key?(line[:trip_id])
       #    puts "Missing trip #{line[:trip_id]}"
       next
