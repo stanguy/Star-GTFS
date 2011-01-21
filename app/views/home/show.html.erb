@@ -3,7 +3,9 @@
   <ul id='line_data'>
     <% @line_data.each do |stop| %>
       <li>
-        <h2><%= link_to stop[:name], stop[:schedule_url], { 'data-id' => stop[:id], 'data-lat' => stop[:lat], 'data-lon' => stop[:lon], 'data-others' => stop[:others].join(',') } %></h2>
+        <% stop_options = { 'data-id' => stop[:id], 'data-lat' => stop[:lat], 'data-lon' => stop[:lon], 'data-others' => stop[:others].join(',') } 
+           stop_options['data-selected'] = 1 if stop[:id] == @selected_stop %>
+        <h2><%= link_to stop[:name], stop[:schedule_url], stop_options %></h2>
         <% if stop.has_key? :times %>
           <% stop[:times].each do |trip| %>
             <div>
@@ -67,6 +69,7 @@
         <p>Les horaires indiqués sont théoriques et fournis par Keolis Rennes / Rennes Métropole. Un traitement
           automatique étant appliqué à ces données, merci de bien vouloir <a href="mailto:maps@dthg.net">contacter
           l'auteur</a> en cas d'erreur ou d'incohérence.</p>
+        <p>Ce service n'est pas affilié au STAR, Keolis Rennes ou Rennes Métropole.</p>
       </div>
       <div class="grid_6 omega">
         <h2>Signification des icônes</h2>

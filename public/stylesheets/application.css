@@ -182,10 +182,6 @@ a.dir_schedule {
     float: left;
     margin: 10px
 }
-.schedule_container .headsign h3 {
-    margin: 10px;
-    float: right;
-}
 .schedule_container .back_to_map {
     float: right;
     margin: 10px;
@@ -193,6 +189,13 @@ a.dir_schedule {
 .schedule_container .accordion h3 {
     padding-left: 30px;
     color: #000;
+    height: 30px;
+}
+.schedule_container .accordion h3 img {
+    margin-right: 8px;
+    float: left;
+    margin-top: 5px;
+    clear: left;
 }
 .schedule_container .accordion h3.ui-state-hover {
     background-image: none;

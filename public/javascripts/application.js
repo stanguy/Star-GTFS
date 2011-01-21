@@ -17,6 +17,7 @@ jQuery.Star = {};
     var ANIM_DELAY = 350;
 
     var browsing_history = [];
+    var initial_loading_sentinel = false;
 
     var icons = {
         bus: {
@@ -137,12 +138,14 @@ jQuery.Star = {};
             }
             content.append( ul );
         }
-        content.append( $('<div></div>').addClass('clear'));
+        content.append( $('<div>x</div>').addClass('clear') );
         infowindow.setContent( content[0] );
-        if( lastUrl().match( /\/at\// ) ) {
-            goBack();
+        if( ! initial_loading_sentinel ) {
+            if( lastUrl().match( /\/at\// ) ) {
+                goBack();
+            }
+            goTo( lastUrl() + '/at/' + this.stop_id );       
         }
-        goTo( lastUrl() + '/at/' + this.stop_id );       
         infowindow.open( map, this );
     }
     function onLineGet( d, s, x) {
@@ -355,6 +358,10 @@ jQuery.Star = {};
             var line_data = [];
             $('#line_data').children('li').each( function() {
                 var stop = $(this).find('h2 a');
+                if ( stop.data('selected') ) {
+                    selected_stop_id = stop.data('id');
+                    initial_loading_sentinel = true;
+                }
                 var others = stop.data('others') + '';
                 if ( others !== '' ) {
                     others = others.split(',');
@@ -379,7 +386,7 @@ jQuery.Star = {};
                                    id: stop.data('id'), 
                                   lat: stop.data('lat'), 
                                   lon: stop.data('lon'),
-                         schedule_url: stop.data('href'),
+                         schedule_url: stop.attr('href'),
                                others: others,
                                 times: times } );
             });
@@ -408,9 +415,6 @@ jQuery.Star = {};
         $('#lines .list a').each( function() {
           $(this).attr('title', $(this).children('span').text() );
         });
-        if( typeof selected_stop != 'undefined' ) {
-            selected_stop_id = selected_stop;
-        }
 
         $('#ajax-loader').ajaxSend(function(){
             $(this).show();

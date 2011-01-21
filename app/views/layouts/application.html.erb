@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><% if @title %><%= @title %>, <% end %>Carte et horaires des bus de Rennes (STAR)</title>
+    <title><% if @title %><%= @title %>, <% end %>Bus de Rennes en ligne</title>
     <%= stylesheet_link_tag [ 'reset', '960gs', 'jquery-ui', 'maptimize', 'application' ], :media => "screen", :cache => true %>
     <%= stylesheet_link_tag [ 'handheld' ], :media => 'handheld, mobile, only screen and (max-device-width:480px)' %>
     <%= csrf_meta_tag %>
@@ -11,7 +11,7 @@
   <body>
     
     <div class="container_12 content">
-      <h1>Carte et horaires des bus de Rennes (STAR)</h1>
+      <h1>Bus de Rennes en ligne</h1>
       <%= yield %>
       <div id="footer" class="grid_12">
         <a class="contact" href="mailto:map@dthg.net">Bug ou fonctionnalité&nbsp;?</a>
