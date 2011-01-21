@@ -112,6 +112,7 @@ mlog "loading line icons"
 Uri_lines = URI.parse( "http://data.keolis-rennes.com/json/?version=2.0&key=AO7UR4OL1ICTKWL&cmd=getlines" )
 result = Yajl::HttpStream.get( Uri_lines )
 lines_base_url = result['opendata']['answer']['data']['baseurl']
+lines_base_url += '/' unless lines_base_url.end_with?('/')
 lines_picto_urls = {}
 result['opendata']['answer']['data']['line'].each do|line|
   lines_picto_urls[line['name']] = lines_base_url + line['picto']
