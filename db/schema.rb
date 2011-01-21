@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110110225302) do
+ActiveRecord::Schema.define(:version => 20110121124006) do
 
   create_table "cities", :force => true do |t|
     t.string   "name"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(:version => 20110110225302) do
     t.string   "picto_url"
     t.string   "short_long_name"
     t.string   "slug"
+    t.boolean  "accessible"
   end
 
   create_table "lines_stops", :id => false, :force => true do |t|
@@ -54,6 +55,7 @@ ActiveRecord::Schema.define(:version => 20110110225302) do
     t.float    "src_lon"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "accessible"
   end
 
   create_table "stop_times", :force => true do |t|
@@ -68,9 +70,6 @@ ActiveRecord::Schema.define(:version => 20110110225302) do
     t.datetime "updated_at"
   end
 
-  add_index "stop_times", ["line_id", "calendar", "arrival"], :name => "stop_times_line_id_calendar_arrival"
-  add_index "stop_times", ["trip_id"], :name => "index_stop_times_on_trip_id"
-
   create_table "stops", :force => true do |t|
     t.string   "name"
     t.float    "lat"
@@ -80,6 +79,7 @@ ActiveRecord::Schema.define(:version => 20110110225302) do
     t.integer  "city_id"
     t.string   "line_ids_cache"
     t.string   "slug"
+    t.boolean  "accessible"
   end
 
   create_table "trips", :force => true do |t|
