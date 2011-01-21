@@ -51,6 +51,7 @@ class HomeController < ApplicationController
       stop_info = {
         :name => stop.name,
         :id => stop.slug, :lat => stop.lat, :lon => stop.lon,
+        :accessible => ( l.accessible && stop.accessible ),
         :schedule_url => url_for({ :action => 'schedule', :line_id => l, :stop_id => stop, :only_path => true }),
         
       }
