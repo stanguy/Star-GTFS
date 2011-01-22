@@ -15,7 +15,7 @@
 <%= div_clear %>
 <% end %>
 <div class="accordion">
-<% @schedule.each do |direction_id,hours| %>
+<% @schedule.keys.sort {|a,b| @headsigns[a] <=> @headsigns[b] }.each do |direction_id| hours = @schedule[direction_id] %>
   <h3><%= @headsigns[direction_id] %></h3>
 <div>
   <table class="schedule">
