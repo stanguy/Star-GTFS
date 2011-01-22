@@ -189,7 +189,7 @@ a.dir_schedule {
 .schedule_container .accordion h3 {
     padding-left: 30px;
     color: #000;
-    height: 30px;
+    min-height: 30px;
 }
 .schedule_container .accordion h3 img {
     margin-right: 8px;
