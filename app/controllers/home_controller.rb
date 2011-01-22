@@ -81,6 +81,7 @@ class HomeController < ApplicationController
     end
   end
   
+  before_filter :check_legacy, :only => :schedule
   before_filter :check_old_ids, :only => :schedule
 
   def schedule
@@ -159,6 +160,15 @@ class HomeController < ApplicationController
       end
     end
   end
+
+  def check_legacy
+    if params[:route_id]
+      # someone is using a legacy route
+      params[:line_id] = Line.first( :conditions => { :src_id => params[:route_id] } ).to_param
+      params[:stop_id] = StopAlias.first( :conditions => { :src_id => params[:stop_id] } ).stop.to_param
+    end
+  end
+      
       
 
 end
