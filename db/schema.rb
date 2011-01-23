@@ -10,7 +10,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110121124006) do
+ActiveRecord::Schema.define(:version => 20110123123658) do
+
+  create_table "bike_stations", :force => true do |t|
+    t.integer  "number"
+    t.string   "name"
+    t.string   "address"
+    t.float    "lat"
+    t.float    "lon"
+    t.boolean  "pos"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "cities", :force => true do |t|
     t.string   "name"
@@ -44,6 +55,29 @@ ActiveRecord::Schema.define(:version => 20110121124006) do
   create_table "lines_stops", :id => false, :force => true do |t|
     t.integer "line_id"
     t.integer "stop_id"
+  end
+
+  create_table "metro_stations", :force => true do |t|
+    t.string   "src_id"
+    t.string   "name"
+    t.string   "address"
+    t.float    "lat"
+    t.float    "lon"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pos", :force => true do |t|
+    t.string   "name"
+    t.string   "type"
+    t.text     "address"
+    t.string   "zipcode"
+    t.string   "city"
+    t.string   "schedule"
+    t.float    "lat"
+    t.float    "lon"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "stop_aliases", :force => true do |t|

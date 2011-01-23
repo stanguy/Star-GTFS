@@ -13,6 +13,8 @@ require 'point'
 require 'digest/sha2'
 require 'yajl/http_stream'
 
+require 'opendata_api'
+
 ActiveRecord::Base.logger.level = Logger::Severity::UNKNOWN
 NB_RECORDS_TO_INSERT = ActiveRecord::Base.connection.class.to_s == "ActiveRecord::ConnectionAdapters::SQLite3Adapter" ? 1 : 1000
 
@@ -98,25 +100,44 @@ def shorten_long_name line
   end.join( ' - ' )
 end
     
-
-
-mlog "loading old routes"
-long_names_for_lines = {}
-if File.exists? File.join( Rails.root, "/tmp/routes_detailed.txt" )
-  read_tmp_csv "routes_detailed" do |line|
-    long_names_for_lines[ line[:route_short_name] ] = line[:route_long_name]
-  end
-end
-
 mlog "loading line icons"
-Uri_lines = URI.parse( "http://data.keolis-rennes.com/json/?version=2.0&key=AO7UR4OL1ICTKWL&cmd=getlines" )
-result = Yajl::HttpStream.get( Uri_lines )
+oda = OpenDataKeolisRennesApi.new( ENV['KEOLIS_API_KEY'], '2.0' )
+result = Yajl::HttpStream.get( oda.get_lines )
 lines_base_url = result['opendata']['answer']['data']['baseurl']
 lines_base_url += '/' unless lines_base_url.end_with?('/')
 lines_picto_urls = {}
 result['opendata']['answer']['data']['line'].each do|line|
   lines_picto_urls[line['name']] = lines_base_url + line['picto']
 end
+
+mlog "loading pos"
+result = Yajl::HttpStream.get( oda.get_pos )
+result['opendata']['answer']['data']['pos'].each do|pos|
+  pos['lat'] = pos['latitude'].to_f
+  pos['lon'] = pos['longitude'].to_f
+  [ 'latitude', 'longitude', 'phone', 'district' ].each {|k| pos.delete k }
+  Pos.create( pos )
+end
+
+mlog "loading bikestations"
+result = Yajl::HttpStream.get( oda.get_bike_stations )
+result['opendata']['answer']['data']['station'].each do|bs|
+  bs['lat'] = bs['latitude'].to_f
+  bs['lon'] = bs['longitude'].to_f
+  [ 'latitude', 'longitude', 'state', 'district', 'slotsavailable','bikesavailable','lastupdate' ].each {|k| bs.delete k }
+  BikeStation.create( bs )
+end
+
+mlog "loading metrostations"
+result = Yajl::HttpStream.get( oda.get_metro_stations )
+result['opendata']['answer']['data']['station'].each do|ms|
+  ms['lat'] = ms['latitude'].to_f
+  ms['lon'] = ms['longitude'].to_f
+  ms['src_id'] = ms['id']
+  [ 'id', 'latitude', 'longitude', 'hasPlatformDirection1', 'hasPlatformDirection2', 'rankingPlatformDirection1', 'rankingPlatformDirection2', 'floors', 'lastupdate' ].each {|k| ms.delete k }
+  MetroStation.create( ms )
+end
+
 
 lines_accessible = Hash.new(false)
 read_tmp_csv "routes_extensions" do |line|
@@ -131,7 +152,7 @@ ActiveRecord::Base.transaction do
   read_tmp_csv "routes" do |line|
     new_line = Line.create({ :src_id => line[:route_id],
                              :short_name => line[:route_short_name],
-                             :long_name => long_names_for_lines.has_key?( line[:route_short_name] ) ? long_names_for_lines[line[:route_short_name]] :  line[:route_long_name],
+                             :long_name =>  line[:route_long_name],
                              :short_long_name => shorten_long_name( line ),
                              :bgcolor => line[:route_color],
                              :fgcolor => line[:route_text_color],
