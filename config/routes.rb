@@ -13,6 +13,7 @@ StarGtfs::Application.routes.draw do
       resources :lines do
         resources :stops
       end
+      resources :cities
     end
   end
 
