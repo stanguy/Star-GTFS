@@ -10,6 +10,7 @@ gem 'yajl-ruby'
 
 gem 'pg'
 gem 'spatial_adapter'
+gem 'inherited_resources'
 
 gem 'jquery-rails'
 
