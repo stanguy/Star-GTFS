@@ -11,7 +11,6 @@ class CreateStopTimes < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index( :stop_times, [ :line_id, :calendar, :arrival ] )
   end
 
   def self.down
