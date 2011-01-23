@@ -56,13 +56,13 @@ end
 valid_stops = {}
 all_stops.each do |shortname,stops|
   checked_stops = { }
-  p = Point.new( stops.first[:stop_lat].to_f, stops.first[:stop_lon].to_f )
+  p = Point.from_lon_lat( stops.first[:stop_lon].to_f, stops.first[:stop_lat].to_f, 4326 )
   checked_stops[p] = [stops.shift]
   stops.each do |stop|
     found = false
-    p2 = Point.new( stop[:stop_lat].to_f, stop[:stop_lon].to_f )
+    p2 = Point.from_lon_lat( stop[:stop_lon].to_f, stop[:stop_lat].to_f, 4326 )
     checked_stops.each do |p,cs_stops|
-      if p.dist( p2 ) < 200
+      if p.ellipsoidal_distance( p2 ) < 200
         found = true
         cs_stops << stop
         break
@@ -115,6 +115,7 @@ result = Yajl::HttpStream.get( oda.get_pos )
 result['opendata']['answer']['data']['pos'].each do|pos|
   pos['lat'] = pos['latitude'].to_f
   pos['lon'] = pos['longitude'].to_f
+  pos['geom'] = Point.from_lon_lat( pos['lon'], pos['lat'], 4326 )
   [ 'latitude', 'longitude', 'phone', 'district' ].each {|k| pos.delete k }
   Pos.create( pos )
 end
@@ -124,6 +125,7 @@ result = Yajl::HttpStream.get( oda.get_bike_stations )
 result['opendata']['answer']['data']['station'].each do|bs|
   bs['lat'] = bs['latitude'].to_f
   bs['lon'] = bs['longitude'].to_f
+  bs['geom'] = Point.from_lon_lat( bs['lon'], bs['lat'], 4326 )
   [ 'latitude', 'longitude', 'state', 'district', 'slotsavailable','bikesavailable','lastupdate' ].each {|k| bs.delete k }
   BikeStation.create( bs )
 end
@@ -133,6 +135,7 @@ result = Yajl::HttpStream.get( oda.get_metro_stations )
 result['opendata']['answer']['data']['station'].each do|ms|
   ms['lat'] = ms['latitude'].to_f
   ms['lon'] = ms['longitude'].to_f
+  ms['geom'] = Point.from_lon_lat( ms['lon'], ms['lat'], 4326 )
   ms['src_id'] = ms['id']
   [ 'id', 'latitude', 'longitude', 'hasPlatformDirection1', 'hasPlatformDirection2', 'rankingPlatformDirection1', 'rankingPlatformDirection2', 'floors', 'lastupdate' ].each {|k| ms.delete k }
   MetroStation.create( ms )
@@ -219,9 +222,12 @@ ActiveRecord::Base.transaction do
       cities[city_name] = City.create({ :name => city_name })
     end
     is_accessible = stops.collect {|s| stops_accessible[s[:stop_id]] }.uniq.count == 1 ? stops_accessible[stops.first[:stop_id]] : false
+    lat = average( stops.collect{|s| s[:stop_lat].to_f } )
+    lon = average( stops.collect{|s| s[:stop_lon].to_f } )
     new_stop = Stop.create({ :name => real_name, 
-                             :lat => average( stops.collect{|s| s[:stop_lat].to_f } ),
-                             :lon => average( stops.collect{|s| s[:stop_lon].to_f } ),
+                             :lat => lat,
+                             :lon => lon,
+                             :geom => Point.from_lon_lat( lon, lat, 4326 ),
                              :city_id => cities[city_name].id,
                              :accessible => is_accessible })
     stops.each do |stop|

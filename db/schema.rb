@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110123123658) do
+ActiveRecord::Schema.define(:version => 20110123134040) do
 
   create_table "bike_stations", :force => true do |t|
     t.integer  "number"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20110123123658) do
     t.boolean  "pos"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.point    "geom",       :limit => nil, :srid => 4326
   end
 
   create_table "cities", :force => true do |t|
@@ -65,6 +66,7 @@ ActiveRecord::Schema.define(:version => 20110123123658) do
     t.float    "lon"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.point    "geom",       :limit => nil, :srid => 4326
   end
 
   create_table "pos", :force => true do |t|
@@ -78,6 +80,7 @@ ActiveRecord::Schema.define(:version => 20110123123658) do
     t.float    "lon"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.point    "geom",       :limit => nil, :srid => 4326
   end
 
   create_table "stop_aliases", :force => true do |t|
@@ -114,6 +117,7 @@ ActiveRecord::Schema.define(:version => 20110123123658) do
     t.string   "line_ids_cache"
     t.string   "slug"
     t.boolean  "accessible"
+    t.point    "geom",           :limit => nil, :srid => 4326
   end
 
   create_table "trips", :force => true do |t|
