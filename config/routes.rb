@@ -11,7 +11,10 @@ StarGtfs::Application.routes.draw do
   if Rails.env.development?
     namespace :dump do
       resources :lines do
-        resources :stops
+        resources :stops do
+          resources :stop_times
+        end
+        resources :headsigns
       end
       resources :cities
     end
