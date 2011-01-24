@@ -17,6 +17,11 @@ StarGtfs::Application.routes.draw do
         resources :headsigns
       end
       resources :cities
+      resources :stops do
+          collection do
+            get :main_ids
+          end
+      end        
     end
   end
 
