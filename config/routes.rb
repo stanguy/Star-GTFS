@@ -15,6 +15,9 @@ StarGtfs::Application.routes.draw do
           resources :stop_times
         end
         resources :headsigns
+        member do
+          get :bearings
+        end
       end
       resources :cities
       resources :stops do
