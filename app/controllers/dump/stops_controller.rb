@@ -12,7 +12,7 @@ class Dump::StopsController < InheritedResources::Base
   def close
     neighbours = {}
     { :bike => BikeStation, :metro => MetroStation, :pos => Pos }.each do |k,klass|
-      neighbours[k] = klass.close_to( resource.geom, 2000 ).limit( 10 ).collect {|o|
+      neighbours[k] = klass.close_to( resource.geom, 1000 ).limit( 10 ).collect {|o|
         { :id => o.id, :name => o.name, :address => o.address,
           :lat => o.lat, :lon => o.lon,
           :distance => o.distance.to_i } 
