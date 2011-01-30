@@ -55,8 +55,14 @@
     </div>
 <% end %>
     <div id="misc">
-      <%= check_box_tag "find_stops", '1', @stops %>
-      <label for="find_stops">Parcourir les arrêts</label>
+      <div class="grid_3">
+        <%= check_box_tag "find_stops", '1', @stops %>
+        <label for="find_stops">Parcourir les arrêts</label>
+      </div>
+      <div class="grid_5">
+        <%= check_box_tag "find_bikes", '1', @bikes %>
+        <label for="find_bikes">Montrer les stations Le Vélo STAR</label>
+      </div>
     </div>
     <div id="help">
       <div class="grid_6 alpha">
@@ -90,4 +96,5 @@
   <div id="map" class="grid_12"> </div>
   <%= div_clear %>
 </div>
-  <% init_javascript "$.Star.init();" %>
+  <% init_javascript "$.Star.Bus.init();" %>
+  <% init_javascript "$.Star.Bikes.init();" %>

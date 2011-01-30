@@ -1,7 +1,11 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-jQuery.Star = {};
+if ( undefined == jQuery.Star ) {
+    jQuery.Star = {};    
+}
+jQuery.Star.Bus = {};
+jQuery.Star.Bikes = {};
 
 
 
@@ -82,6 +86,7 @@ jQuery.Star = {};
         $.get( url, onScheduleGet, "html" );
     }
     function onCloseInfoWindow() {
+        selected_stop_id = null;
         goBack();
     }
     function onOtherLineSelect( e ) {
@@ -120,13 +125,11 @@ jQuery.Star = {};
                                   .append( $('<span> &rarr;</span>').data('id',this.times[i].times[j].tid ).click( onLineStopTimeFollowup ) )   
                 );
             }
-            ul.append( '<li>&hellip;</li>' );
-            content.append( $('<div></div>').addClass('clear'));
+            var hellip = $('<a>&hellip;</a>' ).attr('href', this.times[i].schedule_url ).attr('title',"Horaires complets").addClass('dir_schedule');
+            ul.append( $('<li></li>').append(hellip) );
+            content.append( $('<div></div>').addClass('clear') );
             content.append( ul )
-                   .append( $('<div></div>').addClass('clear') )
-                   .append( 
-                $("<a></a>").addClass("dir_schedule").attr('href',this.times[i].schedule_url).text("Horaires complets") 
-            );
+                   .append( $('<div></div>').addClass('clear') );
         }
         content.append( $('<div></div>').addClass('clear'));
         if ( this.others.length > 0 ) {
@@ -270,7 +273,7 @@ jQuery.Star = {};
             markers.push( marker );
         });
     }
-    $.Star.MaptiTheme = {
+    $.Star.Bus.MaptiTheme = {
       createMarker: function(marker) {
         return new google.maps.Marker({ position: marker.getGLatLng(), icon: icons.bus.blue });
       },
@@ -279,7 +282,7 @@ jQuery.Star = {};
         var count = cluster.getPointsCount(),
             index = parseInt(Math.log(count) / Math.log(10)),
             options;
-        options = $.Star.MaptiTheme._getClusterOptions();
+        options = $.Star.Bus.MaptiTheme._getClusterOptions();
         options = options[Math.min(options.length - 1, index)];
         options.labelText = count;
         return new com.maptimize.LabeledMarker(cluster.getGLatLng(), options);
@@ -318,7 +321,7 @@ jQuery.Star = {};
             if( maptimizeController != null ) {
                 maptimizeController.activate();
             } else {
-                maptimizeController = new com.maptimize.MapController(map,{theme: $.Star.MaptiTheme,onMarkerClicked: onMaptiMarkerClick});
+                maptimizeController = new com.maptimize.MapController(map,{theme: $.Star.Bus.MaptiTheme,onMarkerClicked: onMaptiMarkerClick});
                 maptimizeController.setGroupingDistance(80);
                 maptimizeController.setClusterMinSize(3);
                 maptimizeController.refresh();
@@ -360,13 +363,14 @@ jQuery.Star = {};
             }
         });
     }
-    $.Star.initMap = function() {
+    $.Star.Bus.initMap = function() {
         map = new google.maps.Map($('#map')[0], {
             'scrollwheel': false,
             'zoom': 12,
             'center': new google.maps.LatLng( 48.11, -1.63 ),
             'mapTypeId': google.maps.MapTypeId.ROADMAP
-        });            
+        });
+        $.Star.map = map;
         $('#lines .list a').click(onSelectLine);
         if ( $('#line_data').length > 0 ) {
             var line_data = [];
@@ -420,7 +424,7 @@ jQuery.Star = {};
             window.location = $(this).attr('href');
         }
     }
-    $.Star.init= function() {
+    $.Star.Bus.init= function() {
 
         if ( window.location.hash != '' && window.location.hash != null ) {
             window.location = window.location.hash.substr(1);
@@ -441,13 +445,83 @@ jQuery.Star = {};
 
         $('#heading').live( 'change', onHeadingChange );
         $('a.dir_schedule').live( 'click', onStopDirScheduleClick );
-        $('.back_to_map').live('click', onBackToMapClick );
+        $('a.back_to_map').live('click', onBackToMapClick );
         if( $('#map').length > 0 ) {
-            $.Star.initMap();
+            $.Star.Bus.initMap();
         }
         if( $('#find_stops:checked').val() !== 'undefined' ) {
             onFindStops();
         }
         loadLines();
+    };
+})(jQuery);
+
+(function($) {
+    var markers = [];
+    var areas = [];
+    function onFindBikes(){
+        if ( $('#find_bikes:checked').val() ) {
+            var stations = $.veloStar.getStations( 'AO7UR4OL1ICTKWL' );
+            var districts = $.veloStar.listDistricts( stations );
+            var Colors = [ '#A4DBAC', '#8ED197', '#78C482', '#78C4A2', '#78C4AF', '#8BC1CC',
+                           '#7AB8C4', '#88BEDB', '#88AFDB', '#888FDB', '#5E67CC', '#3742B3', '#3742B3'  ];
+            var Images = [ 'cycling0.png', 'cycling33.png', 'cycling66.png', 'cycling100.png' ];
+            var computeImage = function( station ) {
+                var img_idx = Math.round( station.bikesavailable / ( station.bikesavailable + station.slotsavailable ) * ( Images.length - 1 ) );
+                return '/images/' + Images[img_idx];
+            };
+            $.each( districts, function(k,v) {
+                var nb_stations = 0;
+                $.each( v, function() { nb_stations++; });
+                if( nb_stations > 2 ) {
+                    var points = $.map( v, function(p){ return { x: p.longitude, y: p.latitude }; }); 
+                    var poly_slots = jarvis.walk( points );
+                    var bikes = 0;
+                    var slots = 0;
+                    $.each( v, function( i, v ) { bikes += v.bikesavailable; slots += v.slotsavailable; } );
+                    var color_idx = Math.round( bikes / ( bikes+slots )  * ( Colors.length - 1 ) );
+
+                    var poly_coords = $.map( poly_slots, function(pidx) { 
+                        return new google.maps.LatLng( v[pidx].latitude, v[pidx].longitude );
+                    });
+                    var area = new google.maps.Polygon({
+                        paths: poly_coords,
+                        strokeColor: "#000",
+                        strokeOpacity: 0.8,
+                        strokeWeight: 1,
+                        fillColor: Colors[ color_idx ],
+                        fillOpacity: 0.8
+                    });
+                    area.setMap( $.Star.map );
+                    areas.push( area );
+
+                    google.maps.event.addListener( area, 'click', function( evt ) {
+                        area.setMap( null );
+                        var bbox = $.veloStar.getBoundingBox( v );
+                        var gbounds = new google.maps.LatLngBounds( 
+                            new google.maps.LatLng( bbox[0].latitude, bbox[0].longitude ),
+                            new google.maps.LatLng( bbox[1].latitude, bbox[1].longitude )
+                        );
+                        $.Star.map.fitBounds( gbounds );
+                        $.merge( markers, $.veloStar.drawMarkersForStations( $.Star.map, v, computeImage ) );
+                    });
+                } else {
+                    $.merge( markers, $.veloStar.drawMarkersForStations( $.Star.map, v, computeImage ) );
+                }
+            });
+        } else {           
+        $.each( markers, function( idx, marker ) {
+            marker.setMap( null );
+        });
+        markers = [];
+        $.each( areas, function( idx, area ) {
+            area.setMap( null );
+        });
+        areas = [];
+            
+        }
+    }
+    $.Star.Bikes.init = function() {
+        $('input#find_bikes').change( onFindBikes );
     };
 })(jQuery);
