@@ -6,6 +6,50 @@ if ( undefined == jQuery.Star ) {
 }
 jQuery.Star.Bus = {};
 jQuery.Star.Bikes = {};
+jQuery.SHistory = {};
+
+(function($){
+    var browsing_history = [];
+    if ( "replaceState" in window.history  && window.history.replaceState !== null ) {
+        $.SHistory.goBack = function () {
+            if ( browsing_history.length > 0 ) {
+                window.history.replaceState( null, '', browsing_history.pop() );
+            }
+        };
+        $.SHistory.goTo = function ( url ) {
+            if ( window.location.pathname != '/' ) {
+                browsing_history.push( window.location.pathname );          
+            }
+            window.history.replaceState( null, '', url );
+        };
+        $.SHistory.lastUrl= function () {
+            return window.location.pathname;
+        };
+    } else {
+        $.SHistory.goBack = function () {
+            if ( browsing_history.length > 0 ) {
+                window.location.hash = browsing_history.pop();
+            }
+        };
+        $.SHistory.goTo = function ( url ) {
+            if ( window.location.hash != '' ) {
+                browsing_history.push( window.location.hash );          
+            }
+            window.location.hash = url;
+        };
+        $.SHistory.lastUrl= function () {
+            if ( window.location.hash != '' ){
+                return  window.location.hash;
+            } else {
+                return window.location.pathname;
+            }
+        };
+    }
+    $.SHistory.canGoBack= function () {
+        return browsing_history.length > 0;
+    };
+    
+})(jQuery);
 
 
 
@@ -20,7 +64,6 @@ jQuery.Star.Bikes = {};
     var issues = {};
     var ANIM_DELAY = 350;
 
-    var browsing_history = [];
     var initial_loading_sentinel = false;
 
     var icons = {
@@ -52,28 +95,6 @@ jQuery.Star.Bikes = {};
         icons: {}
     };
     
-    function goBack() {
-        if ( browsing_history.length > 0 ) {
-            window.location.hash = browsing_history.pop();
-        }
-    }
-    function goTo( url ) {
-        if ( window.location.hash != '' ) {
-            browsing_history.push( window.location.hash );          
-        }
-        window.location.hash = url;
-    }
-    function lastUrl() {
-        if ( window.location.hash != '' ){
-            return  window.location.hash;
-        } else {
-            return window.location.pathname;
-        }
-    }
-    function canGoBack() {
-        return browsing_history.length > 0;
-    }
-
     function onScheduleGet(d,s,x) {
         var sched_container = $(d);
         sched_container.hide();
@@ -87,7 +108,7 @@ jQuery.Star.Bikes = {};
     }
     function onCloseInfoWindow() {
         selected_stop_id = null;
-        goBack();
+        $.SHistory.goBack();
     }
     function onOtherLineSelect( e ) {
         e.preventDefault();
@@ -107,7 +128,7 @@ jQuery.Star.Bikes = {};
             infowindow.close();
         }
         if ( this.times === undefined || this.times.length == 0 ) {
-            goTo( this.schedule_url );
+            $.SHistory.goTo( this.schedule_url );
             fetchSchedule( this.schedule_url );
             return;
         }
@@ -155,10 +176,10 @@ jQuery.Star.Bikes = {};
         content.append( $('<div>x</div>').addClass('clear') );
         infowindow.setContent( content[0] );
         if( ! initial_loading_sentinel ) {
-            if( lastUrl().match( /\/at\// ) ) {
-                goBack();
+            if( $.SHistory.lastUrl().match( /\/at\// ) ) {
+                $.SHistory.goBack();
             }
-            goTo( lastUrl() + '/at/' + this.stop_id );       
+            $.SHistory.goTo( $.SHistory.lastUrl() + '/at/' + this.stop_id );       
         }
         infowindow.open( map, this );
     }
@@ -241,7 +262,7 @@ jQuery.Star.Bikes = {};
         var url = $(this).attr('href');
         $('#lines .list li.selected').removeClass('selected');
         $(this).closest('li').addClass('selected');
-        goTo( url );
+        $.SHistory.goTo( url );
         $.get( url, {}, onLineGet, "json" );
         var short_id = $(this).data('short');
         if( issues[short_id] != undefined ) {
@@ -257,7 +278,7 @@ jQuery.Star.Bikes = {};
     }
     function onStopDirScheduleClick(e) {
         e.preventDefault();
-        goTo( $(this).attr('href') );
+        $.SHistory.goTo( $(this).attr('href') );
         fetchSchedule( $(this).attr('href') );
     }
     function onStopsGet(d,x,s) {
@@ -304,13 +325,13 @@ jQuery.Star.Bikes = {};
     };
     function onMaptiMarkerClick(marker) {
         var url = '/schedule/at/' + marker.getId();
-        goTo( url );
+        $.SHistory.goTo( url );
         fetchSchedule( url );
     }
     function onFindStops(e) {
         if ( $('#find_stops:checked').val() ) {
             if ( e != null ) {
-                goTo( '/stops' );
+                $.SHistory.goTo( '/stops' );
             }
             // TODO: disable switching tabs
             $('#lines').tabs({ selected: 4 }).tabs("option","disabled",[0,1,2,3,5]);
@@ -327,7 +348,7 @@ jQuery.Star.Bikes = {};
                 maptimizeController.refresh();
             }
         } else if ( maptimizeController != null ) {
-            goBack();
+            $.SHistory.goBack();
             $('#lines').tabs("option","disabled",[]);
             maptimizeController.deactivate();
         }
@@ -416,8 +437,8 @@ jQuery.Star.Bikes = {};
     };
     function onBackToMapClick(e) {
         e.preventDefault();
-        if( canGoBack() ) {
-            goBack();
+        if( $.SHistory.canGoBack() ) {
+            $.SHistory.goBack();
             $('div.schedule_container').hide('slide', {direction:'right'}, ANIM_DELAY, function(){$(this).remove(); });
             $('#map_browser').show( 'slide', { direction: 'left' }, ANIM_DELAY );
         } else {
