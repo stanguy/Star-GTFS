@@ -10,7 +10,7 @@ jQuery.SHistory = {};
 
 (function($){
     var browsing_history = [];
-    if ( "replaceState" in window.history  && window.history.replaceState !== null ) {
+    if ( "replaceState" in window.history  && window.history.replaceState !== null && ! $.browser.safari ) {
         $.SHistory.goBack = function () {
             if ( browsing_history.length > 0 ) {
                 window.history.replaceState( null, '', browsing_history.pop() );
