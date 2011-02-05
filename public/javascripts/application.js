@@ -6,53 +6,15 @@ if ( undefined == jQuery.Star ) {
 }
 jQuery.Star.Bus = {};
 jQuery.Star.Bikes = {};
-jQuery.SHistory = {};
 
-(function($){
-    var browsing_history = [];
-    if ( "replaceState" in window.history  && window.history.replaceState !== null && ! $.browser.safari ) {
-        $.SHistory.goBack = function () {
-            if ( browsing_history.length > 0 ) {
-                window.history.replaceState( null, '', browsing_history.pop() );
-            }
-        };
-        $.SHistory.goTo = function ( url ) {
-            if ( window.location.pathname != '/' ) {
-                browsing_history.push( window.location.pathname );          
-            }
-            window.history.replaceState( null, '', url );
-        };
-        $.SHistory.lastUrl= function () {
-            return window.location.pathname;
-        };
-    } else {
-        $.SHistory.goBack = function () {
-            if ( browsing_history.length > 0 ) {
-                window.location.hash = browsing_history.pop();
-            }
-        };
-        $.SHistory.goTo = function ( url ) {
-            if ( window.location.hash != '' ) {
-                browsing_history.push( window.location.hash );          
-            }
-            window.location.hash = url;
-        };
-        $.SHistory.lastUrl= function () {
-            if ( window.location.hash != '' ){
-                return  window.location.hash;
-            } else {
-                return window.location.pathname;
-            }
-        };
-    }
-    $.SHistory.canGoBack= function () {
-        return browsing_history.length > 0;
-    };
-    
-})(jQuery);
-
-
-
+var History = window.history;
+/*
+(function(window){
+     History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+     var State = History.getState(); // Note: We are using History.getState() instead of event.state
+     History.log(State.data, State.title, State.url);
+});
+})(window);*/
 
 (function($) {
     var map;
@@ -63,7 +25,9 @@ jQuery.SHistory = {};
     var selected_stop_id = null;
     var issues = {};
     var ANIM_DELAY = 350;
-
+    var currentLineUrl;
+    var displayType;
+    
     var initial_loading_sentinel = false;
 
     var icons = {
@@ -101,6 +65,7 @@ jQuery.SHistory = {};
         $('#map_browser').after( sched_container );
         $('#map_browser').hide( 'slide', { direction: 'left' }, ANIM_DELAY );
         sched_container.show('slide', {direction:'right'}, ANIM_DELAY );
+        displayType = 'div.schedule_container';
         $('.accordion').accordion();
     }
     function fetchSchedule( url ) {
@@ -108,7 +73,7 @@ jQuery.SHistory = {};
     }
     function onCloseInfoWindow() {
         selected_stop_id = null;
-        $.SHistory.goBack();
+        History.pushState( { lineUrl: currentLineUrl }, '', currentLineUrl );
     }
     function onOtherLineSelect( e ) {
         e.preventDefault();
@@ -128,7 +93,7 @@ jQuery.SHistory = {};
             infowindow.close();
         }
         if ( this.times === undefined || this.times.length == 0 ) {
-            $.SHistory.goTo( this.schedule_url );
+            History.pushState( { schedule: true }, '', this.schedule_url );
             fetchSchedule( this.schedule_url );
             return;
         }
@@ -176,10 +141,8 @@ jQuery.SHistory = {};
         content.append( $('<div>x</div>').addClass('clear') );
         infowindow.setContent( content[0] );
         if( ! initial_loading_sentinel ) {
-            if( $.SHistory.lastUrl().match( /\/at\// ) ) {
-                $.SHistory.goBack();
-            }
-            $.SHistory.goTo( $.SHistory.lastUrl() + '/at/' + this.stop_id );       
+            History.pushState( { lineUrl: currentLineUrl, stop: this.stop_id }, '', 
+                               currentLineUrl + '/at/' + this.stop_id );
         }
         infowindow.open( map, this );
     }
@@ -259,11 +222,12 @@ jQuery.SHistory = {};
     }
     function onSelectLine(e) {
         e.preventDefault();
-        var url = $(this).attr('href');
+        currentLineUrl = $(this).attr('href');
         $('#lines .list li.selected').removeClass('selected');
         $(this).closest('li').addClass('selected');
-        $.SHistory.goTo( url );
-        $.get( url, {}, onLineGet, "json" );
+        
+        History.pushState( { lineUrl: currentLineUrl }, null, currentLineUrl );
+        $.get( currentLineUrl, {}, onLineGet, "json" );
         var short_id = $(this).data('short');
         if( issues[short_id] != undefined ) {
             $('.icons img').first().show();
@@ -278,8 +242,9 @@ jQuery.SHistory = {};
     }
     function onStopDirScheduleClick(e) {
         e.preventDefault();
-        $.SHistory.goTo( $(this).attr('href') );
-        fetchSchedule( $(this).attr('href') );
+        var url = $(this).attr('href');
+        History.pushState( { schedule: true }, '', url );
+        fetchSchedule( url );
     }
     function onStopsGet(d,x,s) {
         $.each( d, function( idx, point ) {
@@ -325,15 +290,19 @@ jQuery.SHistory = {};
     };
     function onMaptiMarkerClick(marker) {
         var url = '/schedule/at/' + marker.getId();
-        $.SHistory.goTo( url );
+        History.pushState( {}, null, url );
         fetchSchedule( url );
     }
     function onFindStops(e) {
         if ( $('#find_stops:checked').val() ) {
-            if ( e != null ) {
-                $.SHistory.goTo( '/stops' );
+            if( null != infowindow ) {
+                infowindow.close();
             }
-            // TODO: disable switching tabs
+            currentLineUrl = null;
+            selected_stop_id = null;
+            if ( e != null ) {
+                History.pushState( { stops: true }, null, '/stops' );
+            }
             $('#lines').tabs({ selected: 4 }).tabs("option","disabled",[0,1,2,3,5]);
             $.each( markers, function( idx, marker ) {
                 marker.setMap( null );
@@ -348,10 +317,18 @@ jQuery.SHistory = {};
                 maptimizeController.refresh();
             }
         } else if ( maptimizeController != null ) {
-            $.SHistory.goBack();
+            if( e != null ) {
+                History.pushState( {}, null, '/' );
+            }
             $('#lines').tabs("option","disabled",[]);
             maptimizeController.deactivate();
         }
+    }
+    function disableStopsMaybe() {
+        if ( $('#find_stops:checked').val() ) {
+            $('#find_stops').attr('checked', false );
+            onFindStops();
+        }        
     }
     function onIssuesGet(d,h,x) {
         for( var i = 0; i < d.issues.length; ++i ) {
@@ -385,6 +362,7 @@ jQuery.SHistory = {};
         });
     }
     $.Star.Bus.initMap = function() {
+        displayType = '#map_browser';
         map = new google.maps.Map($('#map')[0], {
             'scrollwheel': false,
             'zoom': 12,
@@ -395,6 +373,7 @@ jQuery.SHistory = {};
         $('#lines .list a').click(onSelectLine);
         if ( $('#line_data').length > 0 ) {
             var line_data = [];
+            currentLineUrl = $('#line_data').data('line-url');
             $('#line_data').children('li').each( function() {
                 var stop = $(this).find('h2 a');
                 if ( stop.data('selected') ) {
@@ -430,6 +409,13 @@ jQuery.SHistory = {};
                             accessible: stop.data('accessible'),
                                 times: times } );
             });
+            var state = {
+                lineUrl: currentLineUrl
+            };
+            if ( selected_stop_id != undefined ) {
+                $.merge( state, { stop: selected_stop_id } );
+            }
+            History.replaceState( state, '', currentLineUrl );
             onLineGet( line_data );
         }
         $('input#find_stops').change( onFindStops );        
@@ -437,20 +423,38 @@ jQuery.SHistory = {};
     };
     function onBackToMapClick(e) {
         e.preventDefault();
-        if( $.SHistory.canGoBack() ) {
-            $.SHistory.goBack();
-            $('div.schedule_container').hide('slide', {direction:'right'}, ANIM_DELAY, function(){$(this).remove(); });
-            $('#map_browser').show( 'slide', { direction: 'left' }, ANIM_DELAY );
-        } else {
-            window.location = $(this).attr('href');
+        History.back();
+    }
+    function historyCallback( event ) {
+        if( event.state != undefined ) {
+            if ( event.state.lineUrl != undefined ) {
+                if ( displayType != '#map_browser' ) {
+                    var to_remove = displayType;
+                    displayType = '#map_browser';
+                    $(to_remove).hide('slide', {direction:'right'}, ANIM_DELAY, function(){
+                        $(to_remove).remove(); 
+                    });
+                    $(displayType).show( 'slide', { direction: 'left' }, ANIM_DELAY );
+                }
+                disableStopsMaybe();
+                selected_stop_id = event.state.stop;
+                if ( undefined == selected_stop_id && infowindow != null ) {
+                    infowindow.close();
+                }
+                if( event.state.lineUrl != currentLineUrl ) {
+                    $('a[href="' + event.state.lineUrl + '"]').click();
+                }
+            }
         }
     }
     $.Star.Bus.init= function() {
 
-        if ( window.location.hash != '' && window.location.hash != null ) {
+        var hash = window.location.hash;
+        if ( hash != '' && hash != null && hash != '#/' && hash != ( '#' + window.location.pathname) ) {
             window.location = window.location.hash.substr(1);
             return;
         }
+        window.onpopstate = historyCallback;
         $('#lines').tabs({event: 'mouseover'}).css('visibility','visible');
         $('#lines .list a').each( function() {
           $(this).attr('title', $(this).children('span').text() );
