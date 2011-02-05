@@ -25,6 +25,9 @@ p {
     visibility: hidden;
     border: 0;
 }
+#lines #handheld_startmap {
+    display: none;
+}
 #lines .ui-tabs-nav li a {
     padding: 0.2em 0.5em 0;
 }

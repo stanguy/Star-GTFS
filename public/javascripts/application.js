@@ -8,13 +8,6 @@ jQuery.Star.Bus = {};
 jQuery.Star.Bikes = {};
 
 var History = window.history;
-/*
-(function(window){
-     History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
-     var State = History.getState(); // Note: We are using History.getState() instead of event.state
-     History.log(State.data, State.title, State.url);
-});
-})(window);*/
 
 (function($) {
     var map;
@@ -454,13 +447,23 @@ var History = window.history;
             }
         }
     }
-    $.Star.Bus.init= function() {
+    $.Star.Bus.init= function( force ) {
 
         var hash = window.location.hash;
-        if ( hash != '' && hash != null && hash != '#/' && hash != ( '#' + window.location.pathname) ) {
+        if ( hash != '' && hash != null && hash != '#/' && hash != ( '#' + window.location.pathname) && hash.match(/\// ) ) {
             window.location = window.location.hash.substr(1);
             return;
         }
+
+        if ( $('div.content').width() < 500 && force == undefined ) {
+            $('#lines').addClass( 'force_handheld' );
+            $('#lines #handheld_startmap a').click( function(e) {
+                $('#lines').removeClass('force_handheld');
+                $.Star.Bus.init(true);
+            });
+            return;
+        }
+
         window.onpopstate = historyCallback;
         $('#lines').tabs({event: 'mouseover'}).css('visibility','visible');
         $('#lines .list a').each( function() {

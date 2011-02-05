@@ -7,6 +7,30 @@ div.schedule_container {
     min-width: 320px;
     margin: 0;
 }
+
+#lines.force_handheld {
+    visibility: visible;
+}
+#lines.force_handheld #handheld_startmap {
+    display: block;
+}
+#lines.force_handheld .list ul {
+    list-style: disc;
+}
+#lines.force_handheld .list ul li {
+    float: none;
+    display: block;
+    width: auto;
+    height: auto;
+    text-align: left;
+}
+#line_data {
+    display: block;
+}
+#lines.force_handheld .list ul li span {
+    position: relative;
+    left: auto;
+}
 #map {
     height: 310px;
 }
@@ -28,7 +52,7 @@ div.push_2,.other_lines.push_3 {
 #stopactions {
     margin-top: 15px;
 }
-#back_to_map {
+.back_to_map {
     display: none;
 }
 ul {
