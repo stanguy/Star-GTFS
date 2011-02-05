@@ -93,7 +93,7 @@ var History = window.history;
             infowindow.close();
         }
         if ( this.times === undefined || this.times.length == 0 ) {
-            History.pushState( { schedule: true }, '', this.schedule_url );
+            History.pushState( { scheduleUrl: this.scheduleUrl }, '', this.schedule_url );
             fetchSchedule( this.schedule_url );
             return;
         }
@@ -243,7 +243,7 @@ var History = window.history;
     function onStopDirScheduleClick(e) {
         e.preventDefault();
         var url = $(this).attr('href');
-        History.pushState( { schedule: true }, '', url );
+        History.pushState( { scheduleUrl: url }, '', url );
         fetchSchedule( url );
     }
     function onStopsGet(d,x,s) {
@@ -425,17 +425,20 @@ var History = window.history;
         e.preventDefault();
         History.back();
     }
+    function displayShouldBeMap() {
+        if ( displayType != '#map_browser' ) {
+            var to_remove = displayType;
+            displayType = '#map_browser';
+            $(to_remove).hide('slide', {direction:'right'}, ANIM_DELAY, function(){
+                $(to_remove).remove(); 
+            });
+            $(displayType).show( 'slide', { direction: 'left' }, ANIM_DELAY );
+        }
+    }
     function historyCallback( event ) {
         if( event.state != undefined ) {
             if ( event.state.lineUrl != undefined ) {
-                if ( displayType != '#map_browser' ) {
-                    var to_remove = displayType;
-                    displayType = '#map_browser';
-                    $(to_remove).hide('slide', {direction:'right'}, ANIM_DELAY, function(){
-                        $(to_remove).remove(); 
-                    });
-                    $(displayType).show( 'slide', { direction: 'left' }, ANIM_DELAY );
-                }
+                displayShouldBeMap();
                 disableStopsMaybe();
                 selected_stop_id = event.state.stop;
                 if ( undefined == selected_stop_id && infowindow != null ) {
@@ -444,6 +447,10 @@ var History = window.history;
                 if( event.state.lineUrl != currentLineUrl ) {
                     $('a[href="' + event.state.lineUrl + '"]').click();
                 }
+            } else if ( event.state.stops ) {
+                displayShouldBeMap();                
+            } else if ( event.state.scheduleUrl ) {
+                fetchSchedule( url );
             }
         }
     }
@@ -475,6 +482,7 @@ var History = window.history;
             $.Star.Bus.initMap();
         }
         if( $('#find_stops:checked').val() !== 'undefined' ) {
+            History.replaceState( { stops: true }, null, '/stops' );
             onFindStops();
         }
         loadLines();
