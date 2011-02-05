@@ -481,7 +481,7 @@ var History = window.history;
         if( $('#map').length > 0 ) {
             $.Star.Bus.initMap();
         }
-        if( $('#find_stops:checked').val() !== 'undefined' ) {
+        if( $('#find_stops:checked').val() != undefined ) {
             History.replaceState( { stops: true }, null, '/stops' );
             onFindStops();
         }
