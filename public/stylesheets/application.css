@@ -70,10 +70,10 @@ p {
 #lines #help {
     padding: 1em 0;
 }
-#lines dl {
+#lines #help dl {
     margin-top: 10px;
 }
-#lines dl dt {
+#lines #help dl dt {
     float: left;
     clear: left;
     width: 25px;
@@ -81,11 +81,21 @@ p {
     text-align: center;
     margin-top: 10px;
 }
-#lines dl dd {
+#lines #help dl dd {
     height: 35px;
     margin-left: 45px;
     padding-top: 3px;
     margin-top: 5px;
+}
+#lines #alerts {
+    padding: 0.5em 0.5;
+}
+#lines #alerts dt {
+    padding-left: 30px;
+}
+#lines #alerts dd {
+    padding: 0 1em;
+    white-space: pre-line;
 }
 .loader_container, .icons {
     padding-top: 15px;

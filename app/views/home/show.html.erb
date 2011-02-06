@@ -26,10 +26,11 @@
     <div id="handheld_startmap"><a href="#">Cliquer ici pour activer la carte (non optimisé pour votre affichage)</a></div>
     <ul>
       <li><a href="#urban">Lignes urbaines</a></li>
-      <li><a href="#suburban">Lignes suburbaines</a></li>
-      <li><a href="#express">Lignes express</a></li>
-      <li><a href="#special">Lignes spéciales</a></li>
-      <li><a href="#misc">Autrement</a></li>
+      <li><a href="#suburban">Suburbaines</a></li>
+      <li><a href="#express">Express</a></li>
+      <li><a href="#special">Spéciales</a></li>
+      <li><a href="#misc">Et autrement</a></li>
+      <li><a href="#alerts"><img src="/images/perturbation.png" alt="Alertes"></a></li>
       <li><a href="#help">Aide</a></li>
     </ul>
     <span id="ajax-loader" style="display: none;">
@@ -62,8 +63,10 @@
       </div>
       <div class="grid_5">
         <%= check_box_tag "find_bikes", '1', @bikes %>
-        <label for="find_bikes">Montrer les stations Le Vélo STAR</label>
+        <label for="find_bikes">Montrer les stations Le vélo STAR</label>
       </div>
+    </div>
+    <div id="alerts">
     </div>
     <div id="help">
       <div class="grid_6 alpha">

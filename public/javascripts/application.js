@@ -20,6 +20,7 @@ var History = window.history;
     var ANIM_DELAY = 350;
     var currentLineUrl;
     var displayType;
+    var alerts = {};
     
     var initial_loading_sentinel = false;
 
@@ -213,6 +214,9 @@ var History = window.history;
         }
         $(issues_display).dialog({ title: 'Erreurs sur la ligne ' + short_id });
     }
+    function formatDate(d) {
+        return d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+    }
     function onSelectLine(e) {
         e.preventDefault();
         currentLineUrl = $(this).attr('href');
@@ -222,11 +226,30 @@ var History = window.history;
         History.pushState( { lineUrl: currentLineUrl }, null, currentLineUrl );
         $.get( currentLineUrl, {}, onLineGet, "json" );
         var short_id = $(this).data('short');
-        if( issues[short_id] != undefined ) {
+/*        if( issues[short_id] != undefined ) {
             $('.icons img').first().show();
             $('.icons img').first().attr('title', issues[short_id][0].title );
         } else {
             $('.icons img').first().hide();
+        }*/
+        var converter = new Showdown.converter();
+        if( alerts[short_id] != undefined ) {
+            var line_alerts = alerts[short_id];
+            var container = $('<dl></dl>');
+            var alerts_length = line_alerts.length;
+            for( var i = 0; i < alerts_length; ++i ) {
+                var alert = line_alerts[i];
+                var start = new Date(alert.starttime);
+                var end = new Date(alert.endtime);
+                var title = alert.title + " du " + formatDate(start) + " au " + formatDate(end);
+                container.append( $('<dt></dt>').text(title));
+                container.append( $('<dd></dd>').append( alert.detail ) );
+            }
+            $('#alerts').html( container );
+            $('#lines #alerts dl').accordion({ header: 'dt', collapsible: true, autoHeight: false, active: false });
+            $('#lines').tabs("option","disabled",[]);
+        } else {
+            $('#lines').tabs("option","disabled",[5]);
         }
     }
     function onHeadingChange() {
@@ -313,7 +336,7 @@ var History = window.history;
             if( e != null ) {
                 History.pushState( {}, null, '/' );
             }
-            $('#lines').tabs("option","disabled",[]);
+            $('#lines').tabs("option","disabled",[5]);
             maptimizeController.deactivate();
         }
     }
@@ -344,6 +367,45 @@ var History = window.history;
     function loadIssues() {
         var url = 'http://github.com/api/v2/json/issues/list/stanguy/star-gtfs/label/datasource?callback=?';
         $.getJSON( url, onIssuesGet );
+    }
+    function addAlertToLine( line, alert ) {
+        if ( undefined == alerts[line] ) {
+            alerts[line] = [];
+        }
+        alerts[line].push( alert );
+    }
+    function onAlertsGet(data,h,x) {
+        if( undefined == data
+            || undefined == data.opendata
+            || undefined == data.opendata.answer
+            || undefined == data.opendata.answer.status
+            || undefined == data.opendata.answer.status[ "@attributes" ]
+            || undefined == data.opendata.answer.status[ "@attributes" ].code
+            || "0" != data.opendata.answer.status[ "@attributes" ].code ) {
+            console.log( "alert retrieval failed");
+            return;
+        }
+        var alerts_data = data.opendata.answer.data.alert;
+        var alerts_length = alerts_data.length;
+        for( var i = 0 ; i < alerts_length; ++i ) {
+            var alert = alerts_data[i];
+            var lines_length;
+            var lines;
+            if( $.isArray(alert.lines.line) ) {
+                lines = alert.lines.line;
+                lines_length = lines.length;
+            } else {
+                lines = [ alert.lines.line ];
+                lines_length = 1;
+            }
+            for( var j = 0; j < lines_length; ++j ) {
+                addAlertToLine( lines[j], alert );
+            }
+        }
+    }
+    function loadAlerts() {
+        var url = "http://data.keolis-rennes.com/json/?cmd=getlinesalerts&key=AO7UR4OL1ICTKWL&version=2.0";
+        $.getJSON( url, onAlertsGet );
     }
     function loadLines() {
         $('#lines .list a').each(function(){
@@ -412,7 +474,8 @@ var History = window.history;
             onLineGet( line_data );
         }
         $('input#find_stops').change( onFindStops );        
-        loadIssues();
+//        loadIssues();
+        loadAlerts();
     };
     function onBackToMapClick(e) {
         e.preventDefault();
@@ -465,7 +528,7 @@ var History = window.history;
         }
 
         window.onpopstate = historyCallback;
-        $('#lines').tabs({event: 'mouseover'}).css('visibility','visible');
+        $('#lines').tabs({event: 'mouseover',disabled:[5]}).css('visibility','visible');
         $('#lines .list a').each( function() {
           $(this).attr('title', $(this).children('span').text() );
         });
