@@ -217,6 +217,10 @@ var History = window.history;
     function formatDate(d) {
         return d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
     }
+    function new_Date(str) {
+      var m = str.match(/^(\d+)-(\d+)-(\d+)T/ );
+      return new Date( m[1], parseInt( m[2] ) - 1, m[3] );
+    }
     function onSelectLine(e) {
         e.preventDefault();
         currentLineUrl = $(this).attr('href');
@@ -239,8 +243,8 @@ var History = window.history;
             var alerts_length = line_alerts.length;
             for( var i = 0; i < alerts_length; ++i ) {
                 var alert = line_alerts[i];
-                var start = new Date(alert.starttime);
-                var end = new Date(alert.endtime);
+                var start = new_Date(alert.starttime);
+                var end = new_Date(alert.endtime);
                 var title = alert.title + " du " + formatDate(start) + " au " + formatDate(end);
                 container.append( $('<dt></dt>').text(title));
                 container.append( $('<dd></dd>').append( alert.detail ) );
