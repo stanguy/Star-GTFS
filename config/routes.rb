@@ -27,6 +27,7 @@ StarGtfs::Application.routes.draw do
         member do
           get :close
         end
+	resources :stop_aliases
       end        
     end
   end
