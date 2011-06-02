@@ -7,7 +7,7 @@ describe StLoImporter do
     before do 
       @data = [ [ "Stop 1", "", "12:42" ],
                 [ "Stop 2", "", "12:43" ] ]
-      @importer = StLoImporter.new
+      @importer = StLoImporter.new Hash.new( "hello" )
       @importer.first_trip_col = 2
       @importer.default_calendar = Calendar::WEEKDAY
       @importer.stops_range = 0..1
@@ -28,8 +28,16 @@ describe StLoImporter do
     it 'should contain 2 lines for the trip' do 
       @importer.import(@data)[0][Calendar::WEEKDAY].count.should == 2
     end
-    it 'should have time and stop id in the first line of the trip' do 
+    it 'should  have time and stop id in the first line of the trip' do 
       @importer.import(@data)[0][Calendar::WEEKDAY][0].should be_kind_of Hash
+    end
+    it 'should convert the time to integer' do 
+      result = @importer.import(@data)
+      result[0][Calendar::WEEKDAY][0][:t].should be_kind_of Fixnum
+      result[0][Calendar::WEEKDAY][0][:t].should == 45720
+    end
+    it 'should use the stop registry' do 
+      @importer.import(@data)[0][Calendar::WEEKDAY][0][:s].should == "hello"
     end
   end
   describe 'Skipping lines' do 
@@ -39,7 +47,7 @@ describe StLoImporter do
                 [],
                 [ "Stop 3", "", "12:45" ],
                 [ "Stop 4", "", "-" ] ]
-      @importer = StLoImporter.new
+      @importer = StLoImporter.new Hash.new
       @importer.first_trip_col = 2
       @importer.default_calendar = Calendar::WEEKDAY
       @importer.stops_range = 0..4
