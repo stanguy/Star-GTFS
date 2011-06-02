@@ -17,4 +17,7 @@ describe StopRegistry do
   it 'should remove unwanted characters' do 
     @reg['Stop 1***'].name.should == 'Stop 1'
   end
+  it 'should not be case sensitive' do 
+    @reg['Stop 1'].should == @reg['stop 1']    
+  end
 end
