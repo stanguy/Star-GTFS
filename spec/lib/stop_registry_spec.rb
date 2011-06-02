@@ -20,4 +20,7 @@ describe StopRegistry do
   it 'should not be case sensitive' do 
     @reg['Stop 1'].should == @reg['stop 1']    
   end
+  it 'should create a stop with one alias' do 
+    @reg['Stop 1'].stop_aliases.count.should == 1
+  end
 end
