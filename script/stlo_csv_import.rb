@@ -10,13 +10,14 @@ end
 def import_stoptimes line, headsign_str, trips
   headsign = Headsign.create( :name => headsign_str,
                               :line => line )
+  line_stops = []
   trips.each do |mtrip|
     mtrip.each do |calendar,times|
       trip = Trip.create( :line => line, 
                           :calendar => calendar,
                           :headsign => headsign )
       times.each do |st|
-        line.stops << st[:s]
+        line_stops << st[:s]
         StopTime.create( :stop => st[:s],
                          :line => line,
                          :trip => trip,
@@ -27,6 +28,7 @@ def import_stoptimes line, headsign_str, trips
       end
     end
   end
+  line.stops = line_stops.uniq
 end
 
 stop_registry = StopRegistry.new
