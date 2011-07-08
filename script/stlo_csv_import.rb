@@ -43,7 +43,7 @@ stop_registry = StopRegistry.new
 mlog "Importing line 3"
 l3 = Line.create( :short_name => "Ligne 3",
                   :long_name => "Saint-Lô-Bois Ardent / Centre Aquatique <> Saint-Georges-Montcocq-Mairie",
-                  :short_long_name => "Saint-Lô-Bois Ardent / Centre Aquatique <> Saint-Georges-Montcocq-Mairie",
+                  :short_long_name => "Bois Ardent / Centre Aquatique <> Saint-Georges-Montcocq-Mairie",
                   :fgcolor => '#ffffff',
                   :bgcolor => '#B1CB44',
                   :src_id => "3",
@@ -106,7 +106,7 @@ import_stoptimes l3, data_l3_samedi[63][0], trips
 mlog "Importing line 1"
 l1 = Line.create( :short_name => "Ligne 1",
                   :long_name => "Saint-Lô-Les Colombes <> Agneaux-Villechien / Centre Commercial La Demeurance",
-                  :short_long_name => "Saint-Lô-Les Colombes <> Agneaux-Villechien / Centre Commercial La Demeurance",
+                  :short_long_name => "Les Colombes <> Agneaux-Villechien / Centre Commercial La Demeurance",
                   :fgcolor => '#ffffff',
                   :bgcolor => '#C8012A',
                   :src_id => '1',
@@ -154,7 +154,7 @@ import_stoptimes l1, data_l1_s2[3][1], trips
 mlog "Importing line 2"
 l2 = Line.create( :short_name => "Ligne 2",
                   :long_name => "Saint-Lô-Conseil Général < > Saint-Lô-La Madeleine",
-                  :short_long_name => "Saint-Lô-Conseil Général < > Saint-Lô-La Madeleine",
+                  :short_long_name => "Conseil Général < > La Madeleine",
                   :fgcolor => '#ffffff',
                   :bgcolor => '#006ab4',
                   :src_id => '2',
