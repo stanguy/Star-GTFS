@@ -7,11 +7,16 @@ def mlog msg
   puts Time.now.to_s(:db) + " " + msg
 end
 
+def fix_stlo_headsign headsign
+  headsign.split(/ (è|=>) /).pop
+end
+    
+
 def import_stoptimes line, headsign_str, trips
   if headsign_str.blank?
     raise "Empty headsign"
   end
-  headsign = Headsign.create( :name => headsign_str,
+  headsign = Headsign.create( :name => fix_stlo_headsign(headsign_str),
                               :line => line )
   line_stops = []
   trips.each do |mtrip|
