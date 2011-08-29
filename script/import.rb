@@ -84,7 +84,7 @@ all_stops = valid_stops
 
 def line_usage line
   return :urban if [ 'Urbaine', 'Inter-quartiers', 'Majeure' ].include? line[:route_desc] 
-  return :express if 'Express' == line[:route_desc]
+  return :express if line[:route_desc].match( /^Express/ )
   return :suburban if [ 'Intercommunale', 'Suburbaine' ].include? line[:route_desc]
   :special
 end
