@@ -423,10 +423,15 @@ var History = window.history;
     $.Star.Bus.initMap = function() {
         displayType = '#map_browser';
         map = new google.maps.Map($('#map')[0], {
-            'scrollwheel': false,
+            'scrollwheel': ! $('#disable_scrollwheel:checked').val(),
             'zoom': 12,
             'center': new google.maps.LatLng( 48.11, -1.63 ),
             'mapTypeId': google.maps.MapTypeId.ROADMAP
+        });
+        $('#disable_scrollwheel').change( function() {
+            map.setOptions({
+                'scrollwheel': ! $('#disable_scrollwheel:checked').val()
+            });
         });
         $.Star.map = map;
         $('#lines .list a').click(onSelectLine);
