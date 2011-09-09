@@ -62,6 +62,12 @@ p {
     width: 21px;
     height: 21px;
 }
+#lines .list ul li.wide img {
+    width: 31px;
+}
+#lines .list ul li.wide {
+    width: 35px;
+}
 #lines .list ul li.as_text {
     width: auto;
     margin-right: 10px;
