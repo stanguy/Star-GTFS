@@ -5,7 +5,8 @@ class Dump::StopsController < InheritedResources::Base
 
   def main_ids
     data = Stop.all.collect do |stop|
-      [ stop.id, stop.stop_aliases.order( 'src_id ASC' ).first.src_id ]
+      stop_alias = stop.stop_aliases.order( 'src_id ASC' ).first
+      [ stop.id, stop_alias.src_id, stop_alias.old_src_id ]
     end
     render :json => data
   end

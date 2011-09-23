@@ -40,6 +40,12 @@ stops_accessible = Hash.new(false)
 read_tmp_csv "stops_extensions" do |line|
   stops_accessible[line[:stop_id]] = line[:stop_accessible].to_i == 1
 end
+old_stops_ids = {}
+if File.exists? File.join( Rails.root, "/tmp/stops_old.txt" )
+  read_tmp_csv "stops_old" do |stop_old|
+    old_stops_ids[stop_old[:stop_code]] = stop_old[:stop_id]
+  end
+end
 mlog "loading stops"
 read_tmp_csv "stops"  do |stop|
   next unless stop[:stop_code].match(/^[0-9]+$/)
@@ -146,6 +152,12 @@ lines_accessible = Hash.new(false)
 read_tmp_csv "routes_extensions" do |line|
   lines_accessible[line[:route_id]] = line[:route_accessible].to_i == 1
 end
+old_lines_ids = {}
+if File.exists? File.join( Rails.root, "/tmp/routes_old.txt" )
+  read_tmp_csv "routes_old" do |line_old|
+    old_lines_ids[line_old[:route_short_name]] = line_old[:route_id]
+  end
+end
 
 legacy[:line] = {}
 lines_stops = {}
@@ -161,7 +173,9 @@ ActiveRecord::Base.transaction do
                              :fgcolor => line[:route_text_color],
                              :usage => line_usage( line ),
                              :picto_url => lines_picto_urls[line[:route_short_name]],
-                             :accessible => lines_accessible[line[:route_id]]})
+                             :accessible => lines_accessible[line[:route_id]],
+                             :old_src_id => old_lines_ids[line[:route_short_name]]
+                           })
     legacy[:line][line[:route_id]] = new_line
     lines_stops[new_line.id] = {}
     all_headsigns[new_line.id] = {}
@@ -236,7 +250,9 @@ ActiveRecord::Base.transaction do
                                      :src_name => stop[:stop_name],
                                      :src_lat => stop[:stop_lat],
                                      :src_lon => stop[:stop_lon],
-                                     :accessible => stops_accessible[stop[:stop_id]] })
+                                     :description => stop[:stop_desc],
+                                     :accessible => stops_accessible[stop[:stop_id]],
+                                     :old_src_id => old_stops_ids[stop[:stop_id]] })
       legacy[:stops][stop[:stop_id]] = new_stop.id
     end
     all_new_stops[new_stop.id] = new_stop
