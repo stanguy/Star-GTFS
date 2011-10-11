@@ -51,7 +51,7 @@ stop_registry = StopRegistry.new
 ###                           L3                                  ###
 #####################################################################
 mlog "Importing line 3"
-l3 = Line.create( :short_name => "Ligne 3",
+l3 = Line.create( :short_name => "3",
                   :long_name => "Saint-Lô-Bois Ardent / Centre Aquatique <> Saint-Georges-Montcocq-Mairie",
                   :short_long_name => "Bois Ardent / Centre Aquatique <> Saint-Georges-Montcocq-Mairie",
                   :fgcolor => '#ffffff',
@@ -157,13 +157,11 @@ importer.first_trip_col = 3
 trips = importer.import(data_l3_samedi)
 import_stoptimes l3, data_l3_samedi[63][0], trips
 
-
-
 #####################################################################
 ###                           L1                                  ###
 #####################################################################
 mlog "Importing line 1"
-l1 = Line.create( :short_name => "Ligne 1",
+l1 = Line.create( :short_name => "1",
                   :long_name => "Saint-Lô-Les Colombes <> Agneaux-Villechien / Centre Commercial La Demeurance",
                   :short_long_name => "Les Colombes <> Agneaux-Villechien / Centre Commercial La Demeurance",
                   :fgcolor => '#ffffff',
@@ -233,7 +231,7 @@ import_stoptimes l1, data_l1_s2[3][1], trips
 ###                           L2                                  ###
 #####################################################################
 mlog "Importing line 2"
-l2 = Line.create( :short_name => "Ligne 2",
+l2 = Line.create( :short_name => "2",
                   :long_name => "Saint-Lô-Conseil Général < > Saint-Lô-La Madeleine",
                   :short_long_name => "Conseil Général < > La Madeleine",
                   :fgcolor => '#ffffff',
