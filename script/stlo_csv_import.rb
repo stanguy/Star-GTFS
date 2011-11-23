@@ -42,10 +42,16 @@ def check_value cell, expected
     raise "Assertion failed" 
   end
 end
+
+def check_values dataset, checks
+  checks.each do |c|
+    x, y, v = c
+    check_value dataset[x][y], v
+  end
+end
     
 
 stop_registry = StopRegistry.new
-
 
 #####################################################################
 ###                           L3                                  ###
@@ -54,8 +60,8 @@ mlog "Importing line 3"
 l3 = Line.create( :short_name => "3",
                   :long_name => "Saint-Lô-Bois Ardent / Centre Aquatique <> Saint-Georges-Montcocq-Mairie",
                   :short_long_name => "Bois Ardent / Centre Aquatique <> Saint-Georges-Montcocq-Mairie",
-                  :fgcolor => '#ffffff',
-                  :bgcolor => '#B1CB44',
+                  :fgcolor => '#000000',
+                  :bgcolor => '#ccffcc',
                   :src_id => "3",
                   :accessible => false,
                   :usage => :urban )
@@ -165,7 +171,7 @@ l1 = Line.create( :short_name => "1",
                   :long_name => "Saint-Lô-Les Colombes <> Agneaux-Villechien / Centre Commercial La Demeurance",
                   :short_long_name => "Les Colombes <> Agneaux-Villechien / Centre Commercial La Demeurance",
                   :fgcolor => '#ffffff',
-                  :bgcolor => '#C8012A',
+                  :bgcolor => '#ff0000',
                   :src_id => '1',
                   :accessible => false,
                   :usage => :urban )
@@ -235,7 +241,7 @@ l2 = Line.create( :short_name => "2",
                   :long_name => "Saint-Lô-Conseil Général < > Saint-Lô-La Madeleine",
                   :short_long_name => "Conseil Général < > La Madeleine",
                   :fgcolor => '#ffffff',
-                  :bgcolor => '#006ab4',
+                  :bgcolor => '#99ccff',
                   :src_id => '2',
                   :accessible => false,
                   :usage => :urban )
@@ -297,3 +303,146 @@ importer.first_trip_col = 3
 trips = importer.import(data_l2_samedi)
 import_stoptimes l2, data_l2_samedi[65][1], trips
 
+mlog "Importing school lines"
+
+data_scolaires = CSV.read( 'tmp/scolaires_janv2011.csv', :encoding => 'UTF-8' )
+
+check_values data_scolaires, [
+                              # s1a
+                              [ 9, 1, "7:25" ],
+                              [ 35, 1, "7:50" ],
+                              # s1r
+                              [ 9, 5, "12:05" ],
+                              [ 35, 5, "12:32" ],
+                              # s2a
+                              [ 9, 9, "7:27" ],
+                              [ 28, 9, "7:52" ],
+                              # s2r
+                              [ 9, 13, "12:05" ],
+                              [ 28, 13, "12:30" ],
+                              # s3a
+                              [ 43, 1, "12:00" ],
+                              [ 54, 1, "12:18" ],
+                              # s4a
+                              [ 43, 5, "7:25" ],
+                              [ 62, 5, "7:50" ],
+                              # s5a
+                              [ 43, 9, "7:35" ],
+                              [ 59, 9, "7:50" ],
+                              # s5r
+                              [ 43, 13, "12:05" ],
+                              [ 59, 13, "12:20" ]
+                             ]
+
+
+ls = Line.create( :short_name => "S1",
+                  :long_name => "Spécial Colombes / Pasteur / Bon Sauveur / Lavalley",
+                  :short_long_name => "Spécial Colombes / Lavalley",
+                  :fgcolor => '#ffffff',
+                  :bgcolor => '#ff0000',
+                  :src_id => 'SCL',
+                  :accessible => false,
+                  :usage => :special )
+importer = StLoImporter.new stop_registry
+importer.default_calendar = Calendar::WEEKDAY
+importer.first_trip_col = 1
+importer.stops_range = 9..35
+importer.stop_col = 0
+importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 9..35, 2 ]
+trips = importer.import( data_scolaires )
+import_stoptimes ls, "Colombes - Lavalley", trips
+
+importer = StLoImporter.new stop_registry
+importer.default_calendar = Calendar::WEEKDAY
+importer.first_trip_col = 5
+importer.stops_range = 9..35
+importer.stop_col = 4
+importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 9..35, 6 ]
+trips = importer.import( data_scolaires )
+import_stoptimes ls, "Lavalley - Colombes", trips
+
+ls = Line.create( :short_name => "S2",
+                  :long_name => "Spécial Agneaux / Lavalley",
+                  :short_long_name => "Spécial Agneaux / Lavalley",
+                  :fgcolor => '#000000',
+                  :bgcolor => '#99ccff',
+                  :src_id => 'SAL',
+                  :accessible => false,
+                  :usage => :special )
+importer = StLoImporter.new stop_registry
+importer.default_calendar = Calendar::WEEKDAY
+importer.first_trip_col = 9
+importer.stops_range = 9..28
+importer.stop_col = 8
+importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 9..28, 10 ]
+trips = importer.import( data_scolaires )
+import_stoptimes ls, "Demeurance - Lavalley", trips
+
+importer = StLoImporter.new stop_registry
+importer.default_calendar = Calendar::WEEKDAY
+importer.first_trip_col = 13
+importer.stops_range = 9..28
+importer.stop_col = 12
+importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 9..28, 14 ]
+trips = importer.import( data_scolaires )
+import_stoptimes ls, "Lavalley - Demeurance", trips
+
+ls = Line.create( :short_name => "S3",
+                  :long_name => "Spécial Bon Sauveur / Lavalley / St Georges Montcocq",
+                  :short_long_name => "Spécial Bon Sauveur / Lavalley / St Georges Montcocq",
+                  :fgcolor => '#000000',
+                  :bgcolor => '#99cc00',
+                  :src_id => 'SBSSGM',
+                  :accessible => false,
+                  :usage => :special )
+importer = StLoImporter.new stop_registry
+importer.default_calendar = Calendar::WEEKDAY
+importer.first_trip_col = 1
+importer.stops_range = 43..54
+importer.stop_col = 0
+importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 43..54, 2 ]
+trips = importer.import( data_scolaires )
+import_stoptimes ls, "Collège Bechevel - St Georges", trips
+
+ls = Line.create( :short_name => "S4",
+                  :long_name => "Spécial Agneaux / Le Verrier",
+                  :short_long_name => "Spécial Agneaux / Le Verrier",
+                  :fgcolor => '#ffffff',
+                  :bgcolor => '#333399',
+                  :src_id => 'SALV',
+                  :accessible => false,
+                  :usage => :special )
+importer = StLoImporter.new stop_registry
+importer.default_calendar = Calendar::WEEKDAY
+importer.first_trip_col = 5
+importer.stops_range = 43..62
+importer.stop_col = 4
+trips = importer.import( data_scolaires )
+import_stoptimes ls, "Agneaux - Le Verrier", trips
+
+
+ls = Line.create( :short_name => "S5",
+                  :long_name => "Spécial Pasteur / Corot / Curie",
+                  :short_long_name => "Spécial Pasteur / Corot / Curie",
+                  :fgcolor => '#ffffff',
+                  :bgcolor => '#cc99ff',
+                  :src_id => 'SBSSGM',
+                  :accessible => false,
+                  :usage => :special )
+importer = StLoImporter.new stop_registry
+importer.default_calendar = Calendar::WEEKDAY
+importer.first_trip_col = 9
+importer.stops_range = 43..59
+importer.stop_col = 8
+importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 43..59, 10 ]
+trips = importer.import( data_scolaires )
+import_stoptimes ls, "Colombes - Lycée Curie Joliot", trips
+
+importer = StLoImporter.new stop_registry
+importer.default_calendar = Calendar::WEEKDAY
+importer.first_trip_col = 13
+importer.stops_range = 43..59
+importer.stop_col = 12
+importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 43..59, 14 ]
+trips = importer.import( data_scolaires )
+import_stoptimes ls, "Lycée Curie Joliot - Colombes", trips
