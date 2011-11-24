@@ -433,6 +433,17 @@ var History = window.history;
                 'scrollwheel': ! $('#disable_scrollwheel:checked').val()
             });
         });
+
+        var adUnitDiv = document.createElement('div');
+        var adUnitOptions = {
+            format: google.maps.adsense.AdFormat.LEADERBOARD,
+            position: google.maps.ControlPosition.BOTTOM,
+            map: map,
+            visible: true,
+            publisherId: 'pub-2211614128309725'
+        };
+        var adUnit = new google.maps.adsense.AdUnit(adUnitDiv, adUnitOptions);
+
         $.Star.map = map;
         $('#lines .list a').click(onSelectLine);
         if ( $('#line_data').length > 0 ) {
