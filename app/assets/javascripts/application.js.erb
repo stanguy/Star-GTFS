@@ -1,3 +1,12 @@
+//= require jquery
+//= require jquery_ujs
+//= require jquery-ui.min
+//= require_self
+//= require history-min 
+//= require showdown 
+//= require markerwithlabel 
+//= require jquery.velostar 
+//= require jarvis
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
@@ -26,26 +35,26 @@ var History = window.history;
 
     var icons = {
         bus: {
-            green: "/images/bus_green.png",
-            red: "/images/bus_red.png",
-            orange: "/images/bus_orange.png",
-            blue: "/images/bus_blue.png"
+            green: "<%= asset_path "bus_green.png" %>",
+            red: "<%= asset_path "bus_red.png" %>",
+            orange: "<%= asset_path "bus_orange.png" %>",
+            blue: "<%= asset_path "bus_blue.png" %>"
         },
         bus_access: {
-            green: "/images/bus_green_access.png",
-            red: "/images/bus_red_access.png",
-            orange: "/images/bus_orange_access.png",
-            blue: "/images/bus_blue.png"
+            green: "<%= asset_path "bus_green_access.png" %>",
+            red: "<%= asset_path "bus_red_access.png" %>",
+            orange: "<%= asset_path "bus_orange_access.png" %>",
+            blue: "<%= asset_path "bus_blue.png" %>"
         },
         point: {
-            green: "/images/point_green.png",
-            red: "/images/point_red.png",
-            orange: "/images/point_orange.png"          
+            green: "<%= asset_path "point_green.png" %>",
+            red: "<%= asset_path "point_red.png" %>",
+            orange: "<%= asset_path "point_orange.png" %>"          
         },
         point_access: {
-            green: "/images/point_green_access.png",
-            red: "/images/point_red_access.png",
-            orange: "/images/point_orange_access.png"          
+            green: "<%= asset_path "point_green_access.png" %>",
+            red: "<%= asset_path "point_red_access.png" %>",
+            orange: "<%= asset_path "point_orange_access.png" %>"          
         }
     };
     var linesInfo = {
@@ -296,13 +305,13 @@ var History = window.history;
  
       _getClusterOptions: function() {
         return this._clusterOptions = this._clusterOptions || [
-          { icon:       { image:            "/images/quant1.png",
+          { icon:       { image:            "<%= asset_path "quant1.png" %>",
                           iconAnchor:       new google.maps.Point(30, 30) },
             labelClass: 'maptimize_cluster_0'},                     
-          { icon:       { image:            "/images/quant2.png",
+          { icon:       { image:            "<%= asset_path "quant2.png" %>",
                           iconAnchor:       new google.maps.Point(30, 30) },
             labelClass: 'maptimize_cluster_0'},                     
-          { icon:       { image:            "/images/quant3.png",
+          { icon:       { image:            "<%= asset_path "quant3.png" %>",
                           iconAnchor:       new google.maps.Point(30, 30) },
             labelClass: 'maptimize_cluster_0'}
           ];
@@ -584,10 +593,10 @@ var History = window.history;
             var districts = $.veloStar.listDistricts( stations );
             var Colors = [ '#A4DBAC', '#8ED197', '#78C482', '#78C4A2', '#78C4AF', '#8BC1CC',
                            '#7AB8C4', '#88BEDB', '#88AFDB', '#888FDB', '#5E67CC', '#3742B3', '#3742B3'  ];
-            var Images = [ 'cycling0.png', 'cycling33.png', 'cycling66.png', 'cycling100.png' ];
+            var Images = [ "<%= asset_path 'cycling0.png' %>", "<%= asset_path 'cycling33.png' %>", "<%= asset_path 'cycling66.png' %>", "<%= asset_path 'cycling100.png' %>" ];
             var computeImage = function( station ) {
                 var img_idx = Math.round( station.bikesavailable / ( station.bikesavailable + station.slotsavailable ) * ( Images.length - 1 ) );
-                return '/images/' + Images[img_idx];
+                return Images[img_idx];
             };
             $.each( districts, function(k,v) {
                 var nb_stations = 0;

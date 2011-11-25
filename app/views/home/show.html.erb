@@ -31,11 +31,11 @@
       <li><a href="#express">Express</a></li>
       <li><a href="#special">Spéciales</a></li>
       <li><a href="#misc">Et autrement</a></li>
-      <li><a href="#alerts"><img src="/images/perturbation.png" alt="Alertes"></a></li>
+      <li><a href="#alerts"><img src="<%= image_path "perturbation.png" %>" alt="Alertes"></a></li>
       <li><a href="#help">Aide</a></li>
     </ul>
     <span id="ajax-loader" style="display: none;">
-      <img src="/images/ajax-loader.gif">
+      <img src="<%= image_path "ajax-loader.gif" %>">
     </span>
 <% cache('all_lines') do %>
 <% lines = Line.all
@@ -89,13 +89,13 @@
       <div class="grid_6 omega">
         <h2>Signification des icônes</h2>
         <dl>
-          <dt><img src="/images/bus_red.png" /></dt>
+          <dt><img src="<%= image_path "bus_red.png" %>" /></dt>
           <dd>Pas de bus dans les 2 heures à venir, plusieurs lignes desservent cet arrêt;</dd>
-          <dt><img src="/images/bus_green.png" /></dt>
+          <dt><img src="<%= image_path "bus_green.png" %>"/></dt>
           <dd>Au moins un passage de bus dans les 2 heures à venir, plusieurs lignes desservent cet arrêt;</dd>
-          <dt><img src="/images/point_red.png" /></dt>
+          <dt><img src="<%= image_path "point_red.png" %>"/></dt>
           <dd>Pas de bus dans les 2 heures à venir, seule la ligne courante dessert cet arrêt;</dd>
-          <dt><img src="/images/point_green.png" /></dt>
+          <dt><img src="<%= image_path "point_green.png" %>"/></dt>
           <dd>Au moins un passage de bus dans les 2 heures à venir, seule la ligne courante dessert cet arrêt.</dd>
         </dl>
       </div>

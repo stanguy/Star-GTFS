@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-StarGtfs::Application.config.secret_token = 'ebae2966f4a463e0aed19e93bae42b99dde3391d9b15dab008d3da1b679633e30ec8027eb5310c20d271ad7e562e21b3022aa528a82cd3d91214fe1857446e5b'
+StarGtfs::Application.config.secret_token = 'b2f81e6a76bf7451c5dfbce55fa2028dd75b71d84a7b5c9d890b1cf2b184919f8ac97919887d67ac28d5ac8595ccbf11798fbf5caaa2ca0d7d96e30f60faae3b'
