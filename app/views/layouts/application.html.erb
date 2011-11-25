@@ -2,12 +2,9 @@
 <html>
   <head>
     <title><% if @title %><%= @title %>, <% end %>Bus de Rennes en ligne</title>
-    <%# , :media => "screen", :cache => true %>
-    
-    <%= stylesheet_link_tag "application" %>
 
-    <%#= stylesheet_link_tag [ 'reset', '960gs', 'jquery-ui', 'maptimize', 'application' ] %>
-    <%#= stylesheet_link_tag [ 'handheld' ], :media => 'handheld, mobile, only screen and (max-device-width:480px)' %>
+    <%= stylesheet_link_tag "application", :media => "screen" %>
+    <%= stylesheet_link_tag 'handheld', :media => 'handheld, mobile, only screen and (max-device-width:480px)' %>
     <%= csrf_meta_tag %>
     <meta name="viewport" content="width=320" />
     <meta name="viewport" content="initial-scale=1.0" />
