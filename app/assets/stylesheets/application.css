@@ -2,6 +2,7 @@
 *= require reset
 *= require 960gs
 *= require jquery-ui
+*= require maptimize
 *= require_self
 */
 html, html body {
