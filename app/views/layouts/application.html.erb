@@ -25,10 +25,10 @@
     <%= javascript_include_tag "application" %>
     <script>$(document).ready( function() { <%= init_javascripts.join(" ") if init_javascripts %> } );</script>
 
-<% if Rails.env == 'production' %>
     <script type="text/javascript">
 
   var _gaq = _gaq || [];
+<% if Rails.env.production? %>
   _gaq.push(['_setAccount', 'UA-56664-5']);
   _gaq.push(['_trackPageview']);
 
@@ -37,8 +37,7 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-
-</script>
 <% end %>
+</script>
   </body>
 </html>
