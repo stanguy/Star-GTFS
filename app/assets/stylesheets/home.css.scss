@@ -48,6 +48,22 @@
                     a span {
                         display: none;
                     }
+                    img {
+                        width: 21px;
+                        height: 21px;
+                    }
+                }
+                li.selected {
+                    border: 1px solid #500;
+                    padding-top: 3px;
+                    width: 27px;
+                }
+                
+                li.wide img {
+                    width: 31px;
+                }
+                li.wide.selected {
+                    width: 37px;
                 }
             }
         }
