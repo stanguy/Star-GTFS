@@ -112,9 +112,12 @@ var History = window.history;
                             .append( this.times[i].direction ) );
             var ul = $("<ul></ul>");
             for( var j = 0; j < this.times[i].times.length; ++j ) {
+                var t_link = $('<a href="javascript:return false;"></a>').append( this.times[i].times[j].t )
+                    .data('id',this.times[i].times[j].tid )
+                    .addClass('t')
+                    .click( onLineStopTimeFollowup );
                 ul.append( 
-                    $("<li></li>").append( this.times[i].times[j].t )
-                                  .append( $('<span> &rarr;</span>').data('id',this.times[i].times[j].tid ).click( onLineStopTimeFollowup ) )   
+                    $("<li></li>").append( t_link )
                 );
             }
             var hellip = $('<a>&hellip;</a>' ).attr('href', this.times[i].schedule_url ).attr('title',"Horaires complets").addClass('dir_schedule');
