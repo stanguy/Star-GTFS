@@ -523,7 +523,7 @@ var History = window.history;
             }
             History.replaceState( state, '', currentLineUrl );
             window._gaq.push(['_trackPageview', currentLineUrl ]);
-            onLineGet( line_data );
+            onLineGet( { stops: line_data, paths: [] } );
         }
         $('input#find_stops').change( onFindStops );        
 //        loadIssues();
