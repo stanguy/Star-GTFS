@@ -72,7 +72,7 @@ class HomeController < ApplicationController
       stop_info
     end
     if request.xhr?
-      render :json => data
+      render :json => { stops: data, paths: l.polylines.collect(&:path), :colors => { :fg => l.fgcolor, :bg => l.bgcolor } }, :callback => params[:callback]
     else
       @line_data = data
       @line_id = l.id
@@ -139,6 +139,9 @@ class HomeController < ApplicationController
     end
   end
 
+  def alt
+  end
+
   private
   def check_old_ids
     if params[:line_id].nil? && params[:stop_id].match(/^[0-9]*$/)
@@ -170,6 +173,4 @@ class HomeController < ApplicationController
     end
   end
       
-      
-
 end

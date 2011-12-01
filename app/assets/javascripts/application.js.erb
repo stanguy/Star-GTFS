@@ -22,6 +22,7 @@ var History = window.history;
     var map;
     var maptimizeController = null;
     var markers = [];
+    var lines = [];
     var infowindow = null;
     var current_marker = null;
     var selected_stop_id = null;
@@ -156,11 +157,24 @@ var History = window.history;
         $.each( markers, function( idx, marker ) {
             marker.setMap( null );
         });
+        $.each( lines, function( idx, line ) {
+            line.setMap( null );
+        });
         markers = [];
+        lines = [];
         
         var bounds = null;
         var selected_marker = null;
-        $.each( d, function( idx, point ) {
+        $.each( d.paths, function( idx, path ) {
+            var path = new google.maps.Polyline({
+                map: map,
+                path: google.maps.geometry.encoding.decodePath( path ),
+                strokeColor: '#' + d.colors.bg,
+                clickable: false
+            });
+            lines.push( path );
+        });
+        $.each( d.stops, function( idx, point ) {
             var myLatlng = new google.maps.LatLng( point.lat, point.lon );
             var icon;
             var icon_type = ( point.others != undefined && point.others.length > 0 ) ? "bus" : "point";

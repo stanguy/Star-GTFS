@@ -7,6 +7,7 @@ gem 'rails', '~>3.1.0'
 
 gem 'fastercsv', :platforms => :ruby_18
 gem 'yajl-ruby'
+gem 'nokogiri'
 
 gem 'pg'
 gem 'spatial_adapter', :git => "https://github.com/Empact/spatial_adapter.git"
@@ -28,6 +29,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'webrat'
   gem 'factory_girl_rails'
+  gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
 end
 
 gem "mongrel", :git => "http://github.com/dynamix/mongrel.git"

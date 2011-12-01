@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/thedarkone/rails-dev-boost.git
+  revision: c648d229fa981c5f9bcbd8ac6baa520582c248c6
+  specs:
+    rails-dev-boost (0.1.1)
+
+GIT
   remote: http://github.com/dynamix/mongrel.git
   revision: f3e69eb8e6fb03e10974830a699a1470b1ebe76a
   specs:
@@ -170,8 +176,10 @@ DEPENDENCIES
   inherited_resources
   jquery-rails
   mongrel!
+  nokogiri
   pg
   rails (~> 3.1.0)
+  rails-dev-boost!
   rspec-rails
   sass-rails (~> 3.1.0)
   spatial_adapter!
