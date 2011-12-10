@@ -3,6 +3,9 @@ require 'csv'
 require 'st_lo_importer'
 require 'stop_registry'
 
+require 'gmap_polyline_encoder'
+require 'point'
+
 def mlog msg
   puts Time.now.to_s(:db) + " " + msg
 end
@@ -446,3 +449,113 @@ importer.stop_col = 12
 importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 43..59, 14 ]
 trips = importer.import( data_scolaires )
 import_stoptimes ls, "Lycée Curie Joliot - Colombes", trips
+
+mlog "Importing KML file"
+
+xml = Nokogiri::XML( File.open( File.join( Rails.root, "tmp", "doc.kml" ) ) )
+xml.remove_namespaces!
+
+stops = []
+missings = []
+
+xml.xpath("//Folder/Placemark").each do |elem|
+  point_coord_elem = elem.at_xpath( "Point/coordinates" )
+  line_coord_elem = elem.at_xpath( "LineString/coordinates" )
+  if not point_coord_elem.nil?
+    coords = point_coord_elem.text.split(/,/)
+    name = elem.xpath( "name" ).text
+    if match = name.match( /^([0-9A-Z]{3}\d{2}[AR]) \(([^)]*)\)?$/ )
+      src_id = match[1]
+      name = match[2].strip
+    elsif match = name.match( /^(.*) \(([A-Z]{3}\d{2}[AR])\)/ )
+      src_id = match[2]
+      name = match[1].strip
+    else
+      puts "unable to understand #{name}"
+    end
+    stop = Stop.find_by_name name
+    if stop.nil?
+      if match = name.match( /^(?:[A-Z]|le|la|les) (.*)$/i )
+        qname = match[1].downcase
+      else
+        qname = name.downcase
+      end
+      case qname 
+      when "buotl" 
+        qname = "buot"
+      when "ferronniere"
+        qname = "ferroniere"
+      when "madelaine"
+        qname = "madeleine"
+      end
+      stop = Stop.where( "ts_rank_cd( '{0.1, 0.2, 0.4, 1.0}', to_tsvector('french',unaccent_string(name)), plainto_tsquery( 'french', ? ) ) > 0", qname ).first
+    end
+    if stop.nil?
+      missings << name
+    else
+      stop.stop_aliases.create({ :src_id => src_id,
+                                 :src_code => src_id,
+                                 :src_name => name,
+                                 :src_lat => coords[1],
+                                 :src_lon => coords[0]
+                               })
+      stops << stop
+    end
+  elsif not line_coord_elem.nil?
+    line = Line.find_by_short_name elem.at_xpath("name").text.to_i.to_s
+    data = []
+    line_coord_elem.text.strip.split( / / ).each do |coord_str|
+      coord = coord_str.split( /,/ )
+      data.push( [ coord[1].to_f, coord[0].to_f ] )
+    end
+    encoder = GMapPolylineEncoder.new( :reduce => true, :zoomlevel => 13, :escape => false )
+    path = encoder.encode( data )
+#    puts path.to_s
+    line.polylines.create( :path => path[:points] )
+  end
+end
+
+#puts stops.uniq.count #each do |s| puts s.inspect end
+#puts missings.uniq.count
+#puts missings.uniq
+
+mlog "Computing positions and bearings"
+
+stops.uniq.each do |stop|
+  next if stop.stop_aliases.count == 0
+  points = stop.stop_aliases.where( 'src_lat is not null' ).collect do |sa|
+    Point.from_lon_lat( sa.src_lon, sa.src_lat, 4326 )
+  end
+  collection = MultiPoint.from_points( points, 4326 )
+  position = collection.envelope.center
+  position.srid = 4326
+  stop.geom = position
+  stop.lat = position.lat
+  stop.lon = position.lon
+  stop.save
+end
+
+
+ActiveRecord::Base.transaction do
+  Trip.all.each do |trip|
+    next if trip.stop_times.empty?
+    start = trip.stop_times.order(:arrival).first.stop
+    stop = trip.stop_times.order(:arrival).last.stop
+    next if start.geom.nil? or stop.geom.nil?
+    bearing = start.geom.bearing( stop.geom )
+    next if bearing.nil?
+    base_dir = bearing > 0 ? 'E' : 'W'
+    dirs = [ 'N', 'N' + base_dir, 'N' + base_dir, base_dir, base_dir, 'S' + base_dir, 'S' + base_dir, 'S' ] 
+    trip.bearing = dirs[ (bearing.abs * 8 / 180).floor ]
+    trip.save
+  end
+end
+
+
+ActiveRecord::Base.transaction do
+  Stop.all.each do |stop|
+    stop.line_ids_cache = stop.lines.collect(&:id).join(",")
+    stop.save
+  end
+end
+

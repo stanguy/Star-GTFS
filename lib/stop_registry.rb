@@ -5,7 +5,7 @@ class StopRegistry
   end
 
   def clean_up str
-    str.gsub( /[\*\/]/, '' )
+    str.strip.gsub( /[\*\/]/, '' )
   end
       
       
