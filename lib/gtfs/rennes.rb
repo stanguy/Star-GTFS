@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 
 require 'point'
 require 'yajl/http_stream'
 require 'opendata_api'
+require 'gmap_polyline_encoder'
+
 
 module Gtfs
   class Rennes < Base
@@ -300,6 +303,20 @@ SQL
       end
       mlog "Adding index for stop_times/trips"
       ActiveRecord::Migration.add_index( :stop_times, [ :trip_id ] )
+
+      check_multiple_trips
+      compute_bearings
+
+      mlog "Adding other indexes"
+      ActiveRecord::Migration.add_index( :stop_times, [ :line_id, :calendar, :arrival ] )
+      ActiveRecord::Migration.add_index( :lines, [ :short_name ] )
+      ActiveRecord::Migration.add_index( :stops, [ :slug ] )
+
+      import_kml
+      
+    end
+
+    def check_multiple_trips
       mlog "This is gonna' be ugly"
       Line.all.each do |line|
         keytrips = {}
@@ -331,7 +348,8 @@ SQL
         end
         mlog "End of purge for #{line.long_name}"
       end
-
+    end
+    def compute_bearings
       mlog "Computing bearings"
       ActiveRecord::Base.transaction do
         Trip.all.each do |trip|
@@ -345,11 +363,33 @@ SQL
           trip.save
         end
       end
-      mlog "Adding other indexes"
-      ActiveRecord::Migration.add_index( :stop_times, [ :line_id, :calendar, :arrival ] )
-      ActiveRecord::Migration.add_index( :lines, [ :short_name ] )
-      ActiveRecord::Migration.add_index( :stops, [ :slug ] )
-      
+    end
+    def import_kml
+      mlog "Importing KML"
+      xml = Nokogiri::XML( File.open( File.join( Rails.root, "tmp", "reseau_star.kml" ) ) )
+      xml.remove_namespaces!
+
+      xml.xpath( "//Folder[@id='itin�raires']/Placemark" ).each do |elem|
+        #  puts "id " + elem["id"]
+        line_short = elem.at_xpath("ExtendedData//SimpleData[@name='li_num']").text
+        #  next unless line_short == "8"
+        line = Line.find_by_short_name line_short
+        next unless line
+        #  next unless line.short_name == "8"
+        elem.xpath("*//LineString/coordinates").each do |celem|
+          coords_str = celem.text
+          data = []
+          coords_str.split( / / ).each do |coord_str|
+            coord = coord_str.split( /,/ )
+            data.push( [ coord[1].to_f, coord[0].to_f ] )
+          end
+#          puts "points: " + data.count.to_s
+          encoder = GMapPolylineEncoder.new( :reduce => true, :zoomlevel => 13, :escape => false )
+          path = encoder.encode( data )
+          #    puts path.to_s
+          line.polylines.create( :path => path[:points] )
+        end
+      end
     end
   end
 end
