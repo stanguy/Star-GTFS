@@ -6,10 +6,6 @@
 
 #navigator {
     @include map-control;
-    position: absolute;
-    min-height: 90px;
-    left: 100px;
-    right: 150px;
     overflow: hidden;
     #lines {
         

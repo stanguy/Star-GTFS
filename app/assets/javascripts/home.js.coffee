@@ -1,6 +1,11 @@
 
 selected_marker = null
 
+linesInfo = {
+        baseUrl: '',
+        icons: {}
+}
+
 class Singleton
   @get: -> @instance ?= new @
 
@@ -54,12 +59,11 @@ class Marker
                 a.bind 'click', { line: name, stop: @stop_id }, => this.onOtherLineSelect()
 #                var marker = this;
 #                a.bind( 'click', { line: name, stop: this.stop_id }, onOtherLineSelect );
-#                if ( linesInfo.icons[name] != undefined ) {
-#                    a.append( $('<img>').attr( 'src', linesInfo.icons[name] ) );
-#                    a.attr('title', name );
-#                } else {
-                a.text( line );
-#                }
+                if linesInfo.icons[line]
+                    a.append( $('<img>').attr( 'src', linesInfo.icons[line] ) )
+                    a.attr('title', line )
+                else
+                    a.text( line )
                 li.append( a );
                 ul.append( li );
             content.append( ul );
@@ -131,6 +135,7 @@ class MapBus
                 },
                 panControl: false
         })
+        @map.controls[google.maps.ControlPosition.TOP_LEFT].push $('#navigator')[0]
         InfoWindow.get().setMap @map
         $('#lines .list a').click (e) => this.onSelectLine(e)
         $('#lines').tabs({event: 'mouseover',disabled:[5]}).css('visibility','visible');
@@ -156,9 +161,18 @@ class MapBus
             new Marker( @map, point )
 
 
+loadLines= ->
+        for element in $('#lines .list a')
+            name = $(element).data('short');
+            img = $(element).children('img');
+            if ( img.length > 0 )
+                linesInfo.icons[name] = img.attr('src');
+
+
 $.dthg = $.dthg || {}
 $.dthg.Bus = {
         init: ->
+            loadLines()
             new MapBus()
     }
 
