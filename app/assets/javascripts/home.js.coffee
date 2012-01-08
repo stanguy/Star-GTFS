@@ -157,6 +157,10 @@ class MapBus
     onStopDirScheduleClick: (e) ->
         e.preventDefault()
         url = $(e.currentTarget).attr( 'href' )
+        if History.state.scheduleUrl
+            History.replaceState( { scheduleUrl: url }, '', url )
+        else
+            History.pushState( { scheduleUrl: url }, '', url );
         $.fancybox({
             autoDimensions: false
             width: 990
@@ -164,7 +168,7 @@ class MapBus
             type: 'ajax'
             href: url
             onComplete: -> $('.accordion').accordion()
-            onCleanup: ->
+            onClosed: -> History.back()
         })
         false
     onSelectLine: (e) ->
