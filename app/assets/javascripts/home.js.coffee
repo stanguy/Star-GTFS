@@ -124,6 +124,7 @@ class Marker
 class MapBus
     constructor: ->
         @markers = []
+        @lines = []
         @alerts = {}
         @selected_stop_id = null
         $("button").button()
@@ -199,10 +200,18 @@ class MapBus
         return false
     onLineGet: (d,s,x) ->
         marker.setMap( null ) for marker in @markers
+        line.setMap( null ) for line in @lines
         bounds = null
         selected_marker = null
-        @markers = for point in d
+        @markers = for point in d.stops
             new Marker( @map, point )
+        @lines = for line in d.paths
+            new google.maps.Polyline({
+                map: @map,
+                path: google.maps.geometry.encoding.decodePath( line ),
+                strokeColor: '#' + d.colors.bg,
+                clickable: false
+            })
     loadLineData: ->
         line_data = []
         currentLineUrl = $('#line_data').data('line-url')
