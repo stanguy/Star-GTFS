@@ -2,6 +2,7 @@
 
 selected_marker = null
 History = window.history
+currentLineUrl = null
 
 linesInfo = {
         baseUrl: '',
@@ -147,6 +148,7 @@ class MapBus
         $('body').on 'click', 'a.dir_schedule, .schedule_container .other_lines a', (e) => this.onStopDirScheduleClick(e)
         if $('#line_data')
             this.loadLineData()
+        window.onpopstate = (e) => this.historyCallback(e)
     onFollowupLine: (e) ->
         e.preventDefault()
         url = $('#lines .list li.selected a').attr('href');
@@ -157,6 +159,8 @@ class MapBus
     onStopDirScheduleClick: (e) ->
         e.preventDefault()
         url = $(e.currentTarget).attr( 'href' )
+        this.loadSchedule url
+    loadSchedule: (url) ->
         if History.state.scheduleUrl
             History.replaceState( { scheduleUrl: url }, '', url )
         else
@@ -171,8 +175,17 @@ class MapBus
             onClosed: -> History.back()
         })
         false
+    historyCallback: (e) ->
+        if e.state
+            if e.state.lineUrl
+                $.fancybox.close()
+                if( e.state.lineUrl != currentLineUrl )
+                    $('a[href="' + e.state.lineUrl + '"]').click()
+            else if e.state.scheduleUrl
+                this.loadSchedule e.state.scheduleUrl
     onSelectLine: (e) ->
         e.preventDefault()
+        currentLineUrl = $(e.delegateTarget).attr('href');
         selected_item = $(e.delegateTarget)
         $('#lines .list li.selected').removeClass('selected');
         selected_item.closest('li').addClass('selected');
