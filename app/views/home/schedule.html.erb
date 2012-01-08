@@ -1,6 +1,6 @@
-<div class="schedule_container grid_12">
+<div class="schedule_container grid_12 alpha omega container_12">
 <h2><%= @title %></h2>
-<a href="/" class="back_to_map">Retour à la carte</a>
+<% unless request.xhr? %><a href="/" class="back_to_map">Retour à la carte</a><% end %>
 <%= div_clear %>
 <% if @other_lines && @other_lines.length > 0 %>
     <div class="other_lines grid_6 push_3">

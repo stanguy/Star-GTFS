@@ -1,0 +1,93 @@
+.schedule_container {
+    div.dir_select {
+    float: left;
+    margin: 10px;
+    }
+    h2 {
+        float: left;
+        margin: 10px
+    }
+    .back_to_map {
+        float: right;
+        margin: 10px;
+    }
+    .accordion {
+        h3 {
+            padding-left: 30px;
+            color: #000;
+            min-height: 30px;
+            img {
+                margin-right: 8px;
+                float: left;
+                margin-top: 5px;
+                clear: left;
+            }
+        }
+        h3.ui-state-hover {
+            background-image: none;
+            background-color: #ddd;
+            border-color: #999;
+        }
+    }
+    ul.other_lines {
+        padding: 0 0 0 5px;
+        margin: 0;
+        list-style: none;
+        li {
+            padding: 2px 10px;
+            float: left;
+            border-right: 1px solid #ddd;
+            height: 21px; line-height: 21px;
+            width: 30px;
+            font-size: 10px;
+        }
+        li:last-child {
+            border-right: none;
+        }
+    }
+    div.other_lines {
+        border: 1px solid #ddd;
+        background-color: #eee;
+        margin-top: 10px; margin-bottom: 10px;
+        padding-bottom: 10px;
+    
+        h3 {
+            text-align: center;
+            margin: 5px 0;
+        }
+    }
+    table.schedule {
+        border-collapse:collapse;
+        margin: 5px auto;
+        th,  td {
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            padding: 6px 10px 5px 5px;
+            font-size: 12px;
+            line-height: 1.1;
+        }
+        td.current {
+            background-color: #fee;
+        }
+        td:last-child, th:last-child {
+            border-right: none;
+        }
+        tr.head th {
+            border-top: none;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        td span.mins {
+            float: left;
+            text-align: right;
+            width: 15px;
+            margin: 0 4px 0 5px;
+            font-family: Courier, Courier new;
+        }
+        div.headsign {
+            background-color: white;
+        }
+    }
+}

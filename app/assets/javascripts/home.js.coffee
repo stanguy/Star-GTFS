@@ -1,5 +1,7 @@
+#= require fancybox
 
 selected_marker = null
+History = window.history
 
 linesInfo = {
         baseUrl: '',
@@ -12,13 +14,13 @@ class Singleton
 class InfoWindow extends Singleton
     setMap: (map) ->
         @map = map
-        @div = $('<div></div>')
-        @div.attr 'id', 'infowindow'
-        $(document.body).append @div
-        @map.controls[google.maps.ControlPosition.RIGHT_CENTER].push @div[0]
+        @container_div = $('<div></div>')
+        @container_div.attr 'id', 'infowindow'
+        $(document.body).append @container_div
+        @map.controls[google.maps.ControlPosition.RIGHT_CENTER].push @container_div[0]
     setContent: (content) ->
-        @div.empty()
-        @div.append content
+        @container_div.empty()
+        @container_div.append content
 
 class Marker
     deselect: ->
@@ -37,7 +39,7 @@ class Marker
                             .append( trip.direction ) );
             ul = $("<ul></ul>");
             for time in trip.times
-                t_link = $('<a href="javascript:false;"></a>').append( time.t )
+                t_link = $('<a></a>').append( time.t )
                     .data('id', time.tid )
                     .addClass('t')
 #                    .click( onLineStopTimeFollowup );
@@ -99,7 +101,7 @@ class Marker
         @map = map
         myLatLng = new google.maps.LatLng( point.lat, point.lon )
         icon = this.determineIcon()
-        if point.trip_time != undefined
+        if point.trip_time
             @marker = new MarkerWithLabel( {
                 position: myLatLng,
                 map: @map,
@@ -138,15 +140,40 @@ class MapBus
         @map.controls[google.maps.ControlPosition.TOP_LEFT].push $('#navigator')[0]
         InfoWindow.get().setMap @map
         $('#lines .list a').click (e) => this.onSelectLine(e)
-        $('#lines').tabs({event: 'mouseover',disabled:[5]}).css('visibility','visible');
+        $('#lines').tabs({event: 'mouseover'}).css('visibility','visible');
         $(elem).attr( 'title': $(elem).children('span').text() ) for elem in $('#lines .list a')
-
+        $('#navigator').show()
+        $('body').on 'click', ".time_display a.t", (e) => this.onFollowupLine(e)
+        $('body').on 'click', 'a.dir_schedule, .schedule_container .other_lines a', (e) => this.onStopDirScheduleClick(e)
+        if $('#line_data')
+            this.loadLineData()
+    onFollowupLine: (e) ->
+        e.preventDefault()
+        url = $('#lines .list li.selected a').attr('href');
+        $.get( url, { trip_id: $(e.target).data('id') },
+                (d,s,x) => this.onLineGet( d,s,x ),
+                "json" )
+        false
+    onStopDirScheduleClick: (e) ->
+        e.preventDefault()
+        url = $(e.currentTarget).attr( 'href' )
+        $.fancybox({
+            autoDimensions: false
+            width: 990
+            height: '90%'
+            type: 'ajax'
+            href: url
+            onComplete: -> $('.accordion').accordion()
+            onCleanup: ->
+        })
+        false
     onSelectLine: (e) ->
         e.preventDefault()
         selected_item = $(e.delegateTarget)
         $('#lines .list li.selected').removeClass('selected');
         selected_item.closest('li').addClass('selected');
         line_url = selected_item.attr 'href'
+        History.pushState( { lineUrl: line_url }, null, line_url );
         $.get( line_url , {},
             (d,s,x) => this.onLineGet(d,s,x),
             "json" )
@@ -159,6 +186,48 @@ class MapBus
         selected_marker = null
         @markers = for point in d
             new Marker( @map, point )
+    loadLineData: ->
+        line_data = []
+        currentLineUrl = $('#line_data').data('line-url')
+        for child in $('#line_data').children('li')
+            stop = $(child).find('h2 a')
+            if ( stop.data('selected') )
+                selected_stop_id = stop.data('id')
+                initial_loading_sentinel = true
+            others = stop.data('others') + ''
+            if ( others != '' )
+                others = others.split(',')
+            else
+                others = []
+            times = [];
+            for subchild in $(child).children('div')
+                direction = $(subchild).find('h3 a')
+                stop_times = [];
+                for subsubchild in $(subchild).children('span')
+                    stop_times.push({ t: $(subsubchild).text(), tid: $(subsubchild).data('tid')});
+                times.push({
+                        direction: direction.text(),
+                        bearing: direction.data('bearing'),
+                        schedule_url: direction.attr('href'),
+                        times: stop_times
+                    })
+            line_data.push({
+                name: stop.text(),
+                id: stop.data('id'),
+                lat: stop.data('lat'),
+                lon: stop.data('lon'),
+                schedule_url: stop.attr('href'),
+                others: others,
+                accessible: stop.data('accessible'),
+                times: times
+            })
+        state = {
+            lineUrl: currentLineUrl
+        }
+        if ( selected_stop_id != undefined )
+            $.merge( state, { stop: selected_stop_id } );
+        History.replaceState( state, '', currentLineUrl );
+        this.onLineGet( line_data );
 
 
 loadLines= ->
