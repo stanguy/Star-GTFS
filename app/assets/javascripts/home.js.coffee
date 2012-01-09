@@ -4,6 +4,8 @@ History = window.history
 
 selectedMarker = null
 currentLineUrl = null
+mapBus = null
+initialLoadingSentinel = false;
 
 linesInfo = {
         baseUrl: '',
@@ -31,8 +33,7 @@ class Marker
         if selectedMarker?
             selectedMarker.deselect()
         if ( ! @times? ) || @times.length == 0
-            # do something about schedule
-            console.log "Help my schedule"
+            mapBus.loadSchedule @schedule_url
             return
         @marker.setIcon this.determineIcon true
         selectedMarker = this
@@ -77,6 +78,9 @@ class Marker
             content.append( ul );
         content.append( $('<span></span>').addClass('clear') );
         InfoWindow.get().setContent content
+        unless initialLoadingSentinel
+            History.pushState( { lineUrl: currentLineUrl, stop: @stop_id }, '',
+                               currentLineUrl + '/at/' + @stop_id )
 
     setMap: ( map ) ->
         @marker.setMap( map )
@@ -172,7 +176,7 @@ class MapBus
         url = $(e.currentTarget).attr( 'href' )
         this.loadSchedule url
     loadSchedule: (url) ->
-        if History.state.scheduleUrl
+        if History.state['scheduleUrl']?
             History.replaceState( { scheduleUrl: url }, '', url )
         else
             History.pushState( { scheduleUrl: url }, '', url );
@@ -228,7 +232,7 @@ class MapBus
             stop = $(child).find('h2 a')
             if ( stop.data('selected') )
                 selected_stop_id = stop.data('id')
-                initial_loading_sentinel = true
+                initialLoadingSentinel = true
             others = stop.data('others') + ''
             if ( others != '' )
                 others = others.split(',')
@@ -280,6 +284,6 @@ $.dthg = $.dthg || {}
 $.dthg.Bus = {
         init: ->
             loadLines()
-            new MapBus()
+            mapBus = new MapBus()
     }
 
