@@ -1,7 +1,8 @@
 #= require fancybox
 
-selected_marker = null
 History = window.history
+
+selectedMarker = null
 currentLineUrl = null
 
 linesInfo = {
@@ -27,10 +28,14 @@ class Marker
     deselect: ->
         @marker.setIcon this.determineIcon()
     onClick: ->
-        if selected_marker != null
-            selected_marker.deselect()
+        if selectedMarker?
+            selectedMarker.deselect()
+        if ( ! @times? ) || @times.length == 0
+            # do something about schedule
+            console.log "Help my schedule"
+            return
         @marker.setIcon this.determineIcon true
-        selected_marker = this
+        selectedMarker = this
         content = $("<div></div>").append(
             $("<h2></h2>").append( @name )
         ).addClass( 'time_display' );
@@ -53,7 +58,7 @@ class Marker
             content.append( ul )
                    .append( $('<div></div>').addClass('clear') );
         content.append( $('<div></div>').addClass('clear'));
-        if @others
+        if @others? and @others.length > 0
             content.append( $('<h2>Autres lignes</h2>') );
             ul = $('<ul></ul>').addClass("lines");
             for line in @others
@@ -76,7 +81,7 @@ class Marker
     setMap: ( map ) ->
         @marker.setMap( map )
     determineIcon: ( hl= false )->
-        if @others != undefined && @others.length > 0
+        if @others? && @others.length > 0
             icon_type = "bus"
         else
             icon_type = "point";
@@ -86,7 +91,7 @@ class Marker
             basemap = $.dthg.Assets.icons.hl
         else
             basemap = $.dthg.Assets.icons
-        if @times != undefined && @times.length > 0
+        if @times? && @times.length > 0
             icon = basemap[icon_type].green;
         else
             icon = basemap[icon_type].red;
@@ -119,6 +124,8 @@ class Marker
                 title: point.name,
                 icon: icon
             })
+        if selectedMarker? and selectedMarker.stop_id == @stop_id
+            this.onClick()
         google.maps.event.addListener @marker, 'click', => this.onClick()
 
 class MapBus
@@ -126,7 +133,6 @@ class MapBus
         @markers = []
         @lines = []
         @alerts = {}
-        @selected_stop_id = null
         $("button").button()
         $("button.alert").button("disable")
         @map = new google.maps.Map($('#map')[0], {
@@ -206,7 +212,6 @@ class MapBus
         marker.setMap( null ) for marker in @markers
         line.setMap( null ) for line in @lines
         bounds = null
-        selected_marker = null
         @markers = for point in d.stops
             new Marker( @map, point )
         @lines = for line in d.paths
