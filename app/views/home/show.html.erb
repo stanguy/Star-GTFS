@@ -22,9 +22,9 @@
   </ul>
 <% end %>
   <div id="navigator">
-    <div id="city_info">
-      Rennes
-    </div>
+    <h1>
+      Bus de <span>Rennes</span> en ligne
+    </h1>
     <div id="lines">
       <div id="handheld_startmap"><h1>Horaires et plans du réseau de bus STAR de Rennes Métropole</h1>
         <a href="#">Cliquer ici pour activer la carte (non optimisé pour votre affichage)</a></div>
@@ -60,7 +60,7 @@
       <%= div_clear %>
     </div>
     <div id="other_actions">
-      <button>Aide</button><br />
+      <button class="help">Aide</button><br />
       <button class="alert"><%= image_tag "perturbation.png" %></button>
     </div>
   </div>
@@ -68,5 +68,35 @@
   </div>
 
   <div id="map"> </div>
+
+  <div style="display: none">
+    <div id="help" class="container_12">
+      <div class="grid_6 alpha">
+        <h2>Fonctionnement de la cartographie</h2>
+        <p>La vu cartographique permets d'afficher les arrêts des différentes lignes du réseau STAR. 
+          S'ils sont disponibles, cliquer sur l'icône d'un arrêt permet d'afficher les passages à venir. 
+          À partir de là, il est possible soit d'afficher les horaires complets, soit d'éventuellement
+          consulter les horaires des correspondances à cet arrêt.</p>
+        <h2>Source de données</h2>
+        <p>Les horaires indiqués sont théoriques et fournis par Keolis Rennes / Rennes Métropole. Un traitement
+          automatique étant appliqué à ces données, merci de bien vouloir <a href="mailto:maps@dthg.net">contacter
+            l'auteur</a> en cas d'erreur ou d'incohérence.</p>
+        <p>Ce service n'est pas affilié au STAR, Keolis Rennes ou Rennes Métropole.</p>
+      </div>
+      <div class="grid_6 omega">
+        <h2>Signification des icônes</h2>
+        <dl>
+          <dt><img src="<%= image_path "bus_red.png" %>" /></dt>
+          <dd>Pas de bus dans les 2 heures à venir, plusieurs lignes desservent cet arrêt;</dd>
+          <dt><img src="<%= image_path "bus_green.png" %>"/></dt>
+          <dd>Au moins un passage de bus dans les 2 heures à venir, plusieurs lignes desservent cet arrêt;</dd>
+          <dt><img src="<%= image_path "point_red.png" %>"/></dt>
+          <dd>Pas de bus dans les 2 heures à venir, seule la ligne courante dessert cet arrêt;</dd>
+          <dt><img src="<%= image_path "point_green.png" %>"/></dt>
+          <dd>Au moins un passage de bus dans les 2 heures à venir, seule la ligne courante dessert cet arrêt.</dd>
+        </dl>
+      </div>
+      <%= div_clear %>
+    </div>
+  </div>
   <% init_javascript "$.dthg.Bus.init();" %>
-  <%# init_javascript "$.Star.Bikes.init();" %>

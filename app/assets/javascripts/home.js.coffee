@@ -139,6 +139,7 @@ class MapBus
         @alerts = {}
         $("button").button()
         $("button.alert").button("disable")
+        $("button.help").click => this.onHelp()
         @map = new google.maps.Map($('#map')[0], {
                 'scrollwheel': ! $('#disable_scrollwheel:checked').val(),
                 'zoom': 12,
@@ -164,6 +165,17 @@ class MapBus
         if $('#line_data')
             this.loadLineData()
         window.onpopstate = (e) => this.historyCallback(e)
+    onHelp: ->
+        $.fancybox({
+            autoDimensions: false
+            width: 990
+            height: '90%'
+            type: 'inline'
+            href: "#help"
+            onComplete: -> $('.accordion').accordion()
+            onClosed: -> History.back()
+        })
+
     onFollowupLine: (e) ->
         e.preventDefault()
         url = $('#lines .list li.selected a').attr('href');
