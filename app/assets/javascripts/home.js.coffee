@@ -59,7 +59,7 @@ class Marker
             for line in @others
                 li = $('<li></li>' )
                 a = $('<a></a>').attr('href', '/line/' + line + '/at/' + @stop_id )
-                a.bind 'click', { line: name, stop: @stop_id }, => this.onOtherLineSelect()
+#                a.bind 'click', { line: name, stop: @stop_id }, => this.onOtherLineSelect()
 #                var marker = this;
 #                a.bind( 'click', { line: name, stop: this.stop_id }, onOtherLineSelect );
                 if linesInfo.icons[line]
@@ -147,6 +147,10 @@ class MapBus
         $('#navigator').show()
         $('body').on 'click', ".time_display a.t", (e) => this.onFollowupLine(e)
         $('body').on 'click', 'a.dir_schedule, .schedule_container .other_lines a', (e) => this.onStopDirScheduleClick(e)
+        $('body').on 'click', '.time_display .lines a', (e) =>
+            e.preventDefault()
+            $('#lines .list li a[data-short="' + $(e.currentTarget).attr('title') + '"]').click()
+            false
         if $('#line_data')
             this.loadLineData()
         window.onpopstate = (e) => this.historyCallback(e)
@@ -253,7 +257,9 @@ class MapBus
         if ( selected_stop_id != undefined )
             $.merge( state, { stop: selected_stop_id } );
         History.replaceState( state, '', currentLineUrl );
-        this.onLineGet( line_data );
+        this.onLineGet( {
+            stops: line_data
+        })
 
 
 loadLines= ->
