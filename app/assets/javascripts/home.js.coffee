@@ -259,6 +259,7 @@ class MapBus
         History.replaceState( state, '', currentLineUrl );
         this.onLineGet( {
             stops: line_data
+            paths: []
         })
 
 
