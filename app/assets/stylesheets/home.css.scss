@@ -172,12 +172,19 @@ html, html body {
     padding: 0;
 }
 
+@mixin displayed-text {
+    font-family: 'Arvo', serif;
+    font-size: 14px;
+ }
+
 #help {
     h2 {
         margin: 15px 0;
     }
     p {
-        margin: 10px 5px;
+        margin: 10px 25px;
+        line-height: 1.4;
+        @include displayed-text;
     }
     dl {
         width: 100%;
@@ -192,6 +199,7 @@ html, html body {
         }
         dd {
             width: 85%;
+            @include displayed-text;
         }
     }
 }
