@@ -148,8 +148,7 @@ class MapBus
         @markers = []
         @lines = []
         @alerts = {}
-        $("button").button()
-        $("button.alert").button("disable")
+        $("button.help").button( icons: { primary: 'ui-icon-help' } )
         $("button.help").click => this.onHelp()
         $("#navigator h1").click => this.onAbout()
         @map = new google.maps.Map($('#map')[0], {
@@ -236,7 +235,6 @@ class MapBus
             (d,s,x) => this.onLineGet(d,s,x),
             "json" )
         short = selected_item.data('short')
-        $("button.alert").button("enable") if @alerts[short]
         return false
     onLineGet: (d,s,x) ->
         marker.setMap( null ) for marker in @markers
