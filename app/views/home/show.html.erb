@@ -26,8 +26,6 @@
       Bus de <span>Rennes</span> en ligne
     </h1>
     <div id="lines">
-      <div id="handheld_startmap"><h1>Horaires et plans du réseau de bus STAR de Rennes Métropole</h1>
-        <a href="#">Cliquer ici pour activer la carte (non optimisé pour votre affichage)</a></div>
       <ul>
         <li><a href="#urban">Lignes urbaines</a></li>
         <li><a href="#suburban">Suburbaines</a></li>
@@ -102,6 +100,16 @@
         </dl>
       </div>
       <%= div_clear %>
+    </div>
+    <div id="about">
+      <p>Cette application a, en partie, été réalisée dans le cadre
+      de <span>Rennes Métropole en accès libre</span> et se base sur
+      les données GTFS du <span>09/12/2012</span>.</p>
+      <p>Retrouvez
+      le <a href="http://github.com/stanguy/Star-GFTFS">code source de
+      cette application sur Github</a></p>
+      <p>Retrouvez <a href="http://itunes.apple.com/fr/app/bus-de-rennes-en-poche/id412512682?mt=8">Bus
+      de Ligne en Poche</a> sur l'AppStore Apple</p>
     </div>
   </div>
   <% init_javascript "$.dthg.Bus.init();" %>

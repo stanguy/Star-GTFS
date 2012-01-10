@@ -140,6 +140,7 @@ class MapBus
         $("button").button()
         $("button.alert").button("disable")
         $("button.help").click => this.onHelp()
+        $("#navigator h1").click => this.onAbout()
         @map = new google.maps.Map($('#map')[0], {
                 'scrollwheel': ! $('#disable_scrollwheel:checked').val(),
                 'zoom': 12,
@@ -172,10 +173,12 @@ class MapBus
             height: '90%'
             type: 'inline'
             href: "#help"
-            onComplete: -> $('.accordion').accordion()
-            onClosed: -> History.back()
         })
-
+    onAbout: ->
+        $.fancybox({
+            type: 'inline'
+            href: "#about"
+        })
     onFollowupLine: (e) ->
         e.preventDefault()
         url = $('#lines .list li.selected a').attr('href');

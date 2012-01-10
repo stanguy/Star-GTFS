@@ -204,6 +204,18 @@ html, html body {
     }
 }
 
+#about {
+    p {
+        @include displayed-text;
+        a {
+            color: #000;
+        }
+        line-height: 1.4;
+    }
+    width: 300px;
+    height: 200px;
+}
+
 .clear {
     clear: both;
 }
