@@ -22,16 +22,27 @@ class InfoWindow extends Singleton
         @container_div.attr 'id', 'infowindow'
         $(document.body).append @container_div
         @map.controls[google.maps.ControlPosition.RIGHT_CENTER].push @container_div[0]
+        @container_div.hide()
     setContent: (content) ->
         @container_div.empty()
         @container_div.append content
+        this.setVisible true
+    setVisible: (visible) ->
+        if visible and not @container_div.is(':visible')
+            @container_div.show()
+        if @container_div.is(':visible') and not visible
+            @container_div.hide()
 
 class Marker
     deselect: ->
+        InfoWindow.get().setVisible false
         @marker.setIcon this.determineIcon()
     onClick: ->
         if selectedMarker?
             selectedMarker.deselect()
+            if selectedMarker == this
+                selectedMarker = null
+                return
         if ( ! @times? ) || @times.length == 0
             mapBus.loadSchedule @schedule_url
             return
