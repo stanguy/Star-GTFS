@@ -45,6 +45,12 @@ class Marker
             if selectedMarker == this
                 selectedMarker = null
                 return
+        this.select()
+        History.pushState( {
+            lineUrl: currentLineUrl
+            stop: @stop_id
+        }, '', currentLineUrl + '/at/' + @stop_id )
+    select: ->
         if ( ! @times? ) || @times.length == 0
             mapBus.loadSchedule @schedule_url
             return
@@ -67,9 +73,6 @@ class Marker
             'others?': others
             stop_id: @stop_id
         }
-        unless initialLoadingSentinel
-            History.pushState( { lineUrl: currentLineUrl, stop: @stop_id }, '',
-                               currentLineUrl + '/at/' + @stop_id )
 
     setMap: ( map ) ->
         @marker.setMap( map )
@@ -117,8 +120,8 @@ class Marker
                 title: point.name,
                 icon: icon
             })
-        if selectedMarker? and selectedMarker.stop_id == @stop_id
-            this.onClick()
+        if ( selectedMarker? and selectedMarker.stop_id == @stop_id ) || point.selected
+            this.select()
         google.maps.event.addListener @marker, 'click', => this.onClick()
 
 class MapBus
@@ -179,7 +182,7 @@ class MapBus
         url = $(e.currentTarget).attr( 'href' )
         this.loadSchedule url
     loadSchedule: (url) ->
-        if History.state['scheduleUrl']?
+        if window.location.pathname.match /schedule/
             History.replaceState( { scheduleUrl: url }, '', url )
         else
             History.pushState( { scheduleUrl: url }, '', url );
@@ -230,11 +233,15 @@ class MapBus
     loadLineData: ->
         line_data = []
         currentLineUrl = $('#line_data').data('line-url')
+        endUrl = currentLineUrl
         for child in $('#line_data').children('li')
             stop = $(child).find('h2 a')
+            selected = false
             if ( stop.data('selected') )
+                selected = true
                 selected_stop_id = stop.data('id')
                 initialLoadingSentinel = true
+                endUrl += '/at/' + selected_stop_id
             others = stop.data('others') + ''
             if ( others != '' )
                 others = others.split(',')
@@ -261,13 +268,14 @@ class MapBus
                 others: others,
                 accessible: stop.data('accessible'),
                 times: times
+                selected: selected
             })
         state = {
             lineUrl: currentLineUrl
         }
         if ( selected_stop_id != undefined )
             $.merge( state, { stop: selected_stop_id } );
-        History.replaceState( state, '', currentLineUrl );
+        History.replaceState( state, '', endUrl );
         this.onLineGet( {
             stops: line_data
             paths: $(elem).text() for elem in $('ul#line_paths li')
