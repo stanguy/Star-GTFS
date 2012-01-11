@@ -41,12 +41,13 @@ $baseActiveColor: #FF0084;
             border-top: none;
             border-left: none;
             border-right: none;
-            border-bottom-color: #555;
+            border-bottom-color: #666;
+            padding-left: 0.5em;
             li.ui-state-default a {
                 color: desaturate( $baseBlueColor, 60% )
             }
             li.ui-state-active {
-                border-color: #555;
+                border-color: #666;
                 a {
                     color: $baseActiveColor;
                 }
@@ -118,6 +119,9 @@ $baseActiveColor: #FF0084;
             width: 100px;
             margin: 2px;
         }
+        button.ui-button.help {
+            width: 30px;
+        }
     }
 }
 
@@ -160,6 +164,11 @@ $baseActiveColor: #FF0084;
                 }
                 a.t:hover {
                     background-color: #fee;
+                }
+                a.dir_schedule {
+                    margin: 5px 0;
+                    font-size: 16pt;
+                    text-decoration: none;
                 }
             }
             li:last-child {

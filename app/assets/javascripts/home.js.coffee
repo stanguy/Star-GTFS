@@ -148,7 +148,7 @@ class MapBus
         @markers = []
         @lines = []
         @alerts = {}
-        $("button.help").button( icons: { primary: 'ui-icon-help' } )
+        $("button.help").button( icons: { primary: 'ui-icon-help' }, text: false )
         $("button.help").click => this.onHelp()
         $("#navigator h1").click => this.onAbout()
         @map = new google.maps.Map($('#map')[0], {
