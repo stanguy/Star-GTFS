@@ -154,7 +154,7 @@ class MapBus
             e.preventDefault()
             $('#lines .list li a[data-short="' + $(e.currentTarget).attr('title') + '"]').click()
             false
-        if $('#line_data')
+        if $('#line_data').length > 0
             this.loadLineData()
         window.onpopstate = (e) => this.historyCallback(e)
     onHelp: ->
