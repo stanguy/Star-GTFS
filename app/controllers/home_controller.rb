@@ -75,6 +75,8 @@ class HomeController < ApplicationController
       render :json => { stops: data, paths: l.polylines.collect(&:path), :colors => { :fg => l.fgcolor, :bg => l.bgcolor } }, :callback => params[:callback]
     else
       @line_data = data
+      @line_paths = l.polylines.collect(&:path)
+      @line_bgcolor = l.bgcolor
       @line_id = l.id
       @line = l
       @title = l.full_name

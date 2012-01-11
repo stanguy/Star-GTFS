@@ -1,6 +1,6 @@
 
 <% if @line_data %>
-  <ul id='line_data' data-line-url='<%= home_line_path( @line )%>'>
+  <ul id='line_data' data-line-url='<%= home_line_path( @line )%>' data-bgcolor="<%= @line_bgcolor %>">
     <% @line_data.each do |stop| %>
       <li>
         <% stop_options = { 'data-id' => stop[:id], 'data-lat' => stop[:lat], 'data-lon' => stop[:lon], 'data-others' => stop[:others].join(','), 'data-accessible' => stop[:accessible] } 
@@ -20,6 +20,11 @@
       </li>
     <% end%>
   </ul>
+  <% if @line_paths %>
+    <ul id='line_paths' style="display: none">
+      <%= @line_paths.collect {|p| content_tag 'li', p }.join.html_safe %>
+    </ul>
+  <% end %>
 <% end %>
   <div id="navigator">
     <h1>
