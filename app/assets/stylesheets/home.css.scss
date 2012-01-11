@@ -7,6 +7,9 @@
     display: none;
 }
 
+$baseBlueColor: #0073EA;
+$baseActiveColor: #FF0084;
+
 #navigator {
     @include map-control;
     display: none;
@@ -26,6 +29,7 @@
         float: left;
         border: none;
         background: none;
+        max-width: 625px;
 
         #handheld_startmap {
             display: none;
@@ -37,8 +41,20 @@
             border-top: none;
             border-left: none;
             border-right: none;
-            li a {
-                padding: 0.2em 0.5em 0;
+            border-bottom-color: #555;
+            li.ui-state-default a {
+                color: desaturate( $baseBlueColor, 60% )
+            }
+            li.ui-state-active {
+                border-color: #555;
+                a {
+                    color: $baseActiveColor;
+                }
+            }
+            li {
+                a {
+                    padding: 0.2em 0.5em 0;
+                }
             }
         }
         
