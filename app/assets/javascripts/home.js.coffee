@@ -149,7 +149,6 @@ class MapBus
         $('body').on 'click', 'a.dir_schedule, .schedule_container .other_lines a', (e) => this.onStopDirScheduleClick(e)
         $('body').on 'click', '.time_display .lines a', (e) =>
             e.preventDefault()
-            console.log $(e.currentTarget).attr('title')
             $('#lines .list li a[data-short="' + $(e.currentTarget).attr('title') + '"]').click()
             false
         if $('#line_data')
