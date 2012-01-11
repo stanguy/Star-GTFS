@@ -1,4 +1,11 @@
+<% if request.xhr? %>
 <div class="schedule_container grid_12 alpha omega container_12">
+<% else %>
+<div class="schedule_header container_12">
+<h1>Bus de <span>Rennes</span> en ligne</h1>
+</div>
+<div class="schedule_container container_12">
+<% end %>
 <h2><%= @title %></h2>
 <% unless request.xhr? %><a href="/" class="back_to_map">Retour à la carte</a><% end %>
 <%= div_clear %>
@@ -45,5 +52,4 @@
 </div>
 
 <%= init_javascript "$('.accordion').accordion();" %>
-<%= init_javascript "$.Star.init();" %>
 </div>

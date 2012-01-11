@@ -1,7 +1,20 @@
-.schedule_container {
+.schedule_header.container_12 {
+    background-color: #fff;
+    h1 {
+        padding: 30px 0;
+        border-bottom: 1px dotted #ddd;
+        span {
+            font-variant: small-caps;
+            font-size: 20px;
+            color: #390;
+        }
+    }
+}
+.schedule_container.container_12 {
+    background-color: #fff;
     div.dir_select {
-    float: left;
-    margin: 10px;
+        float: left;
+        margin: 10px;
     }
     h2 {
         float: left;
