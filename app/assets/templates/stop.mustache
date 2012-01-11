@@ -1,0 +1,22 @@
+<div class="time_display">
+  <h2>Arrêt {{name}}</h2>
+  {{#times}}
+    <h3><span class="bearing ui-icon ui-icon-arrow-1-{{bearing}}"></span>{{direction}}</h3>
+    <ul>
+      {{#times}}
+        <li><a data-id="{{tid}}" class="t">{{t}}</a></li>
+      {{/times}}
+      <li><a href="{{schedule_url}}" title="Horaires complets" class="dir_schedule">&hellip;</a></li>
+    </ul>
+    <div class="clear"></div>
+  {{/times}}
+  {{#others?}}
+    <h2>Autres lignes</h2>
+    <ul class="lines">
+      {{#others}}
+        <li><a href="/line/{{line}}/at/{{stop_id}}" title="{{line}}">{{#icon}}<img src="{{icon}}">{{/icon}}{{#no_icon}}{{line}}{{/no_icon}}</a></li>
+      {{/others}}
+    </ul>
+  {{/others?}}
+</div>
+    

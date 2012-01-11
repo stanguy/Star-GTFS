@@ -1,4 +1,6 @@
 #= require fancybox
+#= require hogan.js
+#= require_tree ../templates
 
 History = window.history
 
@@ -48,47 +50,23 @@ class Marker
             return
         @marker.setIcon this.determineIcon true
         selectedMarker = this
-        content = $("<div></div>").append(
-            $("<h2></h2>").append( @name )
-        ).addClass( 'time_display' );
-        for trip in @times
-            content.append( $("<h3></h3>")
-                            .append( $('<span></span>' ).addClass( "bearing ui-icon ui-icon-arrow-1-" + trip.bearing.toLowerCase() ) )
-                            .append( trip.direction ) );
-            ul = $("<ul></ul>");
-            for time in trip.times
-                t_link = $('<a></a>').append( time.t )
-                    .data('id', time.tid )
-                    .addClass('t')
-#                    .click( onLineStopTimeFollowup );
-                ul.append(
-                    $("<li></li>").append( t_link )
-                )
-            hellip = $('<a>&hellip;</a>' ).attr('href', trip.schedule_url ).attr('title',"Horaires complets").addClass('dir_schedule');
-            ul.append( $('<li></li>').append(hellip) );
-            content.append( $('<div></div>').addClass('clear') );
-            content.append( ul )
-                   .append( $('<div></div>').addClass('clear') );
-        content.append( $('<div></div>').addClass('clear'));
-        if @others? and @others.length > 0
-            content.append( $('<h2>Autres lignes</h2>') );
-            ul = $('<ul></ul>').addClass("lines");
-            for line in @others
-                li = $('<li></li>' )
-                a = $('<a></a>').attr('href', '/line/' + line + '/at/' + @stop_id )
-#                a.bind 'click', { line: name, stop: @stop_id }, => this.onOtherLineSelect()
-#                var marker = this;
-#                a.bind( 'click', { line: name, stop: this.stop_id }, onOtherLineSelect );
-                if linesInfo.icons[line]
-                    a.append( $('<img>').attr( 'src', linesInfo.icons[line] ) )
-                    a.attr('title', line )
-                else
-                    a.text( line )
-                li.append( a );
-                ul.append( li );
-            content.append( ul );
-        content.append( $('<span></span>').addClass('clear') );
-        InfoWindow.get().setContent content
+        trip.bearing = trip.bearing.toLowerCase() for trip in @times
+        others = false
+        if @others?
+            others = { others: for line in @others
+                {
+                line: line
+                icon: linesInfo.icons[line]
+                no_icon: !!! linesInfo.icons[line]
+                }
+            }
+
+        InfoWindow.get().setContent HoganTemplates.stop.render {
+            name: @name
+            times: @times
+            'others?': others
+            stop_id: @stop_id
+        }
         unless initialLoadingSentinel
             History.pushState( { lineUrl: currentLineUrl, stop: @stop_id }, '',
                                currentLineUrl + '/at/' + @stop_id )
@@ -171,6 +149,7 @@ class MapBus
         $('body').on 'click', 'a.dir_schedule, .schedule_container .other_lines a', (e) => this.onStopDirScheduleClick(e)
         $('body').on 'click', '.time_display .lines a', (e) =>
             e.preventDefault()
+            console.log $(e.currentTarget).attr('title')
             $('#lines .list li a[data-short="' + $(e.currentTarget).attr('title') + '"]').click()
             false
         if $('#line_data')
