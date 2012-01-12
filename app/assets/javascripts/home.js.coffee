@@ -142,6 +142,16 @@ class MapBus
                 },
                 panControl: false
         })
+        adUnitDiv = document.createElement('div');
+        adUnitOptions = {
+            format: google.maps.adsense.AdFormat.LEADERBOARD
+            position: google.maps.ControlPosition.BOTTOM
+            map: @map
+            visible: true
+            publisherId: 'pub-2211614128309725'
+        }
+        adUnit = new google.maps.adsense.AdUnit( adUnitDiv, adUnitOptions )
+
         @map.controls[google.maps.ControlPosition.TOP_LEFT].push $('#navigator')[0]
         InfoWindow.get().setMap @map
         $('#lines .list a').click (e) => this.onSelectLine(e)
