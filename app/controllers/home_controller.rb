@@ -64,7 +64,7 @@ class HomeController < ApplicationController
           {
             :direction => headsigns[headsign_id].name,
             :bearing => bearings[headsign_id],
-            :times => stop_times[stop.id][headsign_id].collect {|st| { :t => st.arrival.to_formatted_time, :tid => st.trip_id } },
+            :times => stop_times[stop.id][headsign_id].collect {|st| { :t => st.arrival.to_formatted_time, :tid => st.trip_id } }[0,9],
             :schedule_url => url_for({ :action => 'schedule', :line_id => l, :stop_id => stop, :headsign_id => headsigns[headsign_id], :only_path => true })
           }
         end.reject {|x| x[:times].empty? }
