@@ -149,6 +149,7 @@ class MapBus
             map: @map
             visible: true
             publisherId: 'pub-2211614128309725'
+            channelNumber: '2322968658'
         }
         adUnit = new google.maps.adsense.AdUnit( adUnitDiv, adUnitOptions )
 
