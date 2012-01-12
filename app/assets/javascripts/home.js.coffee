@@ -50,6 +50,7 @@ class Marker
             lineUrl: currentLineUrl
             stop: @stop_id
         }, '', currentLineUrl + '/at/' + @stop_id )
+        window._gaq.push currentLineUrl + '/at/' + @stop_id
     select: ->
         if ( ! @times? ) || @times.length == 0
             mapBus.loadSchedule @schedule_url
@@ -195,8 +196,10 @@ class MapBus
     loadSchedule: (url) ->
         if window.location.pathname.match /schedule/
             History.replaceState( { scheduleUrl: url }, '', url )
+            window._gaq.push url
         else
-            History.pushState( { scheduleUrl: url }, '', url );
+            History.pushState( { scheduleUrl: url }, '', url )
+            window._gaq.push url
         $.fancybox({
             autoDimensions: false
             width: 990
@@ -223,6 +226,7 @@ class MapBus
         selected_item.closest('li').addClass('selected');
         line_url = selected_item.attr 'href'
         History.pushState( { lineUrl: line_url }, null, line_url );
+        window._gaq.push line_url
         $.get( line_url , {},
             (d,s,x) => this.onLineGet(d,s,x),
             "json" )
