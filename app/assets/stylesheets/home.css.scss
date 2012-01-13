@@ -10,6 +10,10 @@
 $baseBlueColor: #0073EA;
 $baseActiveColor: #FF0084;
 
+#ajax-loader {
+    margin-top: 5px;
+}
+
 #navigator {
     @include map-control;
     display: none;

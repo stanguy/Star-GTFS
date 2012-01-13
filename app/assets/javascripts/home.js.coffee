@@ -157,6 +157,14 @@ class MapBus
             e.preventDefault()
             $('#lines .list li a[data-short="' + $(e.currentTarget).attr('title') + '"]').click()
             false
+        @map.controls[google.maps.ControlPosition.TOP_RIGHT].push $('#ajax-loader')[0]
+        $('#ajax-loader').ajaxSend( ->
+            $(this).show();
+        )
+        $('#ajax-loader').ajaxComplete( ->
+            $(this).hide();
+        )
+
         if $('#line_data').length > 0
             this.loadLineData()
         window.onpopstate = (e) => this.historyCallback(e)
