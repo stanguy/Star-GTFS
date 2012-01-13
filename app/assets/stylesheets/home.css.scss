@@ -44,11 +44,16 @@ $baseActiveColor: #FF0084;
             border-right: none;
             border-bottom-color: #666;
             padding-left: 0.5em;
-            li.ui-state-default a {
-                color: desaturate( $baseBlueColor, 60% )
+            li.ui-state-default {
+                background-image: none;
+                background-color: darken( #fff, 4% );
+                a {
+                    color: desaturate( $baseBlueColor, 60% )
+                }
             }
             li.ui-state-active {
                 border-color: #666;
+                background-color: #fff;
                 a {
                     color: $baseActiveColor;
                 }
