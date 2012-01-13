@@ -101,7 +101,8 @@ class HomeController < ApplicationController
         where( :stop_id => @stop.id )
       if params[:headsign_id]
         headsign = Headsign.find_by_slug(params[:headsign_id])
-        stop_signs = stop_signs.where( :headsign_id => headsign.id )
+        unless headsign.nil?
+          stop_signs = stop_signs.where( :headsign_id => headsign.id )
       end
       @other_lines = @stop.lines.select( "id,short_name,picto_url,slug").collect{|sl|
         if sl.id != @line.id
