@@ -208,7 +208,6 @@ class MapBus
                 if( e.state.lineUrl != currentLineUrl )
                     $('a[href="' + e.state.lineUrl + '"]').click()
             else if e.state.scheduleUrl
-                console.log "has schedule url"
                 this.loadSchedule e.state.scheduleUrl
     onSelectLine: (e) ->
         e.preventDefault()
