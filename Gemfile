@@ -24,6 +24,10 @@ group :assets do
   gem 'hogan_assets'
 end
 
+group :production do
+  gem 'memcache-client'
+end
+
 group :development, :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
 #  gem 'silent-postgres'
