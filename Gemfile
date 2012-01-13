@@ -29,14 +29,11 @@ group :production do
 end
 
 group :development, :test do
-  gem 'sqlite3-ruby', :require => 'sqlite3'
-#  gem 'silent-postgres'
+  gem 'silent-postgres'
   gem 'rspec-rails'
   gem 'webrat'
   gem 'factory_girl_rails'
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
+  gem 'unicorn'
 end
 
-gem "mongrel", :git => "http://github.com/dynamix/mongrel.git"
-gem "cgi_multipart_eof_fix"
-gem "fastthread"
