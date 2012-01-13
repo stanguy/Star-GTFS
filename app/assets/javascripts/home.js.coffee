@@ -45,16 +45,17 @@ class Marker
             if selectedMarker == this
                 selectedMarker = null
                 return
-        this.select()
-        History.pushState( {
-            lineUrl: currentLineUrl
-            stop: @stop_id
-        }, '', currentLineUrl + '/at/' + @stop_id )
-        window._gaq.push currentLineUrl + '/at/' + @stop_id
+        if this.select()
+            History.pushState( {
+                lineUrl: currentLineUrl
+                stop: @stop_id
+            }, '', currentLineUrl + '/at/' + @stop_id )
+            window._gaq.push currentLineUrl + '/at/' + @stop_id
     select: ->
         if ( ! @times? ) || @times.length == 0
+            selectedMarker = null
             mapBus.loadSchedule @schedule_url
-            return
+            return false
         @marker.setIcon this.determineIcon true
         selectedMarker = this
         trip.bearing = trip.bearing.toLowerCase() for trip in @times
@@ -67,13 +68,13 @@ class Marker
                 no_icon: !!! linesInfo.icons[line]
                 }
             }
-
         InfoWindow.get().setContent HoganTemplates.stop.render {
             name: @name
             times: @times
             'others?': others
             stop_id: @stop_id
         }
+        true
 
     setMap: ( map ) ->
         @marker.setMap( map )
@@ -143,16 +144,6 @@ class MapBus
                 },
                 panControl: false
         })
-        adUnitDiv = document.createElement('div');
-        adUnitOptions = {
-            format: google.maps.adsense.AdFormat.LEADERBOARD
-            position: google.maps.ControlPosition.BOTTOM
-            map: @map
-            visible: true
-            publisherId: 'pub-2211614128309725'
-            channelNumber: '2322968658'
-        }
-        adUnit = new google.maps.adsense.AdUnit( adUnitDiv, adUnitOptions )
 
         @map.controls[google.maps.ControlPosition.TOP_LEFT].push $('#navigator')[0]
         InfoWindow.get().setMap @map
@@ -194,7 +185,7 @@ class MapBus
         url = $(e.currentTarget).attr( 'href' )
         this.loadSchedule url
     loadSchedule: (url) ->
-        if window.location.pathname.match /schedule/
+        if window.location.pathname.match /\/schedule\//
             History.replaceState( { scheduleUrl: url }, '', url )
             window._gaq.push url
         else
@@ -217,6 +208,7 @@ class MapBus
                 if( e.state.lineUrl != currentLineUrl )
                     $('a[href="' + e.state.lineUrl + '"]').click()
             else if e.state.scheduleUrl
+                console.log "has schedule url"
                 this.loadSchedule e.state.scheduleUrl
     onSelectLine: (e) ->
         e.preventDefault()
