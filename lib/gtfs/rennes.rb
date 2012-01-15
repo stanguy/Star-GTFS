@@ -35,11 +35,11 @@ module Gtfs
       return if stop_times.empty?
       sql = <<SQL
   INSERT INTO stop_times 
-    ( stop_id, line_id, trip_id, headsign_id, calendar, arrival, departure )
+    ( stop_id, line_id, trip_id, headsign_id, calendar, arrival, departure, stop_sequence )
   VALUES
 SQL
       sql += stop_times.collect do |stoptime|
-        "(" + [ stoptime.stop_id, stoptime.line_id, stoptime.trip_id, stoptime.headsign_id, stoptime.calendar, stoptime.arrival, stoptime.departure ].join(",") + ")"
+        "(" + [ stoptime.stop_id, stoptime.line_id, stoptime.trip_id, stoptime.headsign_id, stoptime.calendar, stoptime.arrival, stoptime.departure, stoptime.stop_sequence ].join(",") + ")"
       end.join(",")
       ActiveRecord::Base.connection.execute( sql )
       stop_times.clear
@@ -230,7 +230,8 @@ SQL
                           :headsign_id => @legacy[:trip][line[:trip_id]][:headsign_id],
                           :calendar => @legacy[:trip][line[:trip_id]][:calendar],
                           :arrival => line[:arrival_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i },
-                          :departure => line[:departure_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i }
+                          :departure => line[:departure_time].split(':').inject(0) { |m,v| m = m * 60 + v.to_i },
+                          :stop_sequence => line[:stop_sequence]
                         })
       @all_stop_times.push( st )
       @lines_stops[st.line_id][st.stop_id] = 1

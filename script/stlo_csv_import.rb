@@ -26,14 +26,15 @@ def import_stoptimes line, headsign_str, trips
       trip = Trip.create( :line => line, 
                           :calendar => calendar,
                           :headsign => headsign )
-      times.each do |st|
+      times.each_with_index do |st,idx|
         StopTime.create( :stop => st[:s],
                          :line => line,
                          :trip => trip,
                          :headsign => headsign,
                          :arrival => st[:t],
                          :departure => st[:t],
-                         :calendar => calendar )
+                         :calendar => calendar,
+                         :stop_sequence => idx )
       end
     end
   end

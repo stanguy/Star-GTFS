@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111130232909) do
+ActiveRecord::Schema.define(:version => 20120115134027) do
 
   create_table "bike_stations", :force => true do |t|
     t.integer  "number"
@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(:version => 20111130232909) do
     t.integer  "calendar"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "stop_sequence"
   end
 
   create_table "stops", :force => true do |t|
