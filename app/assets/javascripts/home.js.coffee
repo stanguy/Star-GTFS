@@ -237,6 +237,8 @@ class MapBus
         bounds = null
         @markers = for point in d.stops
             new Marker( @map, point )
+        if -1 == @markers.indexOf selectedMarker
+            InfoWindow.get().setVisible false
         @lines = for line in d.paths
             new google.maps.Polyline({
                 map: @map,
