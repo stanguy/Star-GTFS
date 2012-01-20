@@ -71,8 +71,8 @@ class HomeController < ApplicationController
       end
       stop_info
     end
-    expires_in 5.minutes, :public => true
     if request.xhr?
+      expires_now
       render :json => { stops: data, paths: l.polylines.collect(&:path), :colors => { :fg => l.fgcolor, :bg => l.bgcolor } }, :callback => params[:callback]
     else
       @line_data = data
@@ -139,8 +139,6 @@ class HomeController < ApplicationController
       @schedule[st.headsign_id][hours][st.calendar] << mins
     end
     @headsigns.delete_if{|id,v| ! @schedule.has_key? id }
-    # TODO respect the feedinfo data
-    expires_in 7.days, :public => true
     if request.xhr?
       render :layout => false and return
     end
