@@ -46,6 +46,6 @@ module StarGtfs
     config.assets.version = '1.0'
 
     config.assets.precompile += ['handheld.css']
-    
+   
   end
 end
