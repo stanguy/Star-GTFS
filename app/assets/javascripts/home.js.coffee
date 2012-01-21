@@ -131,9 +131,6 @@ class MapBus
         @markers = []
         @lines = []
         @alerts = {}
-        $("button.help").button( icons: { primary: 'ui-icon-help' }, text: false )
-        $("button.help").click => this.onHelp()
-        $("#navigator h1").click => this.onAbout()
         @map = new google.maps.Map($('#map')[0], {
                 'scrollwheel': ! $('#disable_scrollwheel:checked').val(),
                 'zoom': 13,
@@ -180,6 +177,9 @@ class MapBus
         if $('#line_data').length > 0
             this.loadLineData()
         window.onpopstate = (e) => this.historyCallback(e)
+        $("button.help").button( icons: { primary: 'ui-icon-help' }, text: false )
+        $("button.help").click => this.onHelp()
+        $("body").on 'click', "#map h1", => this.onAbout()
     onHelp: ->
         $.fancybox({
             autoDimensions: false
