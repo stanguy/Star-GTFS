@@ -136,7 +136,7 @@ class MapBus
         $("#navigator h1").click => this.onAbout()
         @map = new google.maps.Map($('#map')[0], {
                 'scrollwheel': ! $('#disable_scrollwheel:checked').val(),
-                'zoom': 12,
+                'zoom': 13,
                 'center': new google.maps.LatLng( 48.11, -1.63 ),
                 'mapTypeId': google.maps.MapTypeId.ROADMAP
                 zoomControlOptions: {
@@ -155,7 +155,9 @@ class MapBus
             channelNumber: '2322968658'
         }
         adUnit = new google.maps.adsense.AdUnit( adUnitDiv, adUnitOptions )
-        @map.controls[google.maps.ControlPosition.TOP_LEFT].push $('#navigator')[0]
+        adUnit.getContainer().style.opacity = '0.7'
+        @map.controls[google.maps.ControlPosition.TOP_LEFT].push $('h1')[0]
+        @map.controls[google.maps.ControlPosition.TOP_CENTER].push $('#navigator')[0]
         InfoWindow.get().setMap @map
         $('#lines .list a').click (e) => this.onSelectLine(e)
         $('#lines').tabs({event: 'mouseover'}).css('visibility','visible');
