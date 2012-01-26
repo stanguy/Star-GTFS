@@ -1,6 +1,7 @@
 h1 {
     padding: 20px;
     text-align: center;
+
     span {
         font-variant: small-caps;
         font-size: 20px;
@@ -18,9 +19,11 @@ h1 {
                 padding: 20px 0;
                 text-align: center;
                 border: 1px outset #ddd;
+                border-radius: 15px;
                 margin: 2px auto;
-                background-color: #ddd;
                 width: 80%;
+                text-decoration: none;
+                background-color: #ddd;
             }
             a:active {
                 border: 1px inset #ddd;
@@ -36,6 +39,10 @@ h1 {
                 width: 100%;
                 text-align: left;
                 height: 44px;
+                a {
+                    font-size: 1.2em;
+                    text-decoration: none;
+                }
                 img {
                     float: left;
                     margin: 5px;
