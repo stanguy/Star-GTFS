@@ -131,17 +131,26 @@ class MapBus
         @markers = []
         @lines = []
         @alerts = {}
+
+        mapStyles = [{ featureType: "road.highway", elementType: "labels", stylers: [ { visibility: "off" } ] },{ featureType: "road.highway", elementType: "geometry", stylers: [ { lightness: 45 }, { gamma: 0.98 }, { visibility: "on" }, { saturation: -100 } ] },{ featureType: "road.arterial", elementType: "geometry", stylers: [ { lightness: 62 }, { gamma: 1.65 }, { hue: "#f600ff" }, { saturation: -100 } ] },{ featureType: "road.arterial", elementType: "labels", stylers: [ { gamma: 0.88 }, { hue: "#f600ff" }, { saturation: -99 } ] }]
+        dthgMapType = new google.maps.StyledMapType( mapStyles,
+            {name: "Trajets"});
+
+
         @map = new google.maps.Map($('#map')[0], {
                 'scrollwheel': ! $('#disable_scrollwheel:checked').val(),
                 'zoom': 13,
-                'center': new google.maps.LatLng( 48.11, -1.63 ),
-                'mapTypeId': google.maps.MapTypeId.ROADMAP
+                'center': new google.maps.LatLng( 48.11, -1.65 ),
+                mapTypeControlOptions: {
+                      mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'dthg']
+                }
                 zoomControlOptions: {
                     style: google.maps.ZoomControlStyle.SMALL
                 },
                 panControl: false
         })
-
+        @map.mapTypes.set('dthg', dthgMapType )
+        @map.setMapTypeId('dthg')
         adUnitDiv = document.createElement('div');
         adUnitOptions = {
             format: google.maps.adsense.AdFormat.HALF_BANNER
