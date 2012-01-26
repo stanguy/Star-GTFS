@@ -16,8 +16,9 @@
         <% @other_lines.each do |line| %>
           <li><%= link_to line.picto_url.blank? ? line.short_name : image_tag(line.picto_url), { :line_id => line, :stop_id => @stop } %></li>
         <% end %>
-        <li><%= link_to "Tous...", { :stop_id => @stop, :line_id => nil, :route_id => nil } %></li>
+        <li><%= link_to "Toutes...", { :stop_id => @stop, :line_id => nil, :route_id => nil } %></li>
       </ul>
+      <%= div_clear %>
     </div>
 <%= div_clear %>
 <% end %>
