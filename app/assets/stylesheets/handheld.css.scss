@@ -1,0 +1,81 @@
+h1 {
+    padding: 20px;
+    text-align: center;
+    span {
+        font-variant: small-caps;
+        font-size: 20px;
+        color: #390;
+    }
+}
+
+#navigator {
+    display: block;
+
+    ul#line_types {
+        li { 
+            a {
+                display: block;
+                padding: 20px 0;
+                text-align: center;
+                border: 1px outset #ddd;
+                margin: 2px auto;
+                background-color: #ddd;
+                width: 80%;
+            }
+            a:active {
+                border: 1px inset #ddd;
+            }
+        }
+    }
+
+    div#lines {
+        div.list {
+            ul li {
+                display: block;
+                height: auto;
+                width: 100%;
+                text-align: left;
+                height: 44px;
+                img {
+                    float: left;
+                    margin: 5px;
+                }
+                span {
+                    display: block;
+                    min-height: 25px;
+                }
+            }
+        }
+    }
+    #other_actions {
+        display: none;
+    }
+}
+
+#line_data {
+    display: block;
+    background-color: white;
+    h2, h3 {
+        min-height: 30px;
+        clear: both;
+        padding-top: 5px;
+    }
+    h2 a:before { content: "Arrêt " }
+    h3 a:before { content: "Vers " }
+    li div {
+        padding-left: 20px;
+        margin-bottom: 10px;
+        clear: both;
+    }
+    span {
+        float: left;
+        text-align: center;
+        padding: 10px 15px;
+    }
+    span:nth-child(odd) { background-color: #ddd; }
+    span:nth-child(even) { border: 1px solid #ddd; padding: 9px 14px; }
+}
+
+h1 {
+    clear: both;
+}

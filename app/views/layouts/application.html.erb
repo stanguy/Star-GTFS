@@ -4,12 +4,13 @@
     <title><% if @title %><%= @title %>, <% end %>Bus de Rennes en ligne</title>
 
     <%= stylesheet_link_tag "application", :media => "screen" %>
+    <%= stylesheet_link_tag "handheld", :media => 'handheld, mobile, screen and (max-width:480px)' %>
     <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
     <%= csrf_meta_tag %>
-    <meta name="viewport" content="width=320" />
-    <meta name="viewport" content="initial-scale=1.0" />
+    <meta name="viewport" content="user-scalable=no, width=device-width" />
     <meta http-equiv="X-UA-Compatible" content="IE=8" />
-    </head>
+    <link rel="apple-touch-startup-image" href="<%= image_path "Default.png" %>" />
+  </head>
   <body>
   
 
@@ -17,7 +18,10 @@
   
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=adsense,geometry"></script> 
     <%= javascript_include_tag "application" %>
-    <script>$(document).ready( function() { <%= init_javascripts.join(" ") if init_javascripts %> } );</script>
+    <% if is_mobile_device? %>
+    <% else %>
+      <script>$(document).ready( function() { <%= init_javascripts.join(" ") if init_javascripts %> } );</script>
+    <% end %>
 
     <script type="text/javascript">
 
