@@ -60,7 +60,7 @@ class Marker
         selectedMarker = this
         trip.bearing = trip.bearing.toLowerCase() for trip in @times
         others = false
-        if @others?
+        if @others? and @others.length > 0
             others = { others: for line in @others
                 {
                 line: line
