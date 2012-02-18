@@ -13,6 +13,13 @@
 }
 
 
+h1, h2, h3, h4, h5, th, #line_types li a {
+    font-family: 'PT Sans', sans-serif;
+}
+p, li {
+    font-family: 'Arvo', serif;
+}
+
 #line_data {
     display: none;
 }
@@ -31,6 +38,7 @@ $baseActiveColor: #FF0084;
     text-align: center;
     margin: 5px 0px;
     padding: 5px 20px;
+    font-size: 18px;
     span {
         font-variant: small-caps;
         display: block;
@@ -236,6 +244,7 @@ html, html body {
             float: left;
             height: 80px;
             display: block;
+            margin: 0;
         }
         dt {
             width: 15%;
