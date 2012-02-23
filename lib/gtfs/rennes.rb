@@ -300,13 +300,8 @@ SQL
         MetroStation.create( ms )
       end
 
-      mlog "Adding index for stop_times/trips"
+      mlog "Removing indexes"
       ActiveRecord::Migration.remove_index( :stop_times, :column => [ :trip_id ] )
-
-      check_multiple_trips
-      compute_bearings
-
-      mlog "Adding other indexes"
       ActiveRecord::Migration.remove_index( :stop_times, :column => [ :line_id, :calendar, :arrival ] )
       ActiveRecord::Migration.remove_index( :lines, :column => [ :short_name ] )
       ActiveRecord::Migration.remove_index( :stops, :column => [ :slug ] )
