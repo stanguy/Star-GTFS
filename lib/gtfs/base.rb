@@ -38,6 +38,15 @@ module Gtfs
         end
       end
       self.post_run if self.respond_to?(:post_run)
+      center_agency
+    end
+
+    def center_agency
+      return if @agency.nil?
+      @agency.bbox = MultiPoint.from_points( MultiPoint.from_points( Stop.where("geom IS NOT NULL").collect(&:geom), 4326 ).bounding_box.map { |p| p.srid = 4326; p }, 4326 )
+      @agency.center = Geometry.from_ewkt( Stop.connection.select_one( "SELECT AsText(ST_Centroid(ST_Collect(geom))) AS center FROM stops WHERE geom IS NOT NULL" )["center"] )
+      @agency.center.srid = 4326
+      @agency.save
     end
     
     class << self

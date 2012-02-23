@@ -136,11 +136,11 @@ class MapBus
         dthgMapType = new google.maps.StyledMapType( mapStyles,
             {name: "Trajets"});
 
-
+        center = $('#map').data('center').split /,/
         @map = new google.maps.Map($('#map')[0], {
                 'scrollwheel': ! $('#disable_scrollwheel:checked').val(),
                 'zoom': 13,
-                'center': new google.maps.LatLng( 48.11, -1.65 ),
+                'center': new google.maps.LatLng( center[1], center[0] ),
                 mapTypeControlOptions: {
                       mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'dthg']
                 }
@@ -149,20 +149,21 @@ class MapBus
                 },
                 panControl: false
         })
+        @map.controls[google.maps.ControlPosition.TOP_LEFT].push $('h1')[0]
         @map.mapTypes.set('dthg', dthgMapType )
         @map.setMapTypeId('dthg')
-        adUnitDiv = document.createElement('div');
-        adUnitOptions = {
-            format: google.maps.adsense.AdFormat.HALF_BANNER
-            position: google.maps.ControlPosition.BOTTOM_LEFT
-            map: @map
-            visible: true
-            publisherId: 'pub-2211614128309725'
-            channelNumber: '2322968658'
-        }
-        adUnit = new google.maps.adsense.AdUnit( adUnitDiv, adUnitOptions )
-        adUnit.getContainer().style.opacity = '0.7'
-        @map.controls[google.maps.ControlPosition.TOP_LEFT].push $('h1')[0]
+        if $('#map').data('ads-allowed')
+            adUnitDiv = document.createElement('div');
+            adUnitOptions = {
+                format: google.maps.adsense.AdFormat.HALF_BANNER
+                position: google.maps.ControlPosition.BOTTOM_LEFT
+                map: @map
+                visible: true
+                publisherId: 'pub-2211614128309725'
+                channelNumber: '2322968658'
+            }
+            adUnit = new google.maps.adsense.AdUnit( adUnitDiv, adUnitOptions )
+            adUnit.getContainer().style.opacity = '0.7'
         @map.controls[google.maps.ControlPosition.TOP_CENTER].push $('#navigator')[0]
         InfoWindow.get().setMap @map
         $('#lines .list a').click (e) => this.onSelectLine(e)

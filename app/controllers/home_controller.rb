@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 class HomeController < ApplicationController
   def show
+    @agency = Agency.first
   end
 
   def stops
@@ -9,6 +10,7 @@ class HomeController < ApplicationController
   end
 
   def line
+    @agency = Agency.first
     l = Line.by_short_name(params[:id])
 
     if params[:stop_id]

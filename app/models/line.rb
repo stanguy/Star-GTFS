@@ -2,6 +2,7 @@ class Line < ActiveRecord::Base
 
   acts_as_url :short_long_name, :url_attribute => :slug
 
+  belongs_to :agency
   has_and_belongs_to_many :stops
   has_many :stop_times
   has_many :trips

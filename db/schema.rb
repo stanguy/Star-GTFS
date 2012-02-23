@@ -11,7 +11,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120115134027) do
+ActiveRecord::Schema.define(:version => 20120222205746) do
+
+  create_table "agencies", :force => true do |t|
+    t.string      "name"
+    t.string      "url"
+    t.string      "tz"
+    t.string      "phone"
+    t.string      "lang"
+    t.string      "city"
+    t.boolean     "ads_allowed"
+    t.datetime    "created_at",                 :null => false
+    t.datetime    "updated_at",                 :null => false
+    t.multi_point "bbox",        :limit => nil,                 :srid => 4326
+    t.point       "center",      :limit => nil,                 :srid => 4326
+  end
 
   create_table "bike_stations", :force => true do |t|
     t.integer  "number"
@@ -54,7 +68,11 @@ ActiveRecord::Schema.define(:version => 20120115134027) do
     t.boolean  "accessible"
     t.string   "old_src_id"
     t.point    "center",          :limit => nil, :srid => 4326
+    t.integer  "agency_id"
   end
+
+  add_index "lines", ["agency_id"], :name => "index_lines_on_agency_id"
+  add_index "lines", ["short_name"], :name => "index_lines_on_short_name"
 
   create_table "lines_stops", :id => false, :force => true do |t|
     t.integer "line_id"
@@ -130,6 +148,9 @@ ActiveRecord::Schema.define(:version => 20120115134027) do
     t.integer  "stop_sequence"
   end
 
+  add_index "stop_times", ["line_id", "calendar", "arrival"], :name => "index_stop_times_on_line_id_and_calendar_and_arrival"
+  add_index "stop_times", ["trip_id"], :name => "index_stop_times_on_trip_id"
+
   create_table "stops", :force => true do |t|
     t.string   "name"
     t.float    "lat"
@@ -142,6 +163,8 @@ ActiveRecord::Schema.define(:version => 20120115134027) do
     t.boolean  "accessible"
     t.point    "geom",           :limit => nil, :srid => 4326
   end
+
+  add_index "stops", ["slug"], :name => "index_stops_on_slug"
 
   create_table "trips", :force => true do |t|
     t.integer  "line_id"

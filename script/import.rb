@@ -2,7 +2,17 @@
 
 require 'gtfs/base'
 require 'gtfs/rennes'
+require 'gtfs/stlo'
 
+Importers = { 
+  :rennes => Gtfs::Rennes,
+  :stlo => Gtfs::StLo 
+}
 
-r = Gtfs::Rennes.new
-r.run
+ARGV.each do |cityname|
+  citysym = cityname.to_sym
+  if Importers.has_key? citysym
+    importer = Importers[citysym].new
+    importer.run
+  end
+end

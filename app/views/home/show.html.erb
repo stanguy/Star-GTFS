@@ -27,7 +27,7 @@
   <% end %>
 <% end %>
   <h1>
-    Bus de <span>Rennes</span> en ligne
+    Bus de <span><%= @agency.city %></span> en ligne
   </h1>
   <div id="navigator">
     <div id="lines">
@@ -68,8 +68,7 @@
   </div>
   </div>
   </div>
-
-  <div id="map"> </div>
+  <div id="map" data-center="<%= @agency.center.x %>,<%= @agency.center.y %>" data-ads-allowed="<%= @agency.ads_allowed ? 1 : "" %>"> </div>
 
   <div style="display: none">
     <div id="help" class="container_12">

@@ -8,6 +8,12 @@ require 'gmap_polyline_encoder'
 
 module Gtfs
   class Rennes < Base
+    def city
+      "Rennes"
+    end
+    def ads_allowed
+      true
+    end
     def line_usage line
       return :urban if [ 'Urbaine', 'Inter-quartiers', 'Majeure' ].include? line[:route_desc] 
       return :express if line[:route_desc].match( /^Express/ )
@@ -63,6 +69,15 @@ SQL
       @stops_accessible[line[:stop_id]] = line[:stop_accessible].to_i == 1
     end
 
+    handle :agency do |line|
+      @agency = Agency.create( :name => line[:agency_name],
+                               :url => line[:agency_url],
+                               :tz => line[:agency_timezone],
+                               :phone => line[:agency_phone],
+                               :lang => line[:agency_lang],
+                               :city => city,
+                               :ads_allowed => ads_allowed )
+    end
 
     def pre_stops
       @all_stops = {}
@@ -164,7 +179,8 @@ SQL
     end
 
     handle :routes do |line|
-      new_line = Line.create({ :src_id => line[:route_id],
+      new_line = Line.create({ :agency_id => @agency.id,
+                               :src_id => line[:route_id],
                                :short_name => line[:route_short_name],
                                :long_name =>  line[:route_long_name],
                                :short_long_name => shorten_long_name( line ),
@@ -283,6 +299,17 @@ SQL
         [ 'id', 'latitude', 'longitude', 'hasPlatformDirection1', 'hasPlatformDirection2', 'rankingPlatformDirection1', 'rankingPlatformDirection2', 'floors', 'lastupdate' ].each {|k| ms.delete k }
         MetroStation.create( ms )
       end
+
+      mlog "Adding index for stop_times/trips"
+      ActiveRecord::Migration.remove_index( :stop_times, :column => [ :trip_id ] )
+
+      check_multiple_trips
+      compute_bearings
+
+      mlog "Adding other indexes"
+      ActiveRecord::Migration.remove_index( :stop_times, :column => [ :line_id, :calendar, :arrival ] )
+      ActiveRecord::Migration.remove_index( :lines, :column => [ :short_name ] )
+      ActiveRecord::Migration.remove_index( :stops, :column => [ :slug ] )
     end
 
     def post_run
