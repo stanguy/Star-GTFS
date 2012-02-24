@@ -1,6 +1,7 @@
 
 class StopRegistry
-  def initialize
+  def initialize agency
+    @agency = agency
     @reg = {}
   end
 
@@ -13,7 +14,7 @@ class StopRegistry
     stop_name = clean_up( stop_name )
     key = stop_name.to_url
     unless @reg.has_key? key
-      @reg[key] = Stop.create( :name => stop_name, :accessible => false )
+      @reg[key] = Stop.create( :name => stop_name, :accessible => false, :agency_id => @agency.id )
       @reg[key].stop_aliases.create( :src_id => @reg[key].id,
                                      :src_code => @reg[key].id,
                                      :src_name => stop_name )

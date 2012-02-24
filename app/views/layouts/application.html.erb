@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><% if @title %><%= @title %>, <% end %>Bus de Rennes en ligne</title>
+    <title><% if @title %><%= @title %>, <% end %>Bus de <%= @agency.city %> en ligne</title>
 
     <%= stylesheet_link_tag "application", :media => "screen" %>
     <%= stylesheet_link_tag "handheld", :media => 'handheld, mobile, screen and (max-width:480px)' %>

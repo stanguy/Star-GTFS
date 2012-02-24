@@ -2,10 +2,10 @@
   <% lines.sort { |a,b| a.short_name.to_i <=> b.short_name.to_i }.each do |line| %>
     <% if line.picto_url.blank? %>
       <li class="as_text">
-       <%= link_to (line.short_name + ' ' + content_tag('span', line.long_name)).html_safe, home_line_path(line), { 'data-short' => line.short_name } %>
+       <%= link_to (line.short_name + ' ' + content_tag('span', line.long_name)).html_safe, home_line_path(@agency,line), { 'data-short' => line.short_name } %>
      <% else %>
       <li<% if line.short_name.match(/^2..$/) %> class="wide"<% end %>>
-        <%= link_to image_tag( line.picto_url ) + content_tag('span', line.full_name), home_line_path(line), { 'data-short' => line.short_name } %>
+        <%= link_to image_tag( line.picto_url ) + content_tag('span', line.full_name), home_line_path(@agency,line), { 'data-short' => line.short_name } %>
       <% end %>
     </li>
   <% end %>

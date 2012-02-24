@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120222205746) do
+ActiveRecord::Schema.define(:version => 20120224202850) do
 
   create_table "agencies", :force => true do |t|
     t.string      "name"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(:version => 20120222205746) do
     t.datetime    "updated_at",                 :null => false
     t.multi_point "bbox",        :limit => nil,                 :srid => 4326
     t.point       "center",      :limit => nil,                 :srid => 4326
+    t.string      "slug"
   end
 
   create_table "bike_stations", :force => true do |t|
@@ -67,8 +68,8 @@ ActiveRecord::Schema.define(:version => 20120222205746) do
     t.string   "slug"
     t.boolean  "accessible"
     t.string   "old_src_id"
-    t.point    "center",          :limit => nil, :srid => 4326
     t.integer  "agency_id"
+    t.point    "center",          :limit => nil, :srid => 4326
   end
 
   add_index "lines", ["agency_id"], :name => "index_lines_on_agency_id"
@@ -161,6 +162,7 @@ ActiveRecord::Schema.define(:version => 20120222205746) do
     t.string   "line_ids_cache"
     t.string   "slug"
     t.boolean  "accessible"
+    t.integer  "agency_id"
     t.point    "geom",           :limit => nil, :srid => 4326
   end
 

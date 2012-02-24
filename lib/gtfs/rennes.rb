@@ -144,7 +144,8 @@ SQL
         is_accessible = stops.collect {|s| @stops_accessible[s[:stop_id]] }.uniq.count == 1 ? @stops_accessible[stops.first[:stop_id]] : false
         lat = average( stops.collect{|s| s[:stop_lat].to_f } )
         lon = average( stops.collect{|s| s[:stop_lon].to_f } )
-        new_stop = Stop.create({ :name => real_name, 
+        new_stop = Stop.create({ :name => real_name,
+                                 :agency_id => @agency.id,
                                  :lat => lat,
                                  :lon => lon,
                                  :geom => Point.from_lon_lat( lon, lat, 4326 ),

@@ -8,6 +8,7 @@ class Stop < ActiveRecord::Base
   has_and_belongs_to_many :lines
   has_many :stop_times
   belongs_to :city
+  belongs_to :agency
 
   def to_point
     Point.from_lon_lat( lon, lat, 4326 )

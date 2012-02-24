@@ -61,7 +61,7 @@ module Gtfs
                                :ads_allowed => false )
 
       
-      stop_registry = StopRegistry.new
+      stop_registry = StopRegistry.new @agency
       
       #####################################################################
       ###                           L3                                  ###
@@ -71,8 +71,8 @@ module Gtfs
                         :agency_id => @agency.id,
                         :long_name => "Saint-Lô-Bois Ardent / Centre Aquatique <> Saint-Georges-Montcocq-Mairie",
                         :short_long_name => "Bois Ardent / Centre Aquatique <> Saint-Georges-Montcocq-Mairie",
-                        :fgcolor => '#000000',
-                        :bgcolor => '#ccffcc',
+                        :fgcolor => '000000',
+                        :bgcolor => 'ccffcc',
                         :src_id => "3",
                         :accessible => false,
                         :usage => :urban )
@@ -179,10 +179,11 @@ module Gtfs
       #####################################################################
       mlog "Importing line 1"
       l1 = Line.create( :short_name => "1",
+                        :agency_id => @agency.id,
                         :long_name => "Saint-Lô-Les Colombes <> Agneaux-Villechien / Centre Commercial La Demeurance",
                         :short_long_name => "Les Colombes <> Agneaux-Villechien / Centre Commercial La Demeurance",
-                        :fgcolor => '#ffffff',
-                        :bgcolor => '#ff0000',
+                        :fgcolor => 'ffffff',
+                        :bgcolor => 'ff0000',
                         :src_id => '1',
                         :accessible => false,
                         :usage => :urban )
@@ -249,10 +250,11 @@ module Gtfs
       #####################################################################
       mlog "Importing line 2"
       l2 = Line.create( :short_name => "2",
+                        :agency_id => @agency.id,
                         :long_name => "Saint-Lô-Conseil Général < > Saint-Lô-La Madeleine",
                         :short_long_name => "Conseil Général < > La Madeleine",
-                        :fgcolor => '#ffffff',
-                        :bgcolor => '#99ccff',
+                        :fgcolor => 'ffffff',
+                        :bgcolor => '99ccff',
                         :src_id => '2',
                         :accessible => false,
                         :usage => :urban )
@@ -347,10 +349,11 @@ module Gtfs
       
       
       ls = Line.create( :short_name => "S1",
+                        :agency_id => @agency.id,
                         :long_name => "Spécial Colombes / Pasteur / Bon Sauveur / Lavalley",
                         :short_long_name => "Spécial Colombes / Lavalley",
-                        :fgcolor => '#ffffff',
-                        :bgcolor => '#ff0000',
+                        :fgcolor => 'ffffff',
+                        :bgcolor => 'ff0000',
                         :src_id => 'SCL',
                         :accessible => false,
                         :usage => :special )
@@ -373,10 +376,11 @@ module Gtfs
       import_stoptimes ls, "Lavalley - Colombes", trips
       
       ls = Line.create( :short_name => "S2",
+                        :agency_id => @agency.id,
                         :long_name => "Spécial Agneaux / Lavalley",
                         :short_long_name => "Spécial Agneaux / Lavalley",
-                        :fgcolor => '#000000',
-                        :bgcolor => '#99ccff',
+                        :fgcolor => '000000',
+                        :bgcolor => '99ccff',
                         :src_id => 'SAL',
                         :accessible => false,
                         :usage => :special )
@@ -399,10 +403,11 @@ module Gtfs
       import_stoptimes ls, "Lavalley - Demeurance", trips
       
       ls = Line.create( :short_name => "S3",
+                        :agency_id => @agency.id,
                         :long_name => "Spécial Bon Sauveur / Lavalley / St Georges Montcocq",
                         :short_long_name => "Spécial Bon Sauveur / Lavalley / St Georges Montcocq",
-                        :fgcolor => '#000000',
-                        :bgcolor => '#99cc00',
+                        :fgcolor => '000000',
+                        :bgcolor => '99cc00',
                         :src_id => 'SBSSGM',
                         :accessible => false,
                         :usage => :special )
@@ -416,10 +421,11 @@ module Gtfs
       import_stoptimes ls, "Collège Bechevel - St Georges", trips
       
       ls = Line.create( :short_name => "S4",
+                        :agency_id => @agency.id,
                         :long_name => "Spécial Agneaux / Le Verrier",
                         :short_long_name => "Spécial Agneaux / Le Verrier",
-                        :fgcolor => '#ffffff',
-                        :bgcolor => '#333399',
+                        :fgcolor => 'ffffff',
+                        :bgcolor => '333399',
                         :src_id => 'SALV',
                         :accessible => false,
                         :usage => :special )
@@ -433,10 +439,11 @@ module Gtfs
 
 
       ls = Line.create( :short_name => "S5",
+                        :agency_id => @agency.id,
                         :long_name => "Spécial Pasteur / Corot / Curie",
                         :short_long_name => "Spécial Pasteur / Corot / Curie",
-                        :fgcolor => '#ffffff',
-                        :bgcolor => '#cc99ff',
+                        :fgcolor => 'ffffff',
+                        :bgcolor => 'cc99ff',
                         :src_id => 'SBSSGM',
                         :accessible => false,
                         :usage => :special )
@@ -510,7 +517,7 @@ module Gtfs
             stops << stop
           end
         elsif not line_coord_elem.nil?
-          line = Line.find_by_short_name elem.at_xpath("name").text.to_i.to_s
+          line = @agency.lines.find_by_short_name elem.at_xpath("name").text.to_i.to_s
           data = []
           line_coord_elem.text.strip.split( / / ).each do |coord_str|
             coord = coord_str.split( /,/ )

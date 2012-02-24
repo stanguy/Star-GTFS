@@ -331,8 +331,8 @@ loadLines= ->
 
 $.dthg = $.dthg || {}
 $.dthg.Bus = {
-        init: ->
-            loadLines()
-            mapBus = new MapBus()
-    }
+    init: ->
+        loadLines()
+        mapBus = new MapBus()
+}
 

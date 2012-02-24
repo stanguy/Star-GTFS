@@ -1,6 +1,6 @@
 
 <% if @line_data %>
-  <ul id='line_data' data-line-url='<%= home_line_path( @line )%>' data-bgcolor="<%= @line_bgcolor %>">
+  <ul id='line_data' data-line-url='<%= home_line_path( @agency, @line )%>' data-bgcolor="<%= @line_bgcolor %>">
     <% @line_data.each do |stop| %>
       <li>
         <% stop_options = { 'data-id' => stop[:id], 'data-lat' => stop[:lat], 'data-lon' => stop[:lon], 'data-others' => stop[:others].join(','), 'data-accessible' => stop[:accessible] } 
@@ -31,35 +31,27 @@
   </h1>
   <div id="navigator">
     <div id="lines">
+<% cache( 'all_lines_' + @agency.id.to_s ) do %>
+  <% lines = @agency.lines.all
+     lines_groupes = [ lines.select(&:is_urban?   ),
+                       lines.select(&:is_suburban?),
+                       lines.select(&:is_express? ),
+                       lines.select(&:is_special? ) ] %>
       <ul id="line_types">
         <li><a href="#urban">Lignes urbaines</a></li>
-        <li><a href="#suburban">Suburbaines</a></li>
-        <li><a href="#express">Express</a></li>
+        <% unless lines_groupes[1].empty? %><li><a href="#suburban">Suburbaines</a></li><% end %>
+        <% unless lines_groupes[1].empty? %><li><a href="#express">Express</a></li><% end %>
         <li><a href="#special">Spéciales</a></li>
       </ul>
+      <%  [ "urban", "suburban", "express", "special" ].each_with_index do |h_id,idx| next if lines_groupes[idx].empty? %>
+      <div id="<%= h_id %>" class="list">
+        <%= render :partial => 'lines', :object => lines_groupes[idx] %>
+      </div>
+      <% end %>
+<% end %>
     <span id="ajax-loader" style="display: none;">
       <img src="<%= image_path "ajax-loader.gif" %>" alt="en cours">
     </span>
-<% cache('all_lines') do %>
-<% lines = Line.all
-   lines_groupes = [ lines.select(&:is_urban?   ),
-                     lines.select(&:is_suburban?),
-                     lines.select(&:is_express? ),
-                     lines.select(&:is_special? ) ] %>
-
-   <div id="urban" class="list">
-      <%= render :partial => 'lines', :object => lines_groupes[0] %>
-    </div>
-    <div id="suburban" class="list">
-      <%= render :partial => 'lines', :object => lines_groupes[1] %>
-    </div>
-    <div id="express" class="list">
-      <%= render :partial => 'lines', :object => lines_groupes[2] %>
-    </div>
-    <div id="special" class="list">
-      <%= render :partial => 'lines', :object => lines_groupes[3] %>
-    </div>
-<% end %>
       <%= div_clear %>
     </div>
     <div id="other_actions">

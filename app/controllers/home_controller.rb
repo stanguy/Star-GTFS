@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 class HomeController < ApplicationController
+  before_filter :set_agency
+
+  def redirect_root
+    redirect_to agency_path(Agency.first)
+  end
+
   def show
-    @agency = Agency.first
   end
 
   def stops
@@ -10,8 +15,7 @@ class HomeController < ApplicationController
   end
 
   def line
-    @agency = Agency.first
-    l = Line.by_short_name(params[:id])
+    l = @agency.lines.by_short_name(params[:id])
 
     if params[:stop_id]
       @selected_stop = params[:stop_id]
@@ -54,7 +58,7 @@ class HomeController < ApplicationController
         :name => stop.name,
         :id => stop.slug, :lat => stop.lat, :lon => stop.lon,
         :accessible => ( l.accessible && stop.accessible ),
-        :schedule_url => url_for({ :action => 'schedule', :line_id => l, :stop_id => stop, :only_path => true }),
+        :schedule_url => url_for({ :agency_id => @agency, :action => 'schedule', :line_id => l, :stop_id => stop, :only_path => true }),
         
       }
       stop_info[:trip_time] = stops_of_trip[stop.id] unless stops_of_trip.nil?
@@ -67,7 +71,7 @@ class HomeController < ApplicationController
             :direction => headsigns[headsign_id].name,
             :bearing => bearings[headsign_id],
             :times => stop_times[stop.id][headsign_id].collect {|st| { :t => st.arrival.to_formatted_time, :tid => st.trip_id } }[0,9],
-            :schedule_url => url_for({ :action => 'schedule', :line_id => l, :stop_id => stop, :headsign_id => headsigns[headsign_id], :only_path => true })
+            :schedule_url => url_for({ :action => 'schedule', :agency_id => @agency, :line_id => l, :stop_id => stop, :headsign_id => headsigns[headsign_id], :only_path => true })
           }
         end.reject {|x| x[:times].empty? }
       end
@@ -177,6 +181,15 @@ class HomeController < ApplicationController
       # someone is using a legacy route
       params[:line_id] = Line.first( :conditions => { :src_id => params[:route_id] } ).to_param
       params[:stop_id] = StopAlias.first( :conditions => { :src_id => params[:stop_id] } ).stop.to_param
+    end
+  end
+
+  def set_agency
+    if params[:agency_id]
+      @agency = Agency.find_by_slug( params[:agency_id] )
+      if @agency.nil?
+        redirect_to root_path
+      end
     end
   end
       
