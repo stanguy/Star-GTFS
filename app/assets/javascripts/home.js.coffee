@@ -228,6 +228,8 @@ class MapBus
         }
         $('#ref_date .day input').datepicker(
             showButtonPanel: true
+            minDate: '-1'
+            maxDate: '+3m' # could be <feed-expiration-date>
             onSelect: => this.onChangeTime()
         )
         $('#ref_date .time input').timePicker().change => this.onChangeTime()
