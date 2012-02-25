@@ -78,6 +78,11 @@ SQL
                                :city => city,
                                :ads_allowed => ads_allowed )
     end
+    handle :feed_info do |line|
+      @agency.publisher = line[:feed_publisher_name]
+      @agency.feed_url = line[:feed_publisher_url]
+      @agency.feed_ref = line[:feed_end_date]
+    end
 
     def pre_stops
       @all_stops = {}

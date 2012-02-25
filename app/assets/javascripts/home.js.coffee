@@ -165,6 +165,7 @@ class MapBus
             adUnit = new google.maps.adsense.AdUnit( adUnitDiv, adUnitOptions )
             adUnit.getContainer().style.opacity = '0.7'
         @map.controls[google.maps.ControlPosition.TOP_CENTER].push $('#navigator')[0]
+        @map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push $('#feedinfo')[0]
         InfoWindow.get().setMap @map
         $('#lines .list a').click (e) => this.onSelectLine(e)
         $('#lines').tabs({event: 'mouseover'}).css('visibility','visible');
@@ -189,7 +190,7 @@ class MapBus
         window.onpopstate = (e) => this.historyCallback(e)
         $("button.help").button( icons: { primary: 'ui-icon-help' }, text: false )
         $("button.help").click => this.onHelp()
-        $("body").on 'click', "#map h1", => this.onAbout()
+        $("body").on 'click', "#map h1", => this.onTitleClick()
     onHelp: ->
         $.fancybox({
             autoDimensions: false
@@ -198,10 +199,10 @@ class MapBus
             type: 'inline'
             href: "#help"
         })
-    onAbout: ->
+    onTitleClick: ->
         $.fancybox({
             type: 'inline'
-            href: "#about"
+            href: "#agency_select"
         })
     onFollowupLine: (e) ->
         e.preventDefault()

@@ -43,7 +43,8 @@ $baseActiveColor: #FF0084;
         font-variant: small-caps;
         display: block;
         font-size: 20px;
-        color: #390;
+        &#rennes { color: #390; }
+        &#saint-lo { color: #f00; }
     }
 }
 
@@ -207,6 +208,45 @@ $baseActiveColor: #FF0084;
     }
 }
 
+#agency_select {
+    width: 240px;
+    margin-bottom: 20px;
+    ul {
+        list-style: none;
+        padding: 0;
+        width: 200px;
+        li {
+            display: block;
+            float: left;
+            width: 100%;
+            border-bottom: 1px dotted #ddd;
+            &:last-child { border-bottom: 1px solid white; }
+            a {
+                height: 30px;
+                line-height: 30px;
+                padding: 20px 0 20px 30px;
+                border: 1px solid white;
+                display: inline-block;
+                width: 100%;
+                font-family: 'PT Sans', sans-serif;
+                font-size: 120%;
+                color: #1412bc;
+                letter-spacing: 5px;
+                text-decoration: none;
+                &:hover { background-color: #EEFCFF; border: 1px solid #ddd; }
+            }
+        }
+    }
+}
+
+#feedinfo {
+    font-family: Arial,sans-serif;
+    font-size: 10px;
+    color: #444;
+    height: 19px;
+    line-height: 19px;
+    a { color: inherit; }
+}
 
 
 html, html body {

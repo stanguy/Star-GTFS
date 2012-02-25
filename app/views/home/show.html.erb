@@ -26,9 +26,7 @@
     </ul>
   <% end %>
 <% end %>
-  <h1>
-    Bus de <span><%= @agency.city %></span> en ligne
-  </h1>
+  <h1>Bus de <span id="<%= @agency.slug %>"><%= @agency.city %></span> en ligne</h1>
   <div id="navigator">
     <div id="lines">
 <% cache( 'all_lines_' + @agency.id.to_s ) do %>
@@ -61,10 +59,20 @@
   </div>
   </div>
   <div id="map" data-center="<%= @agency.center.x %>,<%= @agency.center.y %>" data-ads-allowed="<%= @agency.ads_allowed ? 1 : "" %>"> </div>
+  <div id="feedinfo">Source: <% info = [ @agency.publisher, @agency.feed_ref ].join(", "); if @agency.feed_url? %><%= link_to info, @agency.feed_url %><% else %><%= info %><% end %></div>
 
   <div style="display: none">
     <div id="help" class="container_12">
       <div class="grid_6 alpha">
+        <h2>À propos</h2>
+        <p>Cette application a, en partie, été réalisée dans le cadre
+          de <span>Rennes Métropole en accès libre</span> et se base sur
+          les données GTFS du <span>09/01/2012</span>.</p>
+        <p>Retrouvez
+          le <a href="http://github.com/stanguy/Star-GFTFS">code source de
+            cette application sur Github</a></p>
+        <p>Retrouvez <a href="http://itunes.apple.com/fr/app/bus-de-rennes-en-poche/id412512682?mt=8">Bus
+            de Ligne en Poche</a> pour votre iPhone ou iPod Touch sur l'AppStore Apple</p>
         <h2>Fonctionnement de la cartographie</h2>
         <p>La vue cartographique permet d'afficher les arrêts des
           différentes lignes du réseau STAR des bus de l'agglomération
@@ -96,15 +104,16 @@
       </div>
       <%= div_clear %>
     </div>
-    <div id="about">
-      <p>Cette application a, en partie, été réalisée dans le cadre
-      de <span>Rennes Métropole en accès libre</span> et se base sur
-      les données GTFS du <span>09/01/2012</span>.</p>
-      <p>Retrouvez
-      le <a href="http://github.com/stanguy/Star-GFTFS">code source de
-      cette application sur Github</a></p>
-      <p>Retrouvez <a href="http://itunes.apple.com/fr/app/bus-de-rennes-en-poche/id412512682?mt=8">Bus
-      de Ligne en Poche</a> pour votre iPhone ou iPod Touch sur l'AppStore Apple</p>
-    </div>
+    
+    <% cache( 'agencies' ) do %>
+      <div id="agency_select">
+        <ul>
+          <% Agency.all.each do |agency| %>
+            <li><%= link_to agency.city, agency_path( agency ) %></li>
+          <% end %>
+        </ul>
+        <%= div_clear %>
+      </div>
+    <% end %>
   </div>
   <% init_javascript "$.dthg.Bus.init();" %>

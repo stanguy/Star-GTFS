@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120224202850) do
+ActiveRecord::Schema.define(:version => 20120225001112) do
 
   create_table "agencies", :force => true do |t|
     t.string      "name"
@@ -23,9 +23,12 @@ ActiveRecord::Schema.define(:version => 20120224202850) do
     t.boolean     "ads_allowed"
     t.datetime    "created_at",                 :null => false
     t.datetime    "updated_at",                 :null => false
+    t.string      "slug"
     t.multi_point "bbox",        :limit => nil,                 :srid => 4326
     t.point       "center",      :limit => nil,                 :srid => 4326
-    t.string      "slug"
+    t.string      "publisher"
+    t.string      "feed_url"
+    t.string      "feed_ref"
   end
 
   create_table "bike_stations", :force => true do |t|

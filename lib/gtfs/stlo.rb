@@ -55,6 +55,8 @@ module Gtfs
     def run
       
       @agency = Agency.create( :name => "TUAS",
+                               :publisher => "Veolia Transdev",
+                               :feed_ref => "20111103",
                                :tz => "Europe/Paris",
                                :lang => :fr,
                                :city => "Saint Lô",
