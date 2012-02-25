@@ -67,28 +67,32 @@
       <div class="grid_6 alpha">
         <h2>À propos</h2>
         <p>Cette application a, en partie, été réalisée dans le cadre
-          de <span>Rennes Métropole en accès libre</span> et se base sur
-          les données GTFS du <span>09/01/2012</span>.</p>
+          de <span>Rennes Métropole en accès libre</span>.</p>
         <p>Retrouvez
           le <a href="http://github.com/stanguy/Star-GFTFS">code source de
             cette application sur Github</a></p>
         <p>Retrouvez <a href="http://itunes.apple.com/fr/app/bus-de-rennes-en-poche/id412512682?mt=8">Bus
-            de Ligne en Poche</a> pour votre iPhone ou iPod Touch sur l'AppStore Apple</p>
+            de Rennes en Poche</a>
+            et <a href="http://itunes.apple.com/fr/app/bus-de-saint-lo-en-poche/id467968866?mt=8">Bus
+            de St Lô en Poche</a> pour votre iPhone ou iPod Touch sur
+            l'AppStore Apple</p>
         <h2>Fonctionnement de la cartographie</h2>
         <p>La vue cartographique permet d'afficher les arrêts des
-          différentes lignes du réseau STAR des bus de l'agglomération
-          rennaise.  S'ils sont disponibles, cliquer sur l'icône d'un
+          différentes lignes du réseau <%= @agency.name %> des bus de l'agglomération
+          de <%= @agency.city %>.  S'ils sont disponibles, cliquer sur l'icône d'un
           arrêt permet d'afficher les passages à venir.  À partir de
           là, il est possible soit d'afficher les horaires complets,
           soit d'éventuellement consulter les horaires des
           correspondances à cet arrêt.</p>
         <h2>Source de données</h2>
-        <p>Les horaires indiqués sont théoriques et fournis par Keolis
-          Rennes / Rennes Métropole. Un traitement automatique étant
+        <p>Les horaires indiqués sont théoriques et fournis par
+          <%= @agency.publisher %>. Un traitement automatique étant
           appliqué à ces données, merci de bien
           vouloir <a href="mailto:maps@dthg.net">contacter
-          l'auteur</a> en cas d'erreur ou d'incohérence.</p>
-        <p>Ce service n'est pas affilié au STAR, Keolis Rennes ou Rennes Métropole.</p>
+          l'auteur de ce site</a> en cas d'erreur ou d'incohérence.</p>
+        <p>Ce service n'est <b>pas</b> affilié à <%= @agency.publisher
+        %>, <%= @agency.name %> ou à la ville de <%= @agency.city
+        %>.</p>
       </div>
       <div class="grid_6 omega">
         <h2>Signification des icônes</h2>
