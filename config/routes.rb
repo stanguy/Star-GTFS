@@ -1,11 +1,11 @@
 StarGtfs::Application.routes.draw do
-  match "line/:id"                                            => redirect {|params,req| "/city/#{Agency.first.id}/line/#{params[:id]}" }
-  match "line/:id/at/:stop_id"                                => redirect {|params,req| "/city/#{Agency.first.id}/line/#{params[:id]}/at/#{params[:stop_id]}" }
-  match "stops"                                               => redirect {|params,req| "/city/#{Agency.first.id}/stops" }
+  match "line/:id"                                            => redirect {|params,req| "/city/#{Agency.first.to_param}/line/#{params[:id]}" }
+  match "line/:id/at/:stop_id"                                => redirect {|params,req| "/city/#{Agency.first.to_param}/line/#{params[:id]}/at/#{params[:stop_id]}" }
+  match "stops"                                               => redirect {|params,req| "/city/#{Agency.first.to_param}/stops" }
   # probably wrong regarding the headsign
-  match "schedule/:line_id/at/:stop_id(/toward/:headsign_id)" => redirect {|params,req| "/city/#{Agency.first.id}/schedule/#{params[:line_id]}/at/#{params[:stop_id]}" + ( params.has_key?(:headsign_id) ? "/toward/#{params[:headsign_id]})" : "" ) }
-  match "schedule/legacy/:route_id/at/:stop_id"               => redirect {|params,req| "/city/#{Agency.first.id}/schedule/legacy/#{params[:route_id]}/at/#{params[:stop_id]}" }
-  match "schedule/at/:stop_id/"                               => redirect {|params,req| "/city/#{Agency.first.id}/schedule/at/#{params[:stop_id]}" }
+  match "schedule/:line_id/at/:stop_id(/toward/:headsign_id)" => redirect {|params,req| "/city/#{Agency.first.to_param}/schedule/#{params[:line_id]}/at/#{params[:stop_id]}" + ( params.has_key?(:headsign_id) ? "/toward/#{params[:headsign_id]})" : "" ) }
+  match "schedule/legacy/:route_id/at/:stop_id"               => redirect {|params,req| "/city/#{Agency.first.to_param}/schedule/legacy/#{params[:route_id]}/at/#{params[:stop_id]}" }
+  match "schedule/at/:stop_id/"                               => redirect {|params,req| "/city/#{Agency.first.to_param}/schedule/at/#{params[:stop_id]}" }
     
   match "city/:agency_id" => "home#show", :as => :agency
   match "city/:agency_id/line/:id" => "home#line", :as => :home_line
