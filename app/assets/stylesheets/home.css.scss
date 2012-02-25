@@ -24,6 +24,32 @@ p, li {
     display: none;
 }
 
+#ref_date {
+    cursor: pointer;
+    margin: 0 5px 5px;
+    padding: 1px 6px;
+    font-size: 13px;
+    font-family: Arial,sans-serif;
+    background: -moz-linear-gradient(center top , #FFFFFF, #E6E6E6) repeat scroll 0 0 transparent;
+    border: 1px solid #717B87;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    span {
+        padding:0 5px;
+        display: inline-block;
+        float: left;
+        &:first-child {
+            padding-left: 0;
+            border-right: 1px solid #717B87;
+        }
+        input {
+            border: none;
+            background: transparent;
+        }
+        &.day input { width: 80px; }
+        &.time input { width: 40px; }
+    }
+}
+
 $baseBlueColor: #0073EA;
 $baseActiveColor: #FF0084;
 
@@ -156,6 +182,12 @@ $baseActiveColor: #FF0084;
             width: 30px;
         }
     }
+}
+button#clock {
+    width: 30px;
+    padding: 5px 0 0;
+    margin-left: 6px;
+    span { padding: 0; }
 }
 
 #infowindow {
@@ -333,3 +365,7 @@ html, html body {
      opacity: 0.8;
 }
 
+
+div.time-picker li {
+    font-family: 'PT Sans',sans-serif;
+}

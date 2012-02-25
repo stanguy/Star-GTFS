@@ -21,8 +21,12 @@ class StopTime < ActiveRecord::Base
   belongs_to :stop
   belongs_to :headsign # normalizawha?
 
-  scope :coming, lambda { |line_id|
-    now = Time.zone.now
+  scope :coming, lambda { |line_id,p_now|
+    unless p_now.nil?
+      now = p_now
+    else
+      now = Time.zone.now
+    end
     later = now + 2.hour
     value_now = ( now.hour * 60 + now.min ) * 60 + now.sec 
     value_later = ( later.hour * 60 + later.min ) * 60 + later.sec

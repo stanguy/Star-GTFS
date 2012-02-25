@@ -1,5 +1,7 @@
 #= require fancybox
 #= require hogan.js
+#= require jquery.timePicker.min.js
+#= require jquery.ui.datepicker-fr.js
 #= require_tree ../templates
 
 History = window.history
@@ -8,6 +10,7 @@ selectedMarker = null
 currentLineUrl = null
 mapBus = null
 initialLoadingSentinel = false;
+refDate = null
 
 linesInfo = {
         baseUrl: '',
@@ -190,7 +193,14 @@ class MapBus
         window.onpopstate = (e) => this.historyCallback(e)
         $("button.help").button( icons: { primary: 'ui-icon-help' }, text: false )
         $("button.help").click => this.onHelp()
+        ref_date = $("#ref_date")
+        @map.controls[google.maps.ControlPosition.RIGHT_TOP].push ref_date[0]
+
         $("body").on 'click', "#map h1", => this.onTitleClick()
+
+        rd = $('#ref_date')
+        rd.one 'click', => this.onDefaultRefDateClick()
+
     onHelp: ->
         $.fancybox({
             autoDimensions: false
@@ -204,6 +214,29 @@ class MapBus
             type: 'inline'
             href: "#agency_select"
         })
+    onDefaultRefDateClick: ->
+        rd = $('#ref_date')
+        rd.html ''
+        refDate = new Date()
+        if refDate.getMinutes() >= 10
+            mins = refDate.getMinutes()
+        else
+            mins = "0" + refDate.getMinutes()
+        rd.append HoganTemplates.datetime.render {
+            hours: refDate.getHours()
+            mins: mins
+        }
+        $('#ref_date .day input').datepicker(
+            showButtonPanel: true
+            onSelect: => this.onChangeTime()
+        )
+        $('#ref_date .time input').timePicker().change => this.onChangeTime()
+    onChangeTime: ->
+        time = $.timePicker( '#ref_date .time input' ).getTime()
+        refDate = $('#ref_date .day input').datepicker( "getDate" )
+        refDate.setMinutes( time.getMinutes() )
+        refDate.setHours( time.getHours() )
+        $('#lines .selected a').click()
     onFollowupLine: (e) ->
         e.preventDefault()
         url = $('#lines .list li.selected a').attr('href');
@@ -247,6 +280,8 @@ class MapBus
         $('#lines .list li.selected').removeClass('selected');
         selected_item.closest('li').addClass('selected');
         line_url = selected_item.attr 'href'
+        if refDate?
+            line_url = line_url + '?t=' + (refDate.getTime()/1000)
         History.pushState( { lineUrl: line_url }, null, line_url );
         window._gaq.push line_url
         $.get( line_url , {},
@@ -333,6 +368,7 @@ loadLines= ->
 $.dthg = $.dthg || {}
 $.dthg.Bus = {
     init: ->
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
         loadLines()
         mapBus = new MapBus()
 }
