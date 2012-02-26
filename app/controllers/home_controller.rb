@@ -114,6 +114,7 @@ class HomeController < ApplicationController
         headsign = Headsign.find_by_slug(params[:headsign_id])
         unless headsign.nil?
           stop_signs = stop_signs.where( :headsign_id => headsign.id )
+          @title = @title + " direction #{headsign.name}"
         end
       end
       @other_lines = @stop.lines.select( "id,short_name,picto_url,slug").collect{|sl|
