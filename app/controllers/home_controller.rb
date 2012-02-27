@@ -101,10 +101,10 @@ class HomeController < ApplicationController
   def schedule
     @headsigns = {}
     stop_signs = nil
-    @stop = Stop.find_by_slug(params[:stop_id]) or raise ActiveRecord::RecordNotFound.new
+    @stop = @agency.stops.find_by_slug(params[:stop_id]) or raise ActiveRecord::RecordNotFound.new
     @other_lines = nil
     if params[:line_id]
-      @line = Line.by_short_name(params[:line_id])
+      @line = @agency.lines.by_short_name(params[:line_id])
       @title = "Horaires de la ligne #{@line.short_name} à l'arrêt #{@stop.name}"
       process_headsigns @line
 
