@@ -7,7 +7,7 @@
 <div class="schedule_container container_12">
 <% end %>
 <h2><%= @title %></h2>
-<% unless request.xhr? %><a href="/" class="back_to_map">Retour à la carte</a><% end %>
+<% unless request.xhr? %><%= link_to "Retour à la carte", agency_url(@agency), { class: "back_to_map" } %><% end %>
 <%= div_clear %>
 <% if @other_lines && @other_lines.length > 0 %>
     <div class="other_lines grid_6 push_3">
