@@ -310,8 +310,8 @@ class MapBus
         line_data = []
         currentLineUrl = $('#line_data').data('line-url')
         endUrl = currentLineUrl
-        for child in $('#line_data').children('li')
-            stop = $(child).find('h2 a')
+        for child in $('#line_stops').children('li')
+            stop = $(child).find('h3 a')
             selected = false
             if ( stop.data('selected') )
                 selected = true
@@ -325,7 +325,7 @@ class MapBus
                 others = []
             times = [];
             for subchild in $(child).children('div')
-                direction = $(subchild).find('h3 a')
+                direction = $(subchild).find('h4 a')
                 stop_times = [];
                 for subsubchild in $(subchild).children('span')
                     stop_times.push({ t: $(subsubchild).text(), tid: $(subsubchild).data('tid')});

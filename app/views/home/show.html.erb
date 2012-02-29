@@ -1,15 +1,18 @@
 
+  <h1>Bus de <span id="<%= @agency.slug %>"><%= @agency.city %></span> en ligne</h1>
 <% if @line_data %>
-  <ul id='line_data' data-line-url='<%= home_line_path( @agency, @line )%>' data-bgcolor="<%= @line_bgcolor %>">
+  <div id='line_data' data-line-url='<%= home_line_path( @agency, @line )%>' data-bgcolor="<%= @line_bgcolor %>">
+    <h2><%= @line.short_name %> <%= @line.long_name %></h2>
+    <ul id="line_stops">
     <% @line_data.each do |stop| %>
       <li>
         <% stop_options = { 'data-id' => stop[:id], 'data-lat' => stop[:lat], 'data-lon' => stop[:lon], 'data-others' => stop[:others].join(','), 'data-accessible' => stop[:accessible] } 
            stop_options['data-selected'] = 1 if stop[:id] == @selected_stop %>
-        <h2><%= link_to stop[:name], stop[:schedule_url], stop_options %></h2>
+        <h3><%= link_to stop[:name], stop[:schedule_url], stop_options %></h3>
         <% if stop.has_key? :times %>
           <% stop[:times].each do |trip| %>
             <div>
-              <%= content_tag( :h3, 
+              <%= content_tag( :h4, 
                                link_to( trip[:direction], trip[:schedule_url], 'data-bearing' => trip[:bearing] ) ) %>
               <% trip[:times].each do |time| %>
                 <%= content_tag( :span, time[:t], 'data-tid' => time[:tid] ) %>
@@ -25,8 +28,8 @@
       <%= @line_paths.collect {|p| content_tag 'li', p }.join.html_safe %>
     </ul>
   <% end %>
+  </div>
 <% end %>
-  <h1>Bus de <span id="<%= @agency.slug %>"><%= @agency.city %></span> en ligne</h1>
   <div id="navigator">
     <div id="lines">
 <% cache( 'all_lines_' + @agency.id.to_s ) do %>
