@@ -309,6 +309,8 @@ class MapBus
     loadLineData: ->
         line_data = []
         currentLineUrl = $('#line_data').data('line-url')
+        short = $('#line_data').data("short")
+        $('#lines [data-short="' + short + '"]').parent().addClass( "selected" )
         endUrl = currentLineUrl
         for child in $('#line_stops').children('li')
             stop = $(child).find('h3 a')
@@ -357,6 +359,7 @@ class MapBus
             paths: $(elem).text() for elem in $('ul#line_paths li')
             colors: { bg: $('#line_data').data('bgcolor'), fg: null }
         })
+
 
 
 loadLines= ->

@@ -1,7 +1,7 @@
 
   <h1>Bus de <span id="<%= @agency.slug %>"><%= @agency.city %></span> en ligne</h1>
 <% if @line_data %>
-  <div id='line_data' data-line-url='<%= home_line_path( @agency, @line )%>' data-bgcolor="<%= @line_bgcolor %>">
+  <div id='line_data' data-line-url='<%= home_line_path( @agency, @line )%>' data-bgcolor="<%= @line_bgcolor %>" data-short="<%= @line.short_name %>">
     <h2><%= @line.short_name %> <%= @line.long_name %></h2>
     <ul id="line_stops">
     <% @line_data.each do |stop| %>
