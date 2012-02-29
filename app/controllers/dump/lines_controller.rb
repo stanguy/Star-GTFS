@@ -1,6 +1,7 @@
 class Dump::LinesController < InheritedResources::Base
   defaults :resource_class => Line
   respond_to :json
+  belongs_to :agency
 
   def bearings
     data = resource.trips.collect do |trip|

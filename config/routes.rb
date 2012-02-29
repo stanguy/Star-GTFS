@@ -29,26 +29,28 @@ StarGtfs::Application.routes.draw do
 
   if Rails.env.development?
     namespace :dump do
-      resources :lines do
+      resources :agencies do
+        resources :lines do
+          resources :stops do
+            resources :stop_times
+          end
+          resources :headsigns
+          resources :polylines
+          member do
+            get :bearings
+          end
+        end
+        resources :cities
         resources :stops do
-          resources :stop_times
-        end
-        resources :headsigns
-        resources :polylines
-        member do
-          get :bearings
-        end
+          collection do
+            get :main_ids
+          end
+          member do
+            get :close
+          end
+          resources :stop_aliases
+        end        
       end
-      resources :cities
-      resources :stops do
-        collection do
-          get :main_ids
-        end
-        member do
-          get :close
-        end
-	resources :stop_aliases
-      end        
     end
   end
 
