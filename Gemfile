@@ -21,7 +21,7 @@ group :assets do
   gem 'sass-rails', "  ~> 3.2.3"
   gem 'coffee-rails', "~> 3.2.1"
   gem 'uglifier', '>= 1.0.3'
-  gem 'hogan_assets', '1.0.1'
+  gem 'hogan_assets'
 end
 
 group :production do
