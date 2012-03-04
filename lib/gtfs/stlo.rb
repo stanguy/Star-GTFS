@@ -17,8 +17,9 @@ module Gtfs
       if headsign_str.blank? || headsign_str.nil?
         raise "Empty headsign"
       end
-      headsign = Headsign.create( :name => fix_stlo_headsign(headsign_str),
-                                  :line => line )
+      headsign = Headsign.find_or_create_by_name_and_line_id( fix_stlo_headsign(headsign_str),
+                                                              line.id )
+      headsign.save
       trips.each do |mtrip|
         mtrip.each do |calendar,times|
           trip = Trip.create( :line => line, 
