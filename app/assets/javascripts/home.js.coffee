@@ -61,7 +61,9 @@ class Marker
             return false
         @marker.setIcon this.determineIcon true
         selectedMarker = this
-        trip.bearing = trip.bearing.toLowerCase() for trip in @times
+        for trip in @times
+            if trip.bearing?
+                trip.bearing =  trip.bearing.toLowerCase()
         others = false
         if @others? and @others.length > 0
             others = { others: for line in @others
