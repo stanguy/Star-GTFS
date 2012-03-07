@@ -309,7 +309,7 @@ module Gtfs
       importer.stop_col = 1
       importer.first_trip_col = 3
       trips = importer.import(data_l2_semaine)
-      import_stoptimes l2, data_l2_semaine[73][1], trips
+      import_stoptimes l2, data_l2_semaine[69][1], trips
       
       importer = StLoImporter.new stop_registry
       importer.default_calendar = Calendar::SATURDAY
