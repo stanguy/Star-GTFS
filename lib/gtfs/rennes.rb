@@ -36,7 +36,7 @@ module Gtfs
       array.inject{ |sum, el| sum + el }.to_f / array.size
     end
     
-    NB_RECORDS_TO_INSERT = ActiveRecord::Base.connection.class.to_s == "ActiveRecord::ConnectionAdapters::SQLite3Adapter" ? 1 : 1000
+    NB_RECORDS_TO_INSERT = 1000
     def flush stop_times
       return if stop_times.empty?
       sql = <<SQL
