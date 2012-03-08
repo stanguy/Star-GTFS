@@ -166,16 +166,25 @@ class HomeController < ApplicationController
       case h.class_name
       when "Stop"
         stop = h.result
-        {
+        v = {
           :type => :stop,
           :name => stop.name,
           :id => stop.id,
-          :pos => [ stop.geom.lat, stop.geom.lon ]
+          :schedule_url => stop_schedule_path(@agency,stop),
+          :times => nil,
+          :others => nil,
+          :accessible => stop.accessible
         }
+        if stop.geom? 
+          v[:lat]= stop.geom.lat
+          v[:lon]= stop.geom.lon
+        end
+        v
       when "Line"
         { 
           :type => :line,
           :name => [h.stored(:short_name), h.stored(:long_name).shift].join( " " ),
+          :short => h.stored(:short_name),
           :id => h.primary_key,
         }
       end

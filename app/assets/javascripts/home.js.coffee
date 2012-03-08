@@ -204,13 +204,25 @@ class MapBus
 
         rd = $('#ref_date')
         rd.one 'click', => this.onDefaultRefDateClick()
+        $('#search form').submit -> false
         $('#search input[type="text"]').autocomplete({
             source: $('#search form').attr('action')
-            select: ( event, ui ) ->
+            select: ( event, ui ) =>
+                this.clearMap()
+                if ui.item.type == "stop" and ui.item.lat?
+                    @markers.push new Marker( @map, ui.item )
+                    @map.setCenter( new google.maps.LatLng( ui.item.lat, ui.item.lon ) )
+                else if ui.item.type == "line"
+                    $('#lines [data-short="' + ui.item.short + '"]').click()
+                    this.onSwitchToSearch()
                 input = $('#search input[type="text"]')
                 input.val( ui.item.name )
                 false
-        }).data("autocomplete")._renderItem = ( ul, item ) ->
+            search: =>
+                this.clearMap()
+        }).data("autocomplete")._renderItem = ( ul, item ) =>
+            if item.type == "stop" and item.lat?
+                this.markers.push new Marker( @map, item )
             $( "<li></li>" ).data( "item.autocomplete", item )
                 .append( "<a>" + item.name + "</a>" )
                 .appendTo( ul );
@@ -227,6 +239,7 @@ class MapBus
         if $('#search:visible').length > 0
             $('#search').slideUp 'slow', -> $('#lines').slideDown()
         else
+            this.clearMap()
             $('#lines').slideUp 'slow', -> $('#search').slideDown()
         $('button.search').blur()
     onTitleClick: ->
@@ -311,9 +324,11 @@ class MapBus
             "json" )
         short = selected_item.data('short')
         return false
-    onLineGet: (d,s,x) ->
+    clearMap: ->
         marker.setMap( null ) for marker in @markers
         line.setMap( null ) for line in @lines
+    onLineGet: (d,s,x) ->
+        this.clearMap()
         bounds = null
         @markers = for point in d.stops
             new Marker( @map, point )
