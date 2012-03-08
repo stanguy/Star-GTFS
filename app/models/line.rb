@@ -2,6 +2,14 @@ class Line < ActiveRecord::Base
 
   acts_as_url :short_long_name, :url_attribute => :slug
 
+
+  searchable do 
+    string :short_name, :stored => true
+    text :long_name, :stored => true
+    integer :agency_id
+  end
+
+
   belongs_to :agency
   has_and_belongs_to_many :stops
   has_many :stop_times

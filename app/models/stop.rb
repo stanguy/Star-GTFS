@@ -2,6 +2,11 @@ class Stop < ActiveRecord::Base
 
   acts_as_url :name, :url_attribute => :slug
 
+  searchable do 
+    text :name, :stored => true
+    integer :agency_id
+  end
+
   include POI
 
   has_many :stop_aliases

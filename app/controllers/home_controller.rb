@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 class HomeController < ApplicationController
-  before_filter :set_agency
+  before_filter :set_agency, :except => :redirect_root
 
   def redirect_root
     redirect_to agency_path(Agency.first)
@@ -155,7 +155,31 @@ class HomeController < ApplicationController
     end
   end
 
-  def alt
+  def search
+    agency = @agency
+    search = Sunspot.search [Stop,Line] { 
+      fulltext params[:term] 
+      with :agency_id, agency.id
+      paginate :page => 1, :per_page => 10
+    }
+    render :json => search.hits.collect {|h|
+      case h.class_name
+      when "Stop"
+        stop = h.result
+        {
+          :type => :stop,
+          :name => stop.name,
+          :id => stop.id,
+          :pos => [ stop.geom.lat, stop.geom.lon ]
+        }
+      when "Line"
+        { 
+          :type => :line,
+          :name => [h.stored(:short_name), h.stored(:long_name).shift].join( " " ),
+          :id => h.primary_key,
+        }
+      end
+    }
   end
 
   private
@@ -189,12 +213,18 @@ class HomeController < ApplicationController
     end
   end
 
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
+
   def set_agency
     if params[:agency_id]
       @agency = Agency.find_by_slug( params[:agency_id] )
       if @agency.nil?
-        redirect_to root_path
+        not_found
       end
+    else
+      not_found
     end
   end
       

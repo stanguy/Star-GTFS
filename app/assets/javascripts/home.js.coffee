@@ -195,6 +195,8 @@ class MapBus
         window.onpopstate = (e) => this.historyCallback(e)
         $("button.help").button( icons: { primary: 'ui-icon-help' }, text: false )
         $("button.help").click => this.onHelp()
+        $("button.search").button( icons: { primary: 'ui-icon-gear' }, text: false )
+        $("button.search").click => this.onSwitchToSearch()
         ref_date = $("#ref_date")
         @map.controls[google.maps.ControlPosition.RIGHT_TOP].push ref_date[0]
 
@@ -202,6 +204,16 @@ class MapBus
 
         rd = $('#ref_date')
         rd.one 'click', => this.onDefaultRefDateClick()
+        $('#search input[type="text"]').autocomplete({
+            source: $('#search form').attr('action')
+            select: ( event, ui ) ->
+                input = $('#search input[type="text"]')
+                input.val( ui.item.name )
+                false
+        }).data("autocomplete")._renderItem = ( ul, item ) ->
+            $( "<li></li>" ).data( "item.autocomplete", item )
+                .append( "<a>" + item.name + "</a>" )
+                .appendTo( ul );
 
     onHelp: ->
         $.fancybox({
@@ -211,6 +223,12 @@ class MapBus
             type: 'inline'
             href: "#help"
         })
+    onSwitchToSearch: ->
+        if $('#search:visible').length > 0
+            $('#search').slideUp 'slow', -> $('#lines').slideDown()
+        else
+            $('#lines').slideUp 'slow', -> $('#search').slideDown()
+        $('button.search').blur()
     onTitleClick: ->
         $.fancybox({
             type: 'inline'

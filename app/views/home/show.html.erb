@@ -50,13 +50,24 @@
       </div>
       <% end %>
 <% end %>
+    <%= div_clear %>
+    </div>
+    <div id="search">
+      <div>
+        <%= form_tag search_path(@agency) do %>
+          <label for="term">Rechercher</label>
+          <input type="text" name="term">
+        <% end %>
+      </div>
+      <div class="results">
+      </div>
+    </div>
     <span id="ajax-loader" style="display: none;">
       <img src="<%= image_path "ajax-loader.gif" %>" alt="en cours">
     </span>
-      <%= div_clear %>
-    </div>
     <div id="other_actions">
       <button class="help">Aide</button>
+      <button class="search">Chercher</button>
       <div id="ref_date">Maintenant</div>
     </div>
   </div>

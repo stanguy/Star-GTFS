@@ -13,7 +13,7 @@
 }
 
 
-h1, h2, h3, h4, h5, th, #line_types li a {
+h1, h2, h3, h4, h5, th, #line_types li a, label {
     font-family: 'PT Sans', sans-serif;
 }
 p, li {
@@ -179,6 +179,15 @@ $baseActiveColor: #FF0084;
             }
         }
     }
+    #search {
+        display: none;
+        float: left;
+        padding: 10px;
+        label {
+            font-weight: bold;
+        }
+    }
+
     #other_actions {
         float: right;
         text-align: right;
@@ -187,7 +196,7 @@ $baseActiveColor: #FF0084;
             width: 100px;
             margin: 2px;
         }
-        button.ui-button.help {
+        button.ui-button {
             width: 30px;
         }
     }
@@ -294,6 +303,15 @@ button#clock {
     height: 19px;
     line-height: 19px;
     a { color: inherit; }
+
+    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0pt, rgba(255,255,255,0.5) 50px);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0pt,rgba(255,255,255,0)), color-stop(50px,rgba(255,255,255,0.5)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0pt,rgba(255,255,255,0.5) 50px);
+    background: -o-linear-gradient(top, rgba(255,255,255,0) 0pt,rgba(255,255,255,0.5) 50px);
+    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0pt,rgba(255,255,255,0.5) 50px);
+    background: linear-gradient(top, rgba(255,255,255,0) 0pt,rgba(255,255,255,0.5) 50px);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#80ffffff',GradientType=0 );
+
 }
 
 
