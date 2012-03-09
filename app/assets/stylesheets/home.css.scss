@@ -201,6 +201,21 @@ $baseActiveColor: #FF0084;
         }
     }
 }
+
+.ui-autocomplete {
+    li.ui-menu-item {
+        a {
+            font-family: 'PT Sans', sans-serif;
+            height: 30px;
+            line-height: 30px;
+            white-space: nowrap;
+        }
+        &.line a {
+            font-style: italic;
+        }
+    }
+}
+
 button#clock {
     width: 30px;
     padding: 5px 0 0;

@@ -225,6 +225,7 @@ class MapBus
                 this.markers.push new Marker( @map, item )
             $( "<li></li>" ).data( "item.autocomplete", item )
                 .append( "<a>" + item.name + "</a>" )
+                .addClass( item.type )
                 .appendTo( ul );
 
     onHelp: ->
@@ -237,10 +238,10 @@ class MapBus
         })
     onSwitchToSearch: ->
         if $('#search:visible').length > 0
-            $('#search').slideUp 'slow', -> $('#lines').slideDown()
+            $('#search').slideUp 'fast', -> $('#lines').slideDown()
         else
             this.clearMap()
-            $('#lines').slideUp 'slow', -> $('#search').slideDown()
+            $('#lines').slideUp 'fast', -> $('#search').slideDown()
         $('button.search').blur()
     onTitleClick: ->
         $.fancybox({
