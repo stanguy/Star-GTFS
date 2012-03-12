@@ -1,0 +1,8 @@
+<% if @results.count > 0 %>
+  <ul>
+    <% @results.each do |result| %>
+      <li><a href="<%= result[:type] == :stop ? result[:schedule_url] : home_line_path( @agency, result[:short] ) %>"><%= result[:name] %></a></li>
+    <% end %>
+<% else %>
+  <p>Aucun résultat</p>
+<% end %>

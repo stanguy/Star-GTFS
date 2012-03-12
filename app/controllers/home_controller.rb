@@ -162,7 +162,7 @@ class HomeController < ApplicationController
       with :agency_id, agency.id
       paginate :page => 1, :per_page => 10
     }
-    render :json => search.hits.collect {|h|
+    @results = search.hits.collect {|h|
       case h.class_name
       when "Stop"
         stop = h.result
@@ -189,6 +189,10 @@ class HomeController < ApplicationController
         }
       end
     }
+    respond_to do |format|
+      format.html 
+      format.json { render :json => @results }
+    end
   end
 
   private
