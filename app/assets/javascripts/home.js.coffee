@@ -392,7 +392,7 @@ class MapBus
         History.replaceState( state, '', endUrl );
         this.onLineGet( {
             stops: line_data
-            paths: $(elem).text() for elem in $('ul#line_paths li')
+            paths: $(elem).data('line') for elem in $('ul#line_paths li')
             colors: { bg: $('#line_data').data('bgcolor'), fg: null }
         })
 

@@ -25,7 +25,7 @@
   </ul>
   <% if @line_paths %>
     <ul id='line_paths' style="display: none">
-      <%= @line_paths.collect {|p| content_tag 'li', p }.join.html_safe %>
+      <%= @line_paths.collect {|p| tag 'li', { 'data-line' => p } }.join.html_safe %>
     </ul>
   <% end %>
   </div>
