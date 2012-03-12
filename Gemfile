@@ -17,6 +17,7 @@ gem 'jquery-rails'
 
 gem 'stringex'
 gem 'sunspot_rails'
+gem 'sitemap_generator'
 
 group :assets do
   gem 'sass-rails', "  ~> 3.2.3"
