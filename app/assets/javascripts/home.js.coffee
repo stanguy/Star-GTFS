@@ -276,7 +276,10 @@ class MapBus
     onFollowupLine: (e) ->
         e.preventDefault()
         url = $('#lines .list li.selected a').attr('href');
-        $.get( url, { trip_id: $(e.target).data('id') },
+        params = { trip_id: $(e.target).data('id') }
+        if refDate?
+            params['t'] = refDate.getTime()/1000
+        $.get( url, params,
                 (d,s,x) => this.onLineGet( d,s,x ),
                 "json" )
         false
