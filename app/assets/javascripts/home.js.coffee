@@ -47,6 +47,9 @@ class Marker
             selectedMarker.deselect()
             if selectedMarker == this
                 selectedMarker = null
+                History.replaceState( {
+                        lineUrl: currentLineUrl
+                }, '', currentLineUrl )
                 return
         if this.select()
             History.pushState( {
