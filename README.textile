@@ -16,9 +16,11 @@ So, you want to use this application or do things with, you have just checked ou
 
 You want to initialize the database with the official dataset: Fetch the zip file from the Keolis website and unzip it in @tmp/@, set an environment variable @KEOLIS_API_KEY@ with, well, an API key from Keolis, fetch the KML file of the network from the Rennes Métropole OpenData repostiory and just run the following:
 
+<pre>
     % rake db:schema:load
     % rake stargtfs:import[rennes] 
     % rake sunspot:solr:reindex
+</pre>
 
 The import task takes the various csv files and put some parts into a database, plus some more that I thought more efficient at runtime (like, say, not using @trips@ but directly linking lines, stops and stop_times).
 
