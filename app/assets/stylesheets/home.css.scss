@@ -116,13 +116,6 @@ $baseActiveColor: #FF0084;
                 a {
                     padding: 0.2em 0.5em 0;
                 }
-                &.ui-state-active {
-                    border-color: #666;
-                    background-color: #fff;
-                    a {
-                        color: $baseActiveColor;
-                    }
-                }
                 &.ui-state-default {
                     background-image: none;
                     background-color: darken( #fff, 4% );
@@ -130,7 +123,14 @@ $baseActiveColor: #FF0084;
                         color: desaturate( $baseBlueColor, 60% )
                     }
                 }
-            }
+                &.ui-state-active {
+                    border-color: #666;
+                    background-color: #fff;
+                    a {
+                        color: $baseActiveColor;
+                    }
+                }
+             }
         }
         
         .list {
