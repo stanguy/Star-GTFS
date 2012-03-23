@@ -1,3 +1,6 @@
+
+@import "fonts";
+
 @mixin map-control {
     background-color: #fff;
     opacity: 0.85;
@@ -14,10 +17,10 @@
 
 
 h1, h2, h3, h4, h5, th, #line_types li a, label {
-    font-family: 'PT Sans', sans-serif;
+    @include title_fonts;
 }
 p, li {
-    font-family: 'Arvo', serif;
+    @include text_fonts;
 }
 
 #line_data {
@@ -29,7 +32,8 @@ p, li {
     margin: 0 5px 5px;
     padding: 1px 6px;
     font-size: 13px;
-    font-family: Arial,sans-serif;
+    @include title_fonts;
+    /*font-family: Arial,sans-serif;*/
 
     background: rgb(255,255,255);
     background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(230,230,230,1) 100%);
@@ -200,7 +204,7 @@ $baseActiveColor: #FF0084;
 .ui-autocomplete {
     li.ui-menu-item {
         a {
-            font-family: 'PT Sans', sans-serif;
+            @include title_fonts;
             white-space: nowrap;
         }
         &.line a {
@@ -249,7 +253,7 @@ button#clock {
                 padding: 2px 10px;
                 float: left;
                 border-right: 1px solid #ddd;
-                font-family: monospace, Courier, Courier new;
+                @include fixed_fonts;
                 a.t {
                     color: #000;
                     text-decoration: none;
@@ -294,7 +298,7 @@ button#clock {
                 border: 1px solid white;
                 display: inline-block;
                 width: 100%;
-                font-family: 'PT Sans', sans-serif;
+                @include title_fonts;
                 font-size: 120%;
                 color: #1412bc;
                 letter-spacing: 5px;
@@ -306,7 +310,8 @@ button#clock {
 }
 
 #feedinfo {
-    font-family: Arial,sans-serif;
+    /*font-family: Arial,sans-serif;*/
+    @include title_fonts;
     font-size: 10px;
     color: #444;
     height: 19px;
@@ -340,7 +345,7 @@ html, html body {
 }
 
 @mixin displayed-text {
-    font-family: 'Arvo', serif;
+    @include text_fonts;
     font-size: 14px;
  }
 
@@ -389,19 +394,19 @@ html, html body {
 }
 
 .timeLabel {
-     background-color: white;
-     font-family: Courier, Courier new;
-     font-size: 0.7em;
-     font-weight: regular;
-     text-align: center;
-     width: 40px;
-     border: 2px solid #ddd;
-     white-space: nowrap;
-     padding: 2px 0;
-     opacity: 0.8;
+    @include fixed_fonts;
+    background-color: white;
+    font-size: 0.7em;
+    font-weight: regular;
+    text-align: center;
+    width: 40px;
+    border: 2px solid #ddd;
+    white-space: nowrap;
+    padding: 2px 0;
+    opacity: 0.8;
 }
 
 
 div.time-picker li {
-    font-family: 'PT Sans',sans-serif;
+    @include title_fonts;
 }

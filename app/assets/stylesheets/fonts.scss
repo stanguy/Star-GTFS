@@ -1,0 +1,9 @@
+@mixin title_fonts {
+    font-family: 'PT Sans', sans-serif;
+}
+@mixin text_fonts {
+    font-family: 'Arvo', serif;
+}
+@mixin fixed_fonts {
+     font-family: monospace,Courier, Courier new;
+}

@@ -1,0 +1,7 @@
+<% content_for :content do %>
+  <div class="schedule_container container_12">
+    <h1>Bus de <span><%= @agency.city %></span> en ligne</h1>
+    <%= yield %>
+  </div>
+<% end %>
+<%= render :template => 'layouts/application' %>

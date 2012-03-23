@@ -1,17 +1,18 @@
-.schedule_header.container_12 {
+@import "fonts";
+
+.schedule_container.container_12 {
     background-color: #fff;
+    margin-top: 0;
     h1 {
+        margin: 0;
         padding: 30px 0;
         border-bottom: 1px dotted #ddd;
+        text-align: center;
         span {
             font-variant: small-caps;
-            font-size: 20px;
             color: #390;
         }
     }
-}
-.schedule_container.container_12 {
-    background-color: #fff;
     div.dir_select {
         float: left;
         margin: 10px;
@@ -23,6 +24,7 @@
     .back_to_map {
         float: right;
         margin: 10px;
+        @include title_fonts;
     }
     .accordion {
         h3 {
@@ -56,6 +58,7 @@
         }
         li:last-child {
             border-right: none;
+            @include title_fonts;
         }
     }
     div.other_lines {
@@ -92,15 +95,15 @@
         tr:nth-child(even) {
             background-color: #f8f8f8;
         }
-        td span.mins {
-            float: left;
-            text-align: right;
-            width: 15px;
-            margin: 0 4px 0 5px;
-            font-family: Courier, Courier new;
-        }
         div.headsign {
             background-color: white;
         }
+        td span.mins {
+            @include fixed_fonts;
+            display: inline-block;
+            width: 15px;
+            margin: 0 6px 0 1px;
+        }
+
     }
 }

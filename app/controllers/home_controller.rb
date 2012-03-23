@@ -151,7 +151,9 @@ class HomeController < ApplicationController
     end
     @headsigns.delete_if{|id,v| ! @schedule.has_key? id }
     if request.xhr?
-      render :layout => false and return
+      render :layout => 'bare_container' and return
+    else
+      render :layout => 'container'
     end
   end
 

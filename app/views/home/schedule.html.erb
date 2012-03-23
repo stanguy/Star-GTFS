@@ -1,11 +1,3 @@
-<% if request.xhr? %>
-<div class="schedule_container grid_12 alpha omega container_12">
-<% else %>
-<div class="schedule_header container_12">
-<h1>Bus de <span><%= @agency.city %></span> en ligne</h1>
-</div>
-<div class="schedule_container container_12">
-<% end %>
 <h2><%= @title %></h2>
 <% unless request.xhr? %><%= link_to "Retour à la carte", agency_url(@agency), { class: "back_to_map" } %><% end %>
 <%= div_clear %>
@@ -54,4 +46,3 @@
 <%= div_clear %>
 
 <%= init_javascript "$('.accordion').accordion();" %>
-</div>
