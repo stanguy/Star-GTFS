@@ -2,17 +2,27 @@ h1. Star GTFS
 
 This is a Ruby on Rails application to play (or even do useful stuffs) with the GTFS dataset provided by "Keolis Rennes":http://data.keolis-rennes.com for the bus network of the city of Rennes, France and with the dataset of the bus network of St Lô, France, privately provided by the network, TUSA. You can find an instance of this application running as "Bus de Rennes en Ligne":http://maps.dthg.net.
 
+h2. Requirements
+
+ * Ruby 1.9;
+ * PostgreSQL 8.4;
+ * PostGIS 1.5;
+ * Apache Solr;
+ * Time.
+
 h2. Hey, I want to run my own instance!
 
 So, you want to use this application or do things with, you have just checked out the latest version from the repository and ran @bundle@ to update your rails environment. What's next? 
 
-You want to initialize the database with the official dataset: Fetch the zip file from the Keolis website and unzip it in @tmp/@, set an environment variable @KEOLIS_API_KEY@ with, well, an API key from Keolis, fetch the KML file of the network from the Rennes Métropole OpenData repostiory and just run @rails runner script/import.rb@.
+You want to initialize the database with the official dataset: Fetch the zip file from the Keolis website and unzip it in @tmp/@, set an environment variable @KEOLIS_API_KEY@ with, well, an API key from Keolis, fetch the KML file of the network from the Rennes Métropole OpenData repostiory and just run the following:
 
-The @import.rb@ script takes the various csv files and put some parts into a database, plus some more that I thought more efficient at runtime (like, say, not using @trips@ but directly linking lines, stops and stop_times).
+    % rake db:schema:load
+    % rake stargtfs:import[rennes] 
+    % rake sunspot:solr:reindex
+
+The import task takes the various csv files and put some parts into a database, plus some more that I thought more efficient at runtime (like, say, not using @trips@ but directly linking lines, stops and stop_times).
 
 You can now start your server and point your browser at your usual URL (say, http://localhost:3000/).
-
-PostgreSQL is the only fully supported database, due to the growing (helpfully) use of PostGIS features (and so, it also requires a configured postgis server and database)
 
 h2. Hey, what have you done to the data? 
 
@@ -32,4 +42,3 @@ All the code in this repository, unless otherwise noted is under AGPL v3. (as fa
 
 The bus-like icons are derived from icons that can be found within the "Google Maps Icons":http://code.google.com/p/google-maps-icons/ project and are CC3.0-BY-SA.
 
-The Vincenty bearing computation method is derived from a work by Chris Veness, licensed under CC-BY.
