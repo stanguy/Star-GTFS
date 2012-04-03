@@ -14,6 +14,7 @@
           rel='search' title='Recherche de bus à <%= @agency.city %>'
           type='application/opensearchdescription+xml'>
     <meta name="format-detection" content="telephone=no">
+    <% if @canonical %><link rel="canonical" href="<%= @canonical %>"/><% end %>
   </head>
   <body>
   

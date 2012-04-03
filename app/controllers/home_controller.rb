@@ -18,7 +18,7 @@ class HomeController < ApplicationController
     l = @agency.lines.by_short_name(params[:id])
 
     if params[:stop_id]
-      @selected_stop = params[:stop_id]
+      @selected_stop_id = params[:stop_id]
     end
 
     headsigns = {}
@@ -58,6 +58,9 @@ class HomeController < ApplicationController
       where( :id => l.stops.collect(&:line_ids_cache).
                       map {|ids| ids.split(',') }.flatten.uniq ).each { |vl| other_lines[vl.id] = vl.short_name }
     data = l.stops.collect do|stop|
+      if stop.slug == @selected_stop_id
+        @selected_stop = stop
+      end
       stop_info = {
         :name => stop.name,
         :id => stop.slug, :lat => stop.lat, :lon => stop.lon,
@@ -91,6 +94,11 @@ class HomeController < ApplicationController
       @line_id = l.id
       @line = l
       @title = l.full_name
+      if @selected_stop.nil?
+        @canonical = home_line_url( @agency, @line )
+      else
+        @canonical = home_line_stop_url( @agency, @line, @selected_stop )
+      end
       render :show
     end
   end
@@ -153,6 +161,16 @@ class HomeController < ApplicationController
     if request.xhr?
       render :layout => 'bare_container' and return
     else
+
+      if @line && headsign
+        @canonical = line_stop_schedule_url( @agency, @line, @stop, headsign )
+      elsif @line
+        @canonical = line_stop_schedule_url( @agency, @line, @stop )        
+      elsif @stop
+        @canonical = stop_schedule_url( @agency, @stop )
+      end
+
+
       render :layout => 'container'
     end
   end
