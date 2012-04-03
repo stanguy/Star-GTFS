@@ -172,7 +172,7 @@ class HomeController < ApplicationController
           :type => :stop,
           :name => stop.name,
           :id => stop.id,
-          :schedule_url => stop_schedule_path(@agency,stop),
+          :schedule_url => stop_schedule_url(@agency,stop),
           :times => nil,
           :others => nil,
           :accessible => stop.accessible
@@ -192,10 +192,24 @@ class HomeController < ApplicationController
       end
     }
     respond_to do |format|
-      format.html 
+      format.html { render :layout => 'container'}
+      format.rss {  render :layout => false }
+      format.suggestions { 
+        render :json => [ params[:term],
+                          @results.collect {|r| r[:name] },
+                          @results.collect { "" },
+                          @results.collect {|r| r[:type] == :stop ? r[:schedule_url] : home_line_url(@agency,r[:short])}
+                        ]
+      }
       format.json { render :json => @results }
     end
   end
+
+  def opensearch
+    response.headers["Content-Type"] = 'application/opensearchdescription+xml'
+    render :layout => false
+  end
+      
 
   private
   def check_old_ids

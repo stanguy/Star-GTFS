@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"> 
+  <ShortName>Bus de <%= @agency.city %> en ligne</ShortName> 
+  <Description>Recherche de bus à <%= @agency.city %></Description> 
+  <InputEncoding>UTF-8</InputEncoding> 
+  <!--Image width="16" height="16"></Image--> 
+  <!--moz:SearchForm "http://yerwebbersite.com/searchFormer"/-->
+  
+  <Url type="application/x-suggestions+json"
+       rel="suggestions"
+       template="<%= search_url(@agency) %>.suggestions?term={searchTerms}"/> 
+  <Url type="application/rss+xml"
+       template="<%= search_url(@agency) %>.rss?term={searchTerms}"/> 
+  <Url type="text/html"
+       template="<%= search_url(@agency) %>?term={searchTerms}"/> 
+       
+</OpenSearchDescription> 
