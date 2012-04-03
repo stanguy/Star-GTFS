@@ -3,7 +3,7 @@ class HomeController < ApplicationController
   before_filter :set_agency, :except => :redirect_root
 
   def redirect_root
-    redirect_to agency_path(Agency.first)
+    redirect_to agency_path(Agency.order(:id).first)
   end
 
   def show
