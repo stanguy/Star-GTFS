@@ -7,7 +7,7 @@
     <% @line_data.each do |stop| %>
       <li>
         <% stop_options = { 'data-id' => stop[:id], 'data-lat' => stop[:lat], 'data-lon' => stop[:lon], 'data-others' => stop[:others].join(','), 'data-accessible' => stop[:accessible] } 
-           stop_options['data-selected'] = 1 if stop[:id] == @selected_stop %>
+           stop_options['data-selected'] = 1 if stop[:id] == @selected_stop_id %>
         <h3><%= link_to stop[:name], stop[:schedule_url], stop_options %></h3>
         <% if stop.has_key? :times %>
           <% stop[:times].each do |trip| %>
