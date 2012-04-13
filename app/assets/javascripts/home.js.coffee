@@ -198,7 +198,7 @@ class MapBus
         window.onpopstate = (e) => this.historyCallback(e)
         $("button.help").button( icons: { primary: 'ui-icon-help' }, text: false )
         $("button.help").click => this.onHelp()
-        $("button.search").button( icons: { primary: 'ui-icon-gear' }, text: false )
+        $("button.search").button( icons: { primary: 'ui-icon-search' }, text: false )
         $("button.search").click => this.onSwitchToSearch()
         ref_date = $("#ref_date")
         @map.controls[google.maps.ControlPosition.RIGHT_TOP].push ref_date[0]
