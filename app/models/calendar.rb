@@ -25,7 +25,6 @@ module Calendar
                 20111225,
                 20120101,
                 20120409,
-                20120501,
                 20120508,
                 20120517,
                 20120528,
@@ -36,7 +35,6 @@ module Calendar
                 20121225,
                 20130101,
                 20130401,
-                20130501,
                 20130508,
                 20130509,
                 20130519,
@@ -49,6 +47,8 @@ module Calendar
   def self.from_time t
     if HOLIDAYS.include?( t.year * 10000 + t.month * 100 + t.day )
       return SUNDAY
+    elsif t.month == 5 && t.day == 1
+      return 0
     end
     1 << ( ( t.wday - 1 ) % 7 )
   end
