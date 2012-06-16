@@ -3,12 +3,15 @@ require 'csv'
 
 module Gtfs
   class Base
+
+    attr_accessor :root
+
     def mlog msg
       puts Time.now.to_s(:db) + " " + msg
     end
 
     def read_tmp_csv file
-      CSV.foreach( File.join( Rails.root, "/tmp/#{file}.txt" ),
+      CSV.foreach( File.join( @root, "#{file}.txt" ),
                    :headers => true,
                    :header_converters => :symbol,
                    :encoding => 'UTF-8' ) do |line|
@@ -22,6 +25,14 @@ module Gtfs
 
     def initialize
       @steps = [ "agency", "feed_info", "stops", "routes", "calendar", "calendar_dates", "trips", "stop_times" ]
+      @root = File.join Rails.root, "tmp"
+      if ENV.has_key?( "STARGTFS_IMPORT_BASE" ) && File.directory?( ENV["STARGTFS_IMPORT_BASE"] )
+        @root = ENV["STARGTFS_IMPORT_BASE"]
+        city_specific = File.join( @root, self.class.name.split('::').last.downcase )
+        if File.directory?( city_specific )
+          @root = city_specific
+        end
+      end
     end
     
     def run

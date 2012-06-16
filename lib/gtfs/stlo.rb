@@ -80,7 +80,7 @@ module Gtfs
                         :accessible => false,
                         :usage => :urban )
       
-      data_l3_semaine = CSV.read('tmp/ligne_3_sept2011_semaine.csv', :encoding => 'UTF-8')
+      data_l3_semaine = CSV.read( File.join( self.root, 'ligne_3_sept2011_semaine.csv' ), :encoding => 'UTF-8')
       check_value data_l3_semaine[8][3], "7:00"
       check_value data_l3_semaine[38][3], "-"
       check_value data_l3_semaine[8][41], "19:00"
@@ -147,7 +147,7 @@ module Gtfs
       import_stoptimes l3, data_l3_semaine[71][0], trips
       
       
-      data_l3_samedi = CSV.read('tmp/ligne_3_sept2011_samedi.csv', :encoding => 'UTF-8')
+      data_l3_samedi = CSV.read( File.join( self.root, 'ligne_3_sept2011_samedi.csv' ), :encoding => 'UTF-8')
       
       check_value data_l3_samedi[6][3], "8:30"
       check_value data_l3_samedi[36][3], nil
@@ -190,8 +190,8 @@ module Gtfs
                         :src_id => '1',
                         :accessible => false,
                         :usage => :urban )
-      data_l1_s1 = CSV.read('tmp/ligne_1_sept2011_sens1.csv', :encoding => 'UTF-8')
-      data_l1_s2 = CSV.read('tmp/ligne_1_sept2011_sens2.csv', :encoding => 'UTF-8')
+      data_l1_s1 = CSV.read( File.join( self.root, 'ligne_1_sept2011_sens1.csv' ), :encoding => 'UTF-8')
+      data_l1_s2 = CSV.read( File.join( self.root, 'ligne_1_sept2011_sens2.csv' ), :encoding => 'UTF-8')
       
       check_value data_l1_s1[15][3], "7:01"
       check_value data_l1_s1[49][3], "7:31"
@@ -261,8 +261,8 @@ module Gtfs
                         :src_id => '2',
                         :accessible => false,
                         :usage => :urban )
-      data_l2_semaine = CSV.read('tmp/ligne_2_sept2011_semaine.csv', :encoding => 'UTF-8')
-      data_l2_samedi = CSV.read('tmp/ligne_2_sept2011_samedi.csv', :encoding => 'UTF-8')
+      data_l2_semaine = CSV.read( File.join( self.root, 'ligne_2_sept2011_semaine.csv' ), :encoding => 'UTF-8')
+      data_l2_samedi = CSV.read( File.join( self.root, 'ligne_2_sept2011_samedi.csv' ), :encoding => 'UTF-8')
       
       check_value data_l2_semaine[9][3], "6:25"
       check_value data_l2_semaine[39][3], "6:56"
@@ -321,7 +321,7 @@ module Gtfs
       
       mlog "Importing school lines"
       
-      data_scolaires = CSV.read( 'tmp/scolaires_janv2011.csv', :encoding => 'UTF-8' )
+      data_scolaires = CSV.read( File.join( self.root, 'scolaires_janv2011.csv' ), :encoding => 'UTF-8' )
       
       check_values data_scolaires, [
                                     # s1a
@@ -470,7 +470,7 @@ module Gtfs
 
       mlog "Importing KML file"
 
-      xml = Nokogiri::XML( File.open( File.join( Rails.root, "tmp", "doc.kml" ) ) )
+      xml = Nokogiri::XML( File.open( File.join( self.root, "doc.kml" ) ) )
       xml.remove_namespaces!
 
       stops = []

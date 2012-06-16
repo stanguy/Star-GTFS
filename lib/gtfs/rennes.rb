@@ -395,7 +395,7 @@ SQL
     end
     def import_kml
       mlog "Importing KML"
-      xml = Nokogiri::XML( File.open( File.join( Rails.root, "tmp", "reseau_star.kml" ) ) )
+      xml = Nokogiri::XML( File.open( File.join( self.root, "reseau_star.kml" ) ) )
       xml.remove_namespaces!
 
       xml.xpath( "//Folder[@id='itin�raires']/Placemark" ).each do |elem|
