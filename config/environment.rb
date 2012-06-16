@@ -16,3 +16,9 @@ if in_memory_database?
   load "#{RAILS_ROOT}/db/schema.rb" # use db agnostic schema by default
   # ActiveRecord::Migrator.up('db/migrate') # use migrations
 end
+
+if ENV.has_key? "GMAPS_KEY"
+  StarGtfs::Application.config.gmaps_key = ENV["GMAPS_KEY"]
+else
+  StarGtfs::Application.config.gmaps_key = nil  
+end
