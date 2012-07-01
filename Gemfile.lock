@@ -112,6 +112,8 @@ GEM
       json (~> 1.4)
     responders (0.9.1)
       railties (~> 3.1)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     rsolr (1.0.8)
       builder (>= 2.1.2)
     rspec (2.10.0)
@@ -178,6 +180,7 @@ DEPENDENCIES
   pg
   rails (~> 3.2.0)
   rails-dev-boost!
+  rest-client
   rspec-rails
   sass-rails (~> 3.2.3)
   sitemap_generator
