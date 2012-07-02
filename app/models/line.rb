@@ -1,7 +1,7 @@
 class Line < ActiveRecord::Base
 
   acts_as_url :short_long_name, :url_attribute => :slug
-
+  mount_uploader :picto_url, LinePictoUploader
 
   searchable do 
     string :short_name, :stored => true

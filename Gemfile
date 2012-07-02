@@ -15,6 +15,7 @@ gem 'inherited_resources'
 
 gem 'jquery-rails'
 
+gem 'carrierwave'
 gem 'stringex'
 gem 'sunspot_rails'
 gem 'sitemap_generator'

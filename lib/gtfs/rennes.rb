@@ -193,10 +193,13 @@ SQL
                                :bgcolor => line[:route_color],
                                :fgcolor => line[:route_text_color],
                                :usage => line_usage( line ),
-                               :picto_url => @lines_picto_urls[line[:route_short_name]],
                                :accessible => @lines_accessible[line[:route_id]],
                                :old_src_id => @old_lines_ids[line[:route_short_name]]
                              })
+      if @lines_picto_urls.has_key? line[:route_short_name]
+        new_line.remote_picto_url_url = @lines_picto_urls[line[:route_short_name]]
+        new_line.save
+      end
       @legacy[:line][line[:route_id]] = new_line
       @lines_stops[new_line.id] = {}
       @all_headsigns[new_line.id] = {}
