@@ -317,8 +317,6 @@ SQL
     end
 
     def post_run
-      ActiveRecord::Base.connection.execute( "UPDATE stop_times SET created_at = now(), updated_at = now()" )
-
       mlog "Linking lines and stops"
       ActiveRecord::Base.transaction do
         Line.all.each do |line|
@@ -372,7 +370,7 @@ SQL
           ActiveRecord::Base.transaction do
             final_trip.stop_times.update_all( { :calendar => final_trip.calendar } )
             trips.each do |t| 
-              t.stop_times.delete_all
+              StopTime.delete_all trip_id: t.id
               t.delete
             end
             final_trip.save
