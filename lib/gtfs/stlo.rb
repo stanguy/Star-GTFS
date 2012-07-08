@@ -80,27 +80,16 @@ module Gtfs
                         :accessible => false,
                         :usage => :urban )
       
-      data_l3_semaine = CSV.read( File.join( self.root, 'ligne_3_sept2011_semaine.csv' ), :encoding => 'UTF-8')
-      check_value data_l3_semaine[8][3], "7:00"
+      data_l3_semaine = CSV.read( File.join( self.root, 'ligne 3_ ete2012 %28avec sncf%29 - LR3.csv' ), :encoding => 'UTF-8')
+      check_value data_l3_semaine[8][3], "6:55"
       check_value data_l3_semaine[38][3], "-"
-      check_value data_l3_semaine[8][41], "19:00"
-      check_value data_l3_semaine[38][41], "-"
-      # exceptions 
-      # Mon/Tue/Thu/Fri
-      check_value data_l3_semaine[32][13], "9:52"
-      check_value data_l3_semaine[38][13], "10:00"
-      check_value data_l3_semaine[32][39], "18:57"
-      check_value data_l3_semaine[38][39], "19:05"
-      # Wed
-      check_value data_l3_semaine[32][27], "14:52"
-      check_value data_l3_semaine[38][27], "15:00"
-      check_value data_l3_semaine[32][35], "18:02"
-      check_value data_l3_semaine[38][35], "18:10"
+      check_value data_l3_semaine[8][27], "19:25"
+      check_value data_l3_semaine[38][27], "-"
       
-      check_value data_l3_semaine[76][3], "-"
-      check_value data_l3_semaine[102][3], "7:25"
-      check_value data_l3_semaine[76][41], "19:03"
-      check_value data_l3_semaine[102][41], "19:30"
+      check_value data_l3_semaine[71][3], "-"
+      check_value data_l3_semaine[97][3], "7:47"
+      check_value data_l3_semaine[71][25], "18:51"
+      check_value data_l3_semaine[97][25], "19:16"
       
       
       importer = StLoImporter.new stop_registry
@@ -108,10 +97,6 @@ module Gtfs
       importer.default_calendar = Calendar::WEEKDAY
       importer.stops_range = 8..38
       importer.stop_col = 1
-      importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 32..38, 13 ]
-      importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 32..38, 39 ]
-      importer.add_exception Calendar::WEDNESDAY, [ 32..38, 27 ]
-      importer.add_exception Calendar::WEDNESDAY, [ 32..38, 35 ]
       trips = importer.import(data_l3_semaine)
       
       import_stoptimes l3, data_l3_semaine[3][0], trips
@@ -120,44 +105,24 @@ module Gtfs
       importer = StLoImporter.new stop_registry
       importer.first_trip_col = 3
       importer.default_calendar = Calendar::WEEKDAY
-      importer.stops_range = 76..102
+      importer.stops_range = 71..97
       importer.stop_col = 1
-      check_value data_l3_semaine[76][13], "9:58"
-      check_value data_l3_semaine[78][13], "10:00"
-      importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 76..78, 13 ]
-      check_value data_l3_semaine[79][13], "10:00"
-      importer.add_exception Calendar::WEDNESDAY, [ 79, 13 ]
-      check_value data_l3_semaine[76][41], "19:03"
-      check_value data_l3_semaine[78][41], "19:05"
-      importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 76..78, 41 ]
-      check_value data_l3_semaine[79][41], "19:05"
-      importer.add_exception Calendar::WEDNESDAY, [ 79, 41 ]
-      check_value data_l3_semaine[76][27], "14:58"
-      check_value data_l3_semaine[78][27], "15:00"
-      importer.add_exception Calendar::WEDNESDAY, [ 76..78, 27 ]
-      check_value data_l3_semaine[79][27], "15:00"
-      importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 79, 27 ]
-      check_value data_l3_semaine[76][37], "18:08"
-      check_value data_l3_semaine[78][37], "18:10"
-      importer.add_exception Calendar::WEDNESDAY, [ 76..78, 37 ]
-      check_value data_l3_semaine[79][37], "18:10"
-      importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 79, 37 ]
       
       trips = importer.import(data_l3_semaine)
-      import_stoptimes l3, data_l3_semaine[71][0], trips
+      import_stoptimes l3, data_l3_semaine[66][0], trips
       
       
-      data_l3_samedi = CSV.read( File.join( self.root, 'ligne_3_sept2011_samedi.csv' ), :encoding => 'UTF-8')
+      data_l3_samedi = CSV.read( File.join( self.root, 'ligne 3_ ete2012 %28avec sncf%29 - LR3_Samedi.csv' ), :encoding => 'UTF-8')
       
-      check_value data_l3_samedi[6][3], "8:30"
+      check_value data_l3_samedi[6][3], "8:15"
       check_value data_l3_samedi[36][3], nil
-      check_value data_l3_samedi[6][23], "18:35"
-      check_value data_l3_samedi[36][23], nil
+      check_value data_l3_samedi[6][25], "19:15"
+      check_value data_l3_samedi[36][25], "-"
       
-      check_value data_l3_samedi[67][3], "-"
-      check_value data_l3_samedi[94][3], "8:28"
-      check_value data_l3_samedi[67][25], "-"
-      check_value data_l3_samedi[94][25], "19:30"
+      check_value data_l3_samedi[65][3], "-"
+      check_value data_l3_samedi[91][3], "8:07"
+      check_value data_l3_samedi[65][25], "18:41"
+      check_value data_l3_samedi[91][25], "19:07"
       
       
       
@@ -171,11 +136,11 @@ module Gtfs
       
       importer = StLoImporter.new stop_registry
       importer.default_calendar = Calendar::SATURDAY
-      importer.stops_range = 67..94
+      importer.stops_range = 65..91
       importer.stop_col = 1
       importer.first_trip_col = 3
       trips = importer.import(data_l3_samedi)
-      import_stoptimes l3, data_l3_samedi[63][0], trips
+      import_stoptimes l3, data_l3_samedi[61][0], trips
       
       #####################################################################
       ###                           L1                                  ###
@@ -190,35 +155,36 @@ module Gtfs
                         :src_id => '1',
                         :accessible => false,
                         :usage => :urban )
-      data_l1_s1 = CSV.read( File.join( self.root, 'ligne_1_sept2011_sens1.csv' ), :encoding => 'UTF-8')
-      data_l1_s2 = CSV.read( File.join( self.root, 'ligne_1_sept2011_sens2.csv' ), :encoding => 'UTF-8')
+
+      data_l1_s1 = CSV.read( File.join( self.root, 'ligne 1_ ete2012 %28avec sncf%29 - Sens 1.csv' ), :encoding => 'UTF-8')
+      data_l1_s2 = CSV.read( File.join( self.root, 'ligne 1_ ete2012 %28avec sncf%29 - Sens 2.csv' ), :encoding => 'UTF-8')
       
-      check_value data_l1_s1[15][3], "7:01"
-      check_value data_l1_s1[49][3], "7:31"
-      check_value data_l1_s1[15][65], "-"
-      check_value data_l1_s1[49][65], "20:03"
+      check_value data_l1_s1[10][3], "-"
+      check_value data_l1_s1[44][3], "7:18"
+      check_value data_l1_s1[10][41], "19:35"
+      check_value data_l1_s1[44][41], "20:05"
       
-      check_value data_l1_s1[15][76], "-"
-      check_value data_l1_s1[49][76], "8:38"
-      check_value data_l1_s1[15][132], "-"
-      check_value data_l1_s1[49][132], "20:03"
+      check_value data_l1_s1[10][47], "-"
+      check_value data_l1_s1[44][47], "8:18"
+      check_value data_l1_s1[10][81], "19:35"
+      check_value data_l1_s1[44][81], "20:05"
       
       
-      check_value data_l1_s2[9][3], "6:30"
-      check_value data_l1_s2[41][3], "7:01"
-      check_value data_l1_s2[9][65], "19:00"
-      check_value data_l1_s2[41][65], "-"
+      check_value data_l1_s2[7][3], "6:20"
+      check_value data_l1_s2[39][3], "-"
+      check_value data_l1_s2[7][41], "19:00"
+      check_value data_l1_s2[39][41], "19:31"
       
-      check_value data_l1_s2[9][72], "7:31"
-      check_value data_l1_s2[41][72], "-"
-      check_value data_l1_s2[9][128], "19:00"
-      check_value data_l1_s2[41][128], "-"
+      check_value data_l1_s2[7][47], "7:20"
+      check_value data_l1_s2[39][47], "-"
+      check_value data_l1_s2[7][81], "19:00"
+      check_value data_l1_s2[39][81], "19:31"
       
       
       
       importer = StLoImporter.new stop_registry
       importer.default_calendar = Calendar::WEEKDAY
-      importer.stops_range = 15..49
+      importer.stops_range = 10..44
       importer.stop_col = 1
       importer.first_trip_col = 3
       trips = importer.import(data_l1_s1)
@@ -226,15 +192,15 @@ module Gtfs
       
       importer = StLoImporter.new stop_registry
       importer.default_calendar = Calendar::SATURDAY
-      importer.stops_range = 15..49
+      importer.stops_range = 10..44
       importer.stop_col = 1
-      importer.first_trip_col = 76
+      importer.first_trip_col = 47
       trips = importer.import(data_l1_s1)
       import_stoptimes l1, data_l1_s1[6][1], trips
       
       importer = StLoImporter.new stop_registry
       importer.default_calendar = Calendar::WEEKDAY
-      importer.stops_range = 9..41
+      importer.stops_range = 7..39
       importer.stop_col = 1
       importer.first_trip_col = 3
       trips = importer.import(data_l1_s2)
@@ -242,9 +208,9 @@ module Gtfs
       
       importer = StLoImporter.new stop_registry
       importer.default_calendar = Calendar::SATURDAY
-      importer.stops_range = 9..41
+      importer.stops_range = 7..39
       importer.stop_col = 1
-      importer.first_trip_col = 72
+      importer.first_trip_col = 47
       trips = importer.import(data_l1_s2)
       import_stoptimes l1, data_l1_s2[3][1], trips
       
@@ -261,29 +227,29 @@ module Gtfs
                         :src_id => '2',
                         :accessible => false,
                         :usage => :urban )
-      data_l2_semaine = CSV.read( File.join( self.root, 'ligne_2_sept2011_semaine.csv' ), :encoding => 'UTF-8')
-      data_l2_samedi = CSV.read( File.join( self.root, 'ligne_2_sept2011_samedi.csv' ), :encoding => 'UTF-8')
+      data_l2_semaine = CSV.read( File.join( self.root, 'ligne 2_ ete2012 %28avec sncf%29 - LR2 ETE 2011.csv' ), :encoding => 'UTF-8')
+      data_l2_samedi  = CSV.read( File.join( self.root, 'ligne 2_ ete2012 %28avec sncf%29 - LR2 SAMEDI ETE 2011.csv' ), :encoding => 'UTF-8')
       
-      check_value data_l2_semaine[9][3], "6:25"
-      check_value data_l2_semaine[39][3], "6:56"
-      check_value data_l2_semaine[9][43], "19:10"
-      check_value data_l2_semaine[39][43], "19:41"
+      check_value data_l2_semaine[9][3], "7:20"
+      check_value data_l2_semaine[39][3], "7:43"
+      check_value data_l2_semaine[9][25], "19:15"
+      check_value data_l2_semaine[39][25], "19:38"
       
-      check_value data_l2_semaine[73][3], "6:56"
-      check_value data_l2_semaine[103][3], "7:25"
-      check_value data_l2_semaine[73][43], "19:41"
-      check_value data_l2_semaine[103][43], "20:10"
+      check_value data_l2_semaine[71][3], "7:45"
+      check_value data_l2_semaine[102][3], "8:11"
+      check_value data_l2_semaine[71][25], "19:40"
+      check_value data_l2_semaine[102][25], "20:06"
       
       
-      check_value data_l2_samedi[6][3], "8:00"
-      check_value data_l2_samedi[36][3], "8:31"
-      check_value data_l2_samedi[6][23], "18:50"
-      check_value data_l2_samedi[36][23], "19:21"
+      check_value data_l2_samedi[6][3], "8:20"
+      check_value data_l2_samedi[36][3], "8:44"
+      check_value data_l2_samedi[6][23], "19:10"
+      check_value data_l2_samedi[36][23], "19:34"
       
-      check_value data_l2_samedi[70][3], "8:31"
-      check_value data_l2_samedi[101][3], "9:03"
-      check_value data_l2_samedi[70][23], "19:21"
-      check_value data_l2_samedi[101][23], "19:50"
+      check_value data_l2_samedi[66][3], "8:50"
+      check_value data_l2_samedi[97][3], "9:16"
+      check_value data_l2_samedi[66][23], "19:40"
+      check_value data_l2_samedi[97][23], "20:06"
       
       
       importer = StLoImporter.new stop_registry
@@ -296,7 +262,7 @@ module Gtfs
       
       importer = StLoImporter.new stop_registry
       importer.default_calendar = Calendar::SATURDAY
-      importer.stops_range = 6..39
+      importer.stops_range = 6..36
       importer.stop_col = 1
       importer.first_trip_col = 3
       trips = importer.import(data_l2_samedi)
@@ -305,20 +271,21 @@ module Gtfs
       
       importer = StLoImporter.new stop_registry
       importer.default_calendar = Calendar::WEEKDAY
-      importer.stops_range = 73..103
+      importer.stops_range = 71..102
       importer.stop_col = 1
       importer.first_trip_col = 3
       trips = importer.import(data_l2_semaine)
-      import_stoptimes l2, data_l2_semaine[69][1], trips
+      import_stoptimes l2, data_l2_semaine[67][1], trips
       
       importer = StLoImporter.new stop_registry
       importer.default_calendar = Calendar::SATURDAY
-      importer.stops_range = 70..101
+      importer.stops_range = 66..97
       importer.stop_col = 1
       importer.first_trip_col = 3
       trips = importer.import(data_l2_samedi)
-      import_stoptimes l2, data_l2_samedi[65][1], trips
+      import_stoptimes l2, data_l2_samedi[61][1], trips
       
+      if false
       mlog "Importing school lines"
       
       data_scolaires = CSV.read( File.join( self.root, 'scolaires_janv2011.csv' ), :encoding => 'UTF-8' )
@@ -467,6 +434,7 @@ module Gtfs
       importer.add_exception Calendar::MONDAY|Calendar::TUESDAY|Calendar::THURSDAY|Calendar::FRIDAY, [ 43..59, 14 ]
       trips = importer.import( data_scolaires )
       import_stoptimes ls, "Lycée Curie Joliot - Colombes", trips
+      end
 
       mlog "Importing KML file"
 
