@@ -42,6 +42,7 @@ namespace :stargtfs do
     conn.execute "DROP SCHEMA " + target_schema + " CASCADE"
     conn.execute "ALTER SCHEMA " + current_schema + " RENAME TO " + target_schema
     conn.schema_search_path = target_schema + ",public"
+    ActiveRecord::Migration.add_index(:lines, [:agency_id], {:name=>"index_lines_on_agency_id"})
     POST_IMPORT_TASKS.each do |t| 
       Rake::Task[t].invoke
     end
