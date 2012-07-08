@@ -84,9 +84,15 @@ class HomeController < ApplicationController
       end
       stop_info
     end
+    @incidents = l.incidents.actual
     if request.xhr?
       expires_now
-      render :json => { stops: data, paths: l.polylines.collect(&:path), :colors => { :fg => l.fgcolor, :bg => l.bgcolor } }, :callback => params[:callback]
+      render json: { 
+        stops: data, 
+        paths: l.polylines.collect(&:path), 
+        colors: { :fg => l.fgcolor, :bg => l.bgcolor },
+        incidents: @incidents.collect { |i| { id: i.id, title: i.title } }
+      }, callback: params[:callback]
     else
       @line_data = data
       @line_paths = l.polylines.collect(&:path)
@@ -101,6 +107,15 @@ class HomeController < ApplicationController
       end
       render :show
     end
+  end
+  
+  def line_incidents
+    @line = @agency.lines.by_short_name(params[:id])
+    @incidents = @line.incidents.actual
+    if request.xhr?
+      render :layout => 'bare_container' and return
+    end
+    render :layout => 'container'
   end
   
   before_filter :check_legacy, :only => :schedule

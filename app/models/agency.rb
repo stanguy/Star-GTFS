@@ -3,6 +3,7 @@ class Agency < ActiveRecord::Base
   
   has_many :lines
   has_many :stops
+  has_many :info_collectors
 
   def to_param
     slug

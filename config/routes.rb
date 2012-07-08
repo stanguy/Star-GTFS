@@ -9,6 +9,7 @@ StarGtfs::Application.routes.draw do
     
   match "city/:agency_id" => "home#show", :as => :agency
   match "city/:agency_id/line/:id" => "home#line", :as => :home_line
+  match "city/:agency_id/line/:id/incidents" => "home#line_incidents", :as => :line_incidents
   match "city/:agency_id/line/:id/at/:stop_id" => "home#line", :as => :home_line_stop
   match "city/:agency_id/stops" => "home#stops"
   match "city/:agency_id/schedule/:line_id/at/:stop_id(/toward/:headsign_id)" => "home#schedule", :as => :line_stop_schedule

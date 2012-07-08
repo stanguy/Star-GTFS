@@ -1,0 +1,17 @@
+<h2>Perturbations sur la ligne <%= @line.short_name %></h2>
+<%= div_clear %>
+<% if @incidents.nil? || 0 == @incidents.count %>
+  <p>Aucune perturbation en cours</p>
+<% else %>
+  <div class="accordion incidents">
+    <% @incidents.each do |incident|%>
+      <h3><%= incident.title %></h3>
+      <div>
+        <p>Du <%= incident.since.to_s(:french) %> au <%= incident.expiration.to_s(:french) %>&nbsp;:</p>
+        <%= simple_format incident.detail %>
+      </div>
+    <% end %>
+  </div>
+  <%= init_javascript "$('.accordion').accordion();" %>
+<% end %>
+

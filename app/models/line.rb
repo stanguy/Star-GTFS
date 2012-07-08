@@ -12,6 +12,7 @@ class Line < ActiveRecord::Base
 
   belongs_to :agency
   has_and_belongs_to_many :stops
+  has_and_belongs_to_many :incidents
   has_many :stop_times
   has_many :trips
   has_many :headsigns

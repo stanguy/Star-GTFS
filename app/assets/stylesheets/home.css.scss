@@ -27,25 +27,38 @@ p, li {
     display: none;
 }
 
-#ref_date {
-    cursor: pointer;
-    margin: 0 5px 5px;
-    padding: 1px 6px;
+.text_widget {
+    margin: 5px;
+    padding: 0 6px 1px;
     font-size: 13px;
     @include title_fonts;
-    /*font-family: Arial,sans-serif;*/
-
-    background: rgb(255,255,255);
-    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(230,230,230,1) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(230,230,230,1)));
-    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(230,230,230,1) 100%);
-    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(230,230,230,1) 100%);
-    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(230,230,230,1) 100%);
-    background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(230,230,230,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e6e6e6',GradientType=0 );
-
     border: 1px solid #717B87;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    background: white;
+    &:hover {
+        background: rgb(255,255,255);
+        background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(230,230,230,1) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(230,230,230,1)));
+        background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(230,230,230,1) 100%);
+        background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(230,230,230,1) 100%);
+        background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(230,230,230,1) 100%);
+        background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(230,230,230,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e6e6e6',GradientType=0 );
+    }
+}
+
+#incidents a {
+    color: black;
+    text-decoration: none;
+}
+.accordion.incidents p {
+    line-height: 1.5;
+}
+
+
+#ref_date {
+    cursor: pointer;
+
     span {
         padding:0 5px;
         display: inline-block;
@@ -222,7 +235,6 @@ button#clock {
 
 #infowindow {
     @include map-control;
-    margin-top: -25px;
     padding: 5px 10px 20px 30px;
     max-width: 33%;
 

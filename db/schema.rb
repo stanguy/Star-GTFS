@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120225001112) do
+ActiveRecord::Schema.define(:version => 20120704182530) do
 
   create_table "agencies", :force => true do |t|
     t.string      "name"
@@ -23,9 +23,9 @@ ActiveRecord::Schema.define(:version => 20120225001112) do
     t.boolean     "ads_allowed"
     t.datetime    "created_at",                 :null => false
     t.datetime    "updated_at",                 :null => false
-    t.string      "slug"
     t.multi_point "bbox",        :limit => nil,                 :srid => 4326
     t.point       "center",      :limit => nil,                 :srid => 4326
+    t.string      "slug"
     t.string      "publisher"
     t.string      "feed_url"
     t.string      "feed_ref"
@@ -38,23 +38,48 @@ ActiveRecord::Schema.define(:version => 20120225001112) do
     t.float    "lat"
     t.float    "lon"
     t.boolean  "pos"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.point    "geom",       :limit => nil, :srid => 4326
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.point    "geom",       :limit => nil,                 :srid => 4326
   end
 
   create_table "cities", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "headsigns", :force => true do |t|
     t.string   "name"
     t.integer  "line_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
     t.string   "slug"
+  end
+
+  create_table "incidents", :force => true do |t|
+    t.integer  "info_collector_id"
+    t.string   "source_ref"
+    t.datetime "since"
+    t.datetime "expiration"
+    t.string   "title"
+    t.text     "detail"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  create_table "incidents_lines", :id => false, :force => true do |t|
+    t.integer "incident_id"
+    t.integer "line_id"
+  end
+
+  create_table "info_collectors", :force => true do |t|
+    t.string   "type"
+    t.datetime "last_called_at"
+    t.text     "params"
+    t.integer  "agency_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "lines", :force => true do |t|
@@ -63,20 +88,17 @@ ActiveRecord::Schema.define(:version => 20120225001112) do
     t.string   "long_name"
     t.string   "bgcolor"
     t.string   "fgcolor"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
     t.string   "usage"
     t.string   "picto_url"
     t.string   "short_long_name"
     t.string   "slug"
     t.boolean  "accessible"
     t.string   "old_src_id"
+    t.point    "center",          :limit => nil,                 :srid => 4326
     t.integer  "agency_id"
-    t.point    "center",          :limit => nil, :srid => 4326
   end
-
-  add_index "lines", ["agency_id"], :name => "index_lines_on_agency_id"
-  add_index "lines", ["short_name"], :name => "index_lines_on_short_name"
 
   create_table "lines_stops", :id => false, :force => true do |t|
     t.integer "line_id"
@@ -89,16 +111,16 @@ ActiveRecord::Schema.define(:version => 20120225001112) do
     t.string   "address"
     t.float    "lat"
     t.float    "lon"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.point    "geom",       :limit => nil, :srid => 4326
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.point    "geom",       :limit => nil,                 :srid => 4326
   end
 
   create_table "polylines", :force => true do |t|
     t.integer  "line_id"
     t.text     "path"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "pos", :force => true do |t|
@@ -110,20 +132,10 @@ ActiveRecord::Schema.define(:version => 20120225001112) do
     t.string   "schedule"
     t.float    "lat"
     t.float    "lon"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.point    "geom",       :limit => nil, :srid => 4326
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.point    "geom",       :limit => nil,                 :srid => 4326
   end
-
-  create_table "quartiers", :force => true do |t|
-    t.integer       "nuquart"
-    t.string        "nmquart"
-    t.string        "numnom"
-    t.string        "nom"
-    t.multi_polygon "the_geom", :limit => nil
-  end
-
-  add_index "quartiers", ["the_geom"], :name => "index_quartiers_on_the_geom", :spatial => true
 
   create_table "stop_aliases", :force => true do |t|
     t.integer  "stop_id"
@@ -132,44 +144,37 @@ ActiveRecord::Schema.define(:version => 20120225001112) do
     t.string   "src_name"
     t.float    "src_lat"
     t.float    "src_lon"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.boolean  "accessible"
     t.string   "description"
     t.string   "old_src_id"
   end
 
-  create_table "stop_times", :force => true do |t|
-    t.integer  "stop_id"
-    t.integer  "line_id"
-    t.integer  "trip_id"
-    t.integer  "headsign_id"
-    t.integer  "arrival"
-    t.integer  "departure"
-    t.integer  "calendar"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "stop_sequence"
+  create_table "stop_times", :id => false, :force => true do |t|
+    t.integer "stop_id"
+    t.integer "line_id"
+    t.integer "trip_id"
+    t.integer "headsign_id"
+    t.integer "arrival"
+    t.integer "departure"
+    t.integer "calendar"
+    t.integer "stop_sequence"
   end
-
-  add_index "stop_times", ["line_id", "calendar", "arrival"], :name => "index_stop_times_on_line_id_and_calendar_and_arrival"
-  add_index "stop_times", ["trip_id"], :name => "index_stop_times_on_trip_id"
 
   create_table "stops", :force => true do |t|
     t.string   "name"
     t.float    "lat"
     t.float    "lon"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
     t.integer  "city_id"
     t.string   "line_ids_cache"
     t.string   "slug"
     t.boolean  "accessible"
+    t.point    "geom",           :limit => nil,                 :srid => 4326
     t.integer  "agency_id"
-    t.point    "geom",           :limit => nil, :srid => 4326
   end
-
-  add_index "stops", ["slug"], :name => "index_stops_on_slug"
 
   create_table "trips", :force => true do |t|
     t.integer  "line_id"
@@ -178,8 +183,8 @@ ActiveRecord::Schema.define(:version => 20120225001112) do
     t.string   "src_route_id"
     t.integer  "headsign_id"
     t.integer  "block_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
     t.string   "bearing"
   end
 

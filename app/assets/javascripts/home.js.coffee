@@ -201,7 +201,9 @@ class MapBus
         $("button.search").button( icons: { primary: 'ui-icon-search' }, text: false )
         $("button.search").click => this.onSwitchToSearch()
         ref_date = $("#ref_date")
-        @map.controls[google.maps.ControlPosition.RIGHT_TOP].push ref_date[0]
+        @map.controls[google.maps.ControlPosition.TOP_RIGHT].push ref_date[0]
+        @map.controls[google.maps.ControlPosition.RIGHT_TOP].push $('#incidents')[0]
+        $('#incidents a').on 'click', => this.onLoadIncidents()
 
         $("body").on 'click', "#map h1", => this.onTitleClick()
 
@@ -251,6 +253,20 @@ class MapBus
             type: 'inline'
             href: "#agency_select"
         })
+    onLoadIncidents: ->
+        url = currentLineUrl + '/incidents'
+        History.pushState( {}, '', url )
+        window._gaq.push url
+        $.fancybox({
+            autoDimensions: false
+            width: 990
+            height: '90%'
+            type: 'ajax'
+            href: url
+            onComplete: -> $('.accordion').accordion()
+            onClosed: -> History.back()
+        })
+        return false;
     onDefaultRefDateClick: ->
         rd = $('#ref_date')
         rd.html ''
@@ -348,6 +364,10 @@ class MapBus
                 strokeColor: '#' + d.colors.bg,
                 clickable: false
             })
+        $("#incidents").toggle d.incidents.length > 0
+        $("#incidents .nb").html d.incidents.length
+        $("#incidents .plural").toggle d.incidents.length > 1
+
     loadLineData: ->
         line_data = []
         currentLineUrl = $('#line_data').data('line-url')
@@ -390,6 +410,9 @@ class MapBus
                 times: times
                 selected: selected
             })
+        incidents = []
+        for child in $('#current_incidents').children('li')
+            incidents.push { id: $(child).data("id"), title: $(child).text() }
         state = {
             lineUrl: currentLineUrl
         }
@@ -400,6 +423,7 @@ class MapBus
             stops: line_data
             paths: $(elem).data('line') for elem in $('ul#line_paths li')
             colors: { bg: $('#line_data').data('bgcolor'), fg: null }
+            incidents: incidents
         })
 
 

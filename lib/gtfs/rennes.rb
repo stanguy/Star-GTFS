@@ -77,6 +77,7 @@ SQL
                                :lang => line[:agency_lang],
                                :city => city,
                                :ads_allowed => ads_allowed )
+      KeolisApiCollector.create agency_id: @agency.id
     end
     handle :feed_info do |line|
       @agency.publisher = line[:feed_publisher_name]
@@ -310,10 +311,13 @@ SQL
       end
 
       mlog "Removing indexes"
-      ActiveRecord::Migration.remove_index( :stop_times, :column => [ :trip_id ] )
-      ActiveRecord::Migration.remove_index( :stop_times, :column => [ :line_id, :calendar, :arrival ] )
-      ActiveRecord::Migration.remove_index( :lines, :column => [ :short_name ] )
-      ActiveRecord::Migration.remove_index( :stops, :column => [ :slug ] )
+      begin
+        ActiveRecord::Migration.remove_index( :stop_times, :column => [ :trip_id ] )
+        ActiveRecord::Migration.remove_index( :stop_times, :column => [ :line_id, :calendar, :arrival ] )
+        ActiveRecord::Migration.remove_index( :lines, :column => [ :short_name ] )
+        ActiveRecord::Migration.remove_index( :stops, :column => [ :slug ] )
+      rescue
+      end
     end
 
     def post_run
