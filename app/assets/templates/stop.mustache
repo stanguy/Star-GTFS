@@ -4,7 +4,12 @@
     <h3><span class="bearing ui-icon ui-icon-arrow-1-{{bearing}}"></span>{{direction}}</h3>
     <ul>
       {{#times}}
-        <li><a data-id="{{tid}}" class="t">{{t}}</a></li>
+        {{^has_different_times}}
+          <li><a data-id="{{tid}}" class="t">{{t}}</a></li>
+        {{/has_different_times}}
+        {{#has_different_times}}
+          <li><a data-id="{{tid}}" class="t divert" title="{{t_dep}}">{{t}}</a></li>
+        {{/has_different_times}}
       {{/times}}
       <li><a href="{{schedule_url}}" title="Horaires complets" class="dir_schedule">&hellip;</a></li>
     </ul>

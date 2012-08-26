@@ -105,8 +105,12 @@ class Marker
 
     constructor: (map, point) ->
         @name = point.name
-        @stop_id = point.id;
-        @times = point.times;
+        @stop_id = point.id
+        if point.times
+            @times = point.times
+            for direction in @times
+                for time in direction.times
+                    time.has_different_times = time.t != time.t_dep
         @schedule_url = point.schedule_url;
         @others = point.others;
         @accessible = point.accessible

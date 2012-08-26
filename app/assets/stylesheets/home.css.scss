@@ -273,6 +273,9 @@ button#clock {
                         background-color: #fee;
                         cursor: pointer;
                     }
+                    &.divert {
+                        border-bottom: 1px dashed #444;
+                    }
                 }
                 a.dir_schedule {
                     margin: 5px 0;
