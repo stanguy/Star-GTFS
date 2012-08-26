@@ -197,7 +197,10 @@ SQL
                                :accessible => @lines_accessible[line[:route_id]],
                                :old_src_id => @old_lines_ids[line[:route_short_name]]
                              })
-      if @lines_picto_urls.has_key? line[:route_short_name]
+      if File.exists?( File.join( @root, line[:route_short_name] + ".png" ) )
+        new_line.picto_url = File.open( File.join( @root, line[:route_short_name] + ".png" ) )
+        new_line.save
+      elsif @lines_picto_urls.has_key? line[:route_short_name]
         new_line.remote_picto_url_url = @lines_picto_urls[line[:route_short_name]]
         new_line.save
       end
