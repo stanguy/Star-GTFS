@@ -32,7 +32,7 @@ class StLoImporter
     head = data[valid_stop_indexes.first]
     while trip_i < head.length
       unless head[trip_i].nil? 
-        if head[trip_i].match(/^(\d+:\d+|-)$/)
+        if head[trip_i].strip.match(/^(\d+:\d+|-|\|)$/)
           trip_indexes << trip_i
         elsif !head[trip_i].blank?
           break
