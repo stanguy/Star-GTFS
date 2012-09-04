@@ -25,7 +25,7 @@
     <%= javascript_include_tag "application" %>
       <script>
   if ( window.screen.width > 500 ) {
-    $(document).ready( function() { <%= init_javascripts.join(" ") if  init_javascripts %> } );
+    $(document).ready( function() { <%= init_javascripts.join(" ").html_safe if  init_javascripts %> } );
   }
 </script>
 
