@@ -55,18 +55,10 @@ SQL
 
     def initialize
       super
-      @steps.insert( @steps.index("stops"), "stops_extensions" )
+#      @steps.insert( @steps.index("stops"), "stops_extensions" )
       @steps.insert( @steps.index("routes"), "routes_extensions" )
       # 
       @legacy = {} #
-    end
-
-    def pre_stops_extensions
-      @stops_accessible = Hash.new(false)
-    end
-
-    handle :stops_extensions do |line|
-      @stops_accessible[line[:stop_id]] = line[:stop_accessible].to_i == 1
     end
 
     handle :agency do |line|
@@ -97,9 +89,6 @@ SQL
         @all_stops[name] = []
       end
       @all_stops[name] << line
-      if not @stops_accessible.has_key? line[:stop_id]
-        puts "missing accessible key for #{line[:stop_id]}"
-      end
     end
     
     def post_stops
@@ -147,7 +136,7 @@ SQL
         unless @cities.has_key? city_name
           @cities[city_name] = City.create({ :name => city_name })
         end
-        is_accessible = stops.collect {|s| @stops_accessible[s[:stop_id]] }.uniq.count == 1 ? @stops_accessible[stops.first[:stop_id]] : false
+        is_accessible = stops.find_all {|s| s[:wheelchair_boarding] == 0 }.count == 0
         lat = average( stops.collect{|s| s[:stop_lat].to_f } )
         lon = average( stops.collect{|s| s[:stop_lon].to_f } )
         new_stop = Stop.create({ :name => real_name,
@@ -164,7 +153,7 @@ SQL
                                          :src_lat => stop[:stop_lat],
                                          :src_lon => stop[:stop_lon],
                                          :description => stop[:stop_desc],
-                                         :accessible => @stops_accessible[stop[:stop_id]] })
+                                         :accessible => stop[:wheelchair_boarding] == 1 })
           @legacy[:stops][stop[:stop_id]] = new_stop.id
         end
         @all_new_stops[new_stop.id] = new_stop
@@ -248,6 +237,7 @@ SQL
       @all_stop_times = []
     end
     handle :stop_times do |line|
+      next unless line[:stop_id] =~ /[0-9]+/ # stops that shouldn't be
       if ! @legacy[:trip].has_key?(line[:trip_id])
         #    puts "Missing trip #{line[:trip_id]}"
         next
