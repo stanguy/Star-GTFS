@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 class HomeController < ApplicationController
   before_filter :set_agency, :except => :redirect_root
-  before_filter :go_offline, :except => [ :redirect_root, :offline]
 
   def redirect_root
     redirect_to agency_path(Agency.order(:id).first)
@@ -295,10 +294,4 @@ class HomeController < ApplicationController
     end
   end
 
-  def go_offline
-    if @agency && @agency.name == "STAR"
-      redirect_to offline_path(@agency)
-    end
-  end
-      
 end
