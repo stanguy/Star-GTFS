@@ -21,6 +21,8 @@ gem 'sunspot_rails'
 gem 'sitemap_generator'
 gem 'rest-client'
 
+gem 'unicorn'
+
 group :assets do
   gem 'sass-rails', "  ~> 3.2.3"
   gem 'coffee-rails', "~> 3.2.1"
@@ -38,6 +40,5 @@ group :development, :test do
   gem 'webrat'
 #  gem 'factory_girl_rails'
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
-  gem 'unicorn'
 end
 
