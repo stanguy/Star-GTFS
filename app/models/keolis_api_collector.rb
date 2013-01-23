@@ -1,7 +1,8 @@
+
 class KeolisApiCollector < InfoCollector
   def perform
     oda = OpenDataKeolisRennesApi.new( ENV['KEOLIS_API_KEY'], '2.0' )
-    response = RestClient.get oda.get_lines_alerts.to_s
+    response = Net::HTTP.get_response oda.get_lines_alerts
     if response.code == 200
       oda_response = JSON(response.body)
       if oda_response['opendata']['answer']['status']['@attributes']['code'] == "0"

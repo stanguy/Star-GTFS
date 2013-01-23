@@ -9,10 +9,14 @@ namespace :stargtfs do
         csv << [ stop.slug, stop.lat, stop.lon ]
       end
     end
-    upload_url = 'http://v2.maptimize.com/api/v2/%s/import' % Rails.configuration.api_keys[:MAPTIMIZE]
-    resource = RestClient::Resource.new upload_url, ENV['STARGTFS_MAPTIMIZE_TOKEN'], 'X'
-    r = resource.put str, :content_type => 'text/csv'
-    p r
+    r = Net::HTTP.start( 'v2.maptimize.com', 80 ) do |http|
+      req = Net::HTTP::Put.new('/api/v2/%s/import' % Rails.configuration.api_keys[:MAPTIMIZE] )
+      req.body = str
+      req.content_type = 'text/csv'
+      req.basic_auth ENV['STARGTFS_MAPTIMIZE_TOKEN'], 'X'
+      http.request(req)
+    end
+    p r.body
   end
 
 end

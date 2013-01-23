@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 require 'point'
-require 'yajl/http_stream'
 require 'opendata_api'
 require 'gmap_polyline_encoder'
+require 'net/http'
 
 
 module Gtfs
@@ -265,7 +265,7 @@ SQL
     def pre_run
       mlog "loading line icons"
       oda = OpenDataKeolisRennesApi.new( ENV['KEOLIS_API_KEY'], '2.0' )
-      result = Yajl::HttpStream.get( oda.get_lines )
+      result = JSON.parse Net::HTTP.get( oda.get_lines )
       lines_base_url = result['opendata']['answer']['data']['baseurl']
       lines_base_url += '/' unless lines_base_url.end_with?('/')
       @lines_picto_urls = {}
@@ -273,7 +273,7 @@ SQL
         @lines_picto_urls[line['name']] = lines_base_url + line['picto']
       end
       mlog "loading pos"
-      result = Yajl::HttpStream.get( oda.get_pos )
+      result = JSON.parse Net::HTTP.get( oda.get_pos )
       result['opendata']['answer']['data']['pos'].each do|pos|
         pos['lat'] = pos['latitude'].to_f
         pos['lon'] = pos['longitude'].to_f
@@ -283,7 +283,7 @@ SQL
       end
 
       mlog "loading bikestations"
-      result = Yajl::HttpStream.get( oda.get_bike_stations )
+      result = JSON.parse Net::HTTP.get( oda.get_bike_stations )
       result['opendata']['answer']['data']['station'].each do|bs|
         bs['lat'] = bs['latitude'].to_f
         bs['lon'] = bs['longitude'].to_f
@@ -293,7 +293,7 @@ SQL
       end
       
       mlog "loading metrostations"
-      result = Yajl::HttpStream.get( oda.get_metro_stations )
+      result = JSON.parse Net::HTTP.get( oda.get_metro_stations )
       result['opendata']['answer']['data']['station'].each do|ms|
         ms['lat'] = ms['latitude'].to_f
         ms['lon'] = ms['longitude'].to_f

@@ -6,7 +6,6 @@ gem 'rails', '~>3.2.0'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'fastercsv', :platforms => :ruby_18
-gem 'yajl-ruby'
 gem 'nokogiri'
 
 gem 'pg'
@@ -19,7 +18,6 @@ gem 'carrierwave'
 gem 'stringex'
 gem 'sunspot_rails'
 gem 'sitemap_generator'
-gem 'rest-client'
 
 gem 'unicorn'
 
@@ -40,5 +38,6 @@ group :development, :test do
   gem 'webrat'
 #  gem 'factory_girl_rails'
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
+  gem 'rb-inotify', '~> 0.8.8'
 end
 
