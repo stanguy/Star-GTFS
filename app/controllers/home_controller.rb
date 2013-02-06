@@ -31,7 +31,7 @@ class HomeController < ApplicationController
     bearings = {}
     time_ref = nil
     unless params[:t].nil?
-      time_ref = Time.at(params[:t].to_i)
+      time_ref = Time.zone.at(params[:t].to_i)
     end
     original_stop_times = StopTime.coming(l.id,time_ref).order(:arrival)
     original_stop_times.each do |st|
