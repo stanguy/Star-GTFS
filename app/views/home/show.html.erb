@@ -15,7 +15,11 @@
               <%= content_tag( :h4, 
                                link_to( trip[:direction], trip[:schedule_url], 'data-bearing' => trip[:bearing] ) ) %>
               <% trip[:times].each do |time| %>
-                <%= content_tag( :span, time[:t], 'data-tid' => time[:tid] ) %>
+                <% data = { tid: time[:tid] } 
+                   if time[:t] != time[:t_dep]
+                     data[:dep] = time[:t_dep]
+                   end %>
+                <%= content_tag( :span, time[:t], 'data' => data ) %>
               <% end %>
             </div>
           <% end %>

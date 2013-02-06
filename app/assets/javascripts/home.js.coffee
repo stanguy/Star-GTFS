@@ -373,12 +373,11 @@ class MapBus
         $("#incidents .plural").toggle d.incidents.length > 1
 
     loadLineData: ->
-        line_data = []
         currentLineUrl = $('#line_data').data('line-url')
         short = $('#line_data').data("short")
         $('#lines [data-short="' + short + '"]').parent().addClass( "selected" )
         endUrl = currentLineUrl
-        for child in $('#line_stops').children('li')
+        line_data = for child in $('#line_stops').children('li')
             stop = $(child).find('h3 a')
             selected = false
             if ( stop.data('selected') )
@@ -391,32 +390,33 @@ class MapBus
                 others = others.split(',')
             else
                 others = []
-            times = [];
-            for subchild in $(child).children('div')
+            times = for subchild in $(child).children('div')
                 direction = $(subchild).find('h4 a')
-                stop_times = [];
-                for subsubchild in $(subchild).children('span')
-                    stop_times.push({ t: $(subsubchild).text(), tid: $(subsubchild).data('tid')});
-                times.push({
-                        direction: direction.text(),
-                        bearing: direction.data('bearing'),
-                        schedule_url: direction.attr('href'),
-                        times: stop_times
-                    })
-            line_data.push({
-                name: stop.text(),
-                id: stop.data('id'),
-                lat: stop.data('lat'),
-                lon: stop.data('lon'),
-                schedule_url: stop.attr('href'),
-                others: others,
-                accessible: stop.data('accessible'),
+                stop_times = for subsubchild in $(subchild).children('span')
+                    {
+                        t: $(subsubchild).text()
+                        tid: $(subsubchild).data('tid')
+                        t_dep: if $(subsubchild).data("dep") then $(subsubchild).data("dep") else $(subsubchild).text()
+                    }
+                {
+                    direction: direction.text()
+                    bearing: direction.data('bearing')
+                    schedule_url: direction.attr('href')
+                    times: stop_times
+                }
+            {
+                name: stop.text()
+                id: stop.data('id')
+                lat: stop.data('lat')
+                lon: stop.data('lon')
+                schedule_url: stop.attr('href')
+                others: others
+                accessible: stop.data('accessible')
                 times: times
                 selected: selected
-            })
-        incidents = []
-        for child in $('#current_incidents').children('li')
-            incidents.push { id: $(child).data("id"), title: $(child).text() }
+            }
+        incidents = for child in $('#current_incidents').children('li')
+            { id: $(child).data("id"), title: $(child).text() }
         state = {
             lineUrl: currentLineUrl
         }
