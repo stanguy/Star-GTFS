@@ -40,5 +40,7 @@ group :development, :test do
 #  gem 'factory_girl_rails'
   gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
   gem 'rb-inotify', '~> 0.8.8'
+  gem "better_errors"
+  gem "binding_of_caller"
 end
 
