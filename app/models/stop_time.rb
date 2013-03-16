@@ -33,12 +33,12 @@ class StopTime < ActiveRecord::Base
     value_later = ( later.hour * 60 + later.min ) * 60 + later.sec
     if now.day != later.day
       where( :line_id => line_id ).
-        where( "( calendar IN (?) AND arrival > ? ) OR ( calendar IN (?) AND arrival < ? )",
+        where( "( calendar_id IN (?) AND arrival > ? ) OR ( calendar_id IN (?) AND arrival < ? )",
                Calendar.from_time( now ), value_now,
                Calendar.from_time( later ), value_later )
     elsif now.hour < 8
       where( :line_id => line_id ).
-        where( "( calendar IN (?) AND arrival > ? ) OR ( calendar IN (?) AND arrival > ? AND arrival < ? )",
+        where( "( calendar_id IN (?) AND arrival > ? ) OR ( calendar_id IN (?) AND arrival > ? AND arrival < ? )",
                Calendar.from_time( now - 1.day ), value_now + 24.hours,
                Calendar.from_time( now ), value_now, value_later )
     else
