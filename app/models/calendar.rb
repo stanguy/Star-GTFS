@@ -1,4 +1,6 @@
-module Calendar
+class Calendar < ActiveRecord::Base
+  attr_accessible :days, :end_date, :src_id, :start_date
+
   MONDAY    = 1 << 0
   TUESDAY   = 1 << 1
   WEDNESDAY = 1 << 2
@@ -11,57 +13,23 @@ module Calendar
 
   CAL_STRINGS = { MONDAY => 'Lu', TUESDAY => 'Ma', WEDNESDAY => 'Me', THURSDAY => 'Je', FRIDAY => 'Ve', SATURDAY => 'Sa', SUNDAY => 'Di' }
 
-  HOLIDAYS = [  20101225,
-                20110101,
-                20110425,
-                20110501,
-                20110508,
-                20110602,
-                20110613,
-                20110714,
-                20110815,
-                20111101,
-                20111111,
-                20111225,
-                20120101,
-                20120409,
-                20120508,
-                20120517,
-                20120528,
-                20120714,
-                20120815,
-                20121101,
-                20121111,
-                20121225,
-                20130101,
-                20130401,
-                20130508,
-                20130509,
-                20130519,
-                20130714,
-                20130815,
-                20131101,
-                20131111,
-                20131225 ]
-  
-  def self.from_time t
-    if HOLIDAYS.include?( t.year * 10000 + t.month * 100 + t.day )
-      return SUNDAY
-    elsif t.month == 5 && t.day == 1
-      return 0
-    end
-    1 << ( ( t.wday - 1 ) % 7 )
-  end
-
-  def self.range_to_str c
-    case c
+  def range_to_str
+    case self.days
     when WEEKDAY
       [ CAL_STRINGS[MONDAY], CAL_STRINGS[FRIDAY] ].join('-')
     else
-      days = (0..6).collect {|ds| d = ( 1 << ds ); ( c & d > 0 ) ? CAL_STRINGS[d] : nil }.delete_if &:nil?
+      days = (0..6).collect {|ds| d = ( 1 << ds ); ( self.days & d > 0 ) ? CAL_STRINGS[d] : nil }.delete_if &:nil?
       days.join ","
     end
   end
-      
-      
+
+
+  def self.days_from_time t
+    1 << ( ( t.wday - 1 ) % 7 )
+  end
+
+  scope :from_time, lambda { |t|
+    where( "end_date >= ? AND start_date <= ? AND days & ? > 0", t.to_date, t.to_date, 1 << ( ( t.wday - 1 ) % 7 ) )
+  }
+
 end

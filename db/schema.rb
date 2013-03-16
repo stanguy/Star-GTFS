@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120704182530) do
+ActiveRecord::Schema.define(:version => 20130316151828) do
 
   create_table "agencies", :force => true do |t|
     t.string      "name"
@@ -23,12 +23,12 @@ ActiveRecord::Schema.define(:version => 20120704182530) do
     t.boolean     "ads_allowed"
     t.datetime    "created_at",                 :null => false
     t.datetime    "updated_at",                 :null => false
-    t.multi_point "bbox",        :limit => nil,                 :srid => 4326
-    t.point       "center",      :limit => nil,                 :srid => 4326
     t.string      "slug"
     t.string      "publisher"
     t.string      "feed_url"
     t.string      "feed_ref"
+    t.multi_point "bbox",        :limit => nil,                 :srid => 4326
+    t.point       "center",      :limit => nil,                 :srid => 4326
   end
 
   create_table "bike_stations", :force => true do |t|
@@ -41,6 +41,15 @@ ActiveRecord::Schema.define(:version => 20120704182530) do
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
     t.point    "geom",       :limit => nil,                 :srid => 4326
+  end
+
+  create_table "calendars", :force => true do |t|
+    t.string   "src_id"
+    t.integer  "days"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "cities", :force => true do |t|
@@ -96,8 +105,8 @@ ActiveRecord::Schema.define(:version => 20120704182530) do
     t.string   "slug"
     t.boolean  "accessible"
     t.string   "old_src_id"
-    t.point    "center",          :limit => nil,                 :srid => 4326
     t.integer  "agency_id"
+    t.point    "center",          :limit => nil,                 :srid => 4326
   end
 
   create_table "lines_stops", :id => false, :force => true do |t|
@@ -158,8 +167,8 @@ ActiveRecord::Schema.define(:version => 20120704182530) do
     t.integer "headsign_id"
     t.integer "arrival"
     t.integer "departure"
-    t.integer "calendar"
     t.integer "stop_sequence"
+    t.integer "calendar_id"
   end
 
   create_table "stops", :force => true do |t|
@@ -172,20 +181,20 @@ ActiveRecord::Schema.define(:version => 20120704182530) do
     t.string   "line_ids_cache"
     t.string   "slug"
     t.boolean  "accessible"
-    t.point    "geom",           :limit => nil,                 :srid => 4326
     t.integer  "agency_id"
+    t.point    "geom",           :limit => nil,                 :srid => 4326
   end
 
   create_table "trips", :force => true do |t|
     t.integer  "line_id"
     t.integer  "src_id"
-    t.integer  "calendar"
     t.string   "src_route_id"
     t.integer  "headsign_id"
     t.integer  "block_id"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
     t.string   "bearing"
+    t.integer  "calendar_id"
   end
 
 end

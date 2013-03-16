@@ -41,11 +41,11 @@ module Gtfs
       return if stop_times.empty?
       sql = <<SQL
   INSERT INTO stop_times 
-    ( stop_id, line_id, trip_id, headsign_id, calendar, arrival, departure, stop_sequence )
+    ( stop_id, line_id, trip_id, headsign_id, calendar_id, arrival, departure, stop_sequence )
   VALUES
 SQL
       sql += stop_times.collect do |stoptime|
-        "(" + [ stoptime.stop_id, stoptime.line_id, stoptime.trip_id, stoptime.headsign_id, stoptime.calendar, stoptime.arrival, stoptime.departure, stoptime.stop_sequence ].join(",") + ")"
+        "(" + [ stoptime.stop_id, stoptime.line_id, stoptime.trip_id, stoptime.headsign_id, stoptime.calendar_id, stoptime.arrival, stoptime.departure, stoptime.stop_sequence ].join(",") + ")"
       end.join(",")
       ActiveRecord::Base.connection.execute( sql )
       stop_times.clear
@@ -203,12 +203,16 @@ SQL
     end
     handle :calendar do |line|
       id = line[:service_id]
-      @calendar[id] = 0
+      days = 0
       line.keys.grep(/day$/) do|k|
         if line[k] == "1"
-          @calendar[id] |= Calendar.const_get( k.upcase )
+          days |= Calendar.const_get( k.upcase )
         end
       end
+      @calendar[id] = Calendar.create( src_id: id,
+                                       days: days,
+                                       start_date: Date.strptime( line[:start_date], '%Y%m%d' ), 
+                                       end_date: Date.strptime( line[:end_date], '%Y%m%d' ) )
     end
     def pre_trips 
       @legacy[:trip] = {}
