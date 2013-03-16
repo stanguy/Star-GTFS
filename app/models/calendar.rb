@@ -1,5 +1,7 @@
 class Calendar < ActiveRecord::Base
   attr_accessible :days, :end_date, :src_id, :start_date
+  
+  has_many :calendar_dates
 
   MONDAY    = 1 << 0
   TUESDAY   = 1 << 1
@@ -29,7 +31,23 @@ class Calendar < ActiveRecord::Base
   end
 
   scope :from_time, lambda { |t|
-    where( "end_date >= ? AND start_date <= ? AND days & ? > 0", t.to_date, t.to_date, 1 << ( ( t.wday - 1 ) % 7 ) )
+    date = t.to_date
+    dates = CalendarDate.where( exception_date: date )
+    except_include = dates.select {|d| ! d.exclusion }.collect(&:calendar_id)
+    if except_include.empty?
+      include_test = "?"
+      except_include = false
+    else
+      include_test = "id IN (?)"
+    end
+    except_exclude = dates.select {|d|   d.exclusion }.collect(&:calendar_id)
+    if except_exclude.empty?
+      exclude_test = "?"
+      except_exclude = true
+    else
+      exclude_test = "id NOT IN (?)"
+    end
+    where( "( end_date >= ? AND start_date <= ? AND days & ? > 0 AND #{exclude_test} ) OR #{include_test}", date, date, 1 << ( ( t.wday - 1 ) % 7 ), except_exclude, except_include )
   }
 
 end
