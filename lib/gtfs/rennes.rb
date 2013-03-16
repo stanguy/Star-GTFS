@@ -214,6 +214,16 @@ SQL
                                        start_date: Date.strptime( line[:start_date], '%Y%m%d' ), 
                                        end_date: Date.strptime( line[:end_date], '%Y%m%d' ) )
     end
+
+    handle :calendar_dates do |line|
+      if not @calendar.has_key? line[:service_id]
+        print "Missing calendar for exception ? (" + line[:service_id] + ")"
+      end
+      CalendarDate.create( calendar_id: @calendar[ line[:service_id] ].id,
+                           exception_date: Date.strptime( line[:date], "%Y%m%d" ),
+                           exclusion: "2" == line[:exception_type] )
+    end
+
     def pre_trips 
       @legacy[:trip] = {}
     end

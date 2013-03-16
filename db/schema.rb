@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130316151828) do
+ActiveRecord::Schema.define(:version => 20130316180539) do
 
   create_table "agencies", :force => true do |t|
     t.string      "name"
@@ -41,6 +41,14 @@ ActiveRecord::Schema.define(:version => 20130316151828) do
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
     t.point    "geom",       :limit => nil,                 :srid => 4326
+  end
+
+  create_table "calendar_dates", :force => true do |t|
+    t.integer  "calendar_id"
+    t.date     "exception_date"
+    t.boolean  "exclusion"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "calendars", :force => true do |t|
