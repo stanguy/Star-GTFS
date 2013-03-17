@@ -224,6 +224,21 @@ SQL
                            exclusion: "2" == line[:exception_type] )
     end
 
+    def post_calendar_dates
+      cal_sums = {}
+      @calendar.each do |src_id,cal|
+        cal_key = [ cal.to_s, cal.calendar_dates.join("_") ].join("/")
+        if cal_sums.has_key? cal_key
+          CalendarDate.delete_all calendar_id: cal.id
+          cal.delete
+          @calendar[src_id] = cal_sums[cal_key]
+        else 
+          cal_sums[cal_key] = cal
+        end
+      end
+    end
+        
+
     def pre_trips 
       @legacy[:trip] = {}
     end

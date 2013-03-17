@@ -2,6 +2,7 @@ class Calendar < ActiveRecord::Base
   attr_accessible :days, :end_date, :src_id, :start_date
   
   has_many :calendar_dates
+  has_many :trips
 
   MONDAY    = 1 << 0
   TUESDAY   = 1 << 1
@@ -49,5 +50,12 @@ class Calendar < ActiveRecord::Base
     end
     where( "( end_date >= ? AND start_date <= ? AND days & ? > 0 AND #{exclude_test} ) OR #{include_test}", date, date, 1 << ( ( t.wday - 1 ) % 7 ), except_exclude, except_include )
   }
+
+  def to_s
+    [ start_date.strftime( "%Y%m%d" ), 
+      end_date.strftime( "%Y%m%d" ),
+      days ].join("-")
+  end
+      
 
 end
