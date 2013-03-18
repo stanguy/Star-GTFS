@@ -3,7 +3,7 @@ class KeolisApiCollector < InfoCollector
   def perform
     oda = OpenDataKeolisRennesApi.new( ENV['KEOLIS_API_KEY'], '2.0' )
     response = Net::HTTP.get_response oda.get_lines_alerts
-    if response.code == 200
+    if response.is_a?(Net::HTTPSuccess)
       oda_response = JSON(response.body)
       if oda_response['opendata']['answer']['status']['@attributes']['code'] == "0"
         oda_response['opendata']['answer']['data']['alert'].each do |alert|
