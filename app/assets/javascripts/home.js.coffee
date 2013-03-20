@@ -1,5 +1,6 @@
 #= require fancybox
 #= require hogan.js
+#= require migrate.js
 #= require jquery.timePicker.min.js
 #= require jquery.ui.datepicker-fr.js
 #= require_tree ../templates
