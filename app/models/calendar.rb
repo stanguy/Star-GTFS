@@ -52,9 +52,9 @@ class Calendar < ActiveRecord::Base
   }
 
   def to_s
-    [ start_date.strftime( "%Y%m%d" ), 
-      end_date.strftime( "%Y%m%d" ),
-      days ].join("-")
+    [ self.start_date.strftime( "%Y%m%d" ), 
+      self.end_date.strftime( "%Y%m%d" ),
+      self.days ].join("-")
   end
       
 
