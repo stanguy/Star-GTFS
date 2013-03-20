@@ -21,7 +21,15 @@ module Gtfs
                                                               line.id )
       headsign.save
       trips.each do |mtrip|
-        mtrip.each do |calendar,times|
+        mtrip.each do |calendar_days,times|
+          if @calendars.has_key? calendar_days
+            calendar = @calendars[calendar_days]
+          else
+            calendar = @calendars[calendar_days] = Calendar.create( src_id: 'cal_' + calendar_days.to_s,
+                                                                    days: calendar_days,
+                                                                    start_date: Date::civil( 2012, 9, 1 ),
+                                                                    end_date: Date::civil( 2013, 7, 1 ) )
+          end
           trip = Trip.create( :line => line, 
                               :calendar => calendar,
                               :headsign => headsign )
@@ -61,7 +69,7 @@ module Gtfs
                                :lang => :fr,
                                :city => "Saint Lô",
                                :ads_allowed => false )
-
+      @calendars = { }
       
       stop_registry = StopRegistry.new @agency
       
@@ -548,6 +556,18 @@ module Gtfs
         end
       end
       center_agency
+
+      [ Date::civil( 2013, 4, 1 ), 
+        Date::civil( 2013, 5, 1 ),
+        Date::civil( 2013, 5, 8 ),
+        Date::civil( 2013, 5, 9 ),
+        Date::civil( 2013, 5, 19 ) ].each do |date|
+        @calendars.each do |days,calendar|
+          CalendarDate.create( calendar: calendar,
+                               exception_date: date,
+                               exclusion: true )
+        end
+      end
     end
   end
 end
