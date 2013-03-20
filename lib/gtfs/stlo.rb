@@ -563,7 +563,7 @@ module Gtfs
         Date::civil( 2013, 5, 9 ),
         Date::civil( 2013, 5, 19 ) ].each do |date|
         @calendars.each do |days,calendar|
-          CalendarDate.create( calendar: calendar,
+          CalendarDate.create( calendar_id: calendar.id,
                                exception_date: date,
                                exclusion: true )
         end
