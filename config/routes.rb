@@ -43,6 +43,8 @@ StarGtfs::Application.routes.draw do
           end
         end
         resources :cities
+        resources :calendars
+        resources :calendar_dates
         resources :stops do
           collection do
             get :main_ids
