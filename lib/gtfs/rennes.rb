@@ -345,7 +345,7 @@ SQL
     def post_run
       mlog "Linking lines and stops"
       ActiveRecord::Base.transaction do
-        Line.all.each do |line|
+        @agency.lines.each do |line|
           line.stops = @lines_stops[line.id].keys.collect {|stop_id| @all_new_stops[stop_id] }.reject{|x| x.nil? }
           line.save
         end
@@ -360,7 +360,7 @@ SQL
       mlog "Adding index for stop_times/trips"
       ActiveRecord::Migration.add_index( :stop_times, [ :trip_id ] )
 
-#      check_multiple_trips
+      check_multiple_trips
       compute_bearings
 
       mlog "Adding other indexes"
@@ -374,7 +374,7 @@ SQL
 
     def check_multiple_trips
       mlog "This is gonna' be ugly"
-      Line.all.each do |line|
+      @agency.lines.each do |line|
         keytrips = {}
         
         line.trips.of_week_day(Calendar::WEEKDAY).each do |trip|
@@ -391,10 +391,23 @@ SQL
         keytrips.each do |k,ts|
           next if ts.count == 1
           trips = Trip.find( ts )
+          all_calendars = trips.collect(&:calendar).uniq
           final_trip = trips.shift
-          final_trip.calendar = trips.inject(final_trip.calendar) { |acc,t| acc |= t.calendar }
+          all_days = all_calendars.inject(0) { |acc,cal| acc |= cal.days }
+          final_trip.calendar = Calendar.where( start_date: final_trip.calendar.start_date,
+                                                end_date: final_trip.calendar.end_date,
+                                                days: all_days ).first_or_create
+          all_exceptions = all_calendars.collect(&:calendar_dates).flatten.uniq
+          if final_trip.calendar.calendar_dates.count == 0 and all_exceptions.count > 0
+            all_exceptions.collect do |cd|
+              { exclusion: cd.exclusion, exception_date: cd.exception_date }
+            end.uniq.each do |bcd|
+              bcd[:calendar_id] = final_trip.calendar.id
+              CalendarDate.create( bcd )
+            end
+          end
           ActiveRecord::Base.transaction do
-            final_trip.stop_times.update_all( { :calendar => final_trip.calendar } )
+            final_trip.stop_times.update_all( { :calendar_id => final_trip.calendar.id } )
             trips.each do |t| 
               StopTime.delete_all trip_id: t.id
               t.delete
@@ -404,6 +417,7 @@ SQL
         end
         mlog "End of purge for #{line.long_name}"
       end
+      Calendar.all.select { |c| c.trips.count == 0 }.map(&:delete)
     end
     def compute_bearings
       mlog "Computing bearings"
