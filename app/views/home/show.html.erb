@@ -46,7 +46,7 @@
   <div id="navigator">
     <div id="lines">
 <% cache( 'all_lines_' + @agency.id.to_s ) do %>
-  <% lines = @agency.lines.all
+  <% lines = @agency.lines.visible.all
      lines_groupes = [ lines.select(&:is_urban?   ),
                        lines.select(&:is_suburban?),
                        lines.select(&:is_express? ),
