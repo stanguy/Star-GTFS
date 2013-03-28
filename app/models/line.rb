@@ -18,6 +18,8 @@ class Line < ActiveRecord::Base
   has_many :headsigns
   has_many :polylines
 
+  scope :visible, where( :hidden => false )
+
   scope :by_usage, lambda{ |what_usage|
     ( ( what_usage == :all ) ? scoped : where( :usage => what_usage ) ).order('short_name ASC')
   }
