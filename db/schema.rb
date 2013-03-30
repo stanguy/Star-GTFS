@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130316180539) do
+ActiveRecord::Schema.define(:version => 20130326210824) do
 
   create_table "agencies", :force => true do |t|
     t.string      "name"
@@ -105,8 +105,8 @@ ActiveRecord::Schema.define(:version => 20130316180539) do
     t.string   "long_name"
     t.string   "bgcolor"
     t.string   "fgcolor"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at",                                        :null => false
+    t.datetime "updated_at",                                        :null => false
     t.string   "usage"
     t.string   "picto_url"
     t.string   "short_long_name"
@@ -114,7 +114,8 @@ ActiveRecord::Schema.define(:version => 20130316180539) do
     t.boolean  "accessible"
     t.string   "old_src_id"
     t.integer  "agency_id"
-    t.point    "center",          :limit => nil,                 :srid => 4326
+    t.point    "center",          :limit => nil,                                    :srid => 4326
+    t.boolean  "hidden",                         :default => false
   end
 
   create_table "lines_stops", :id => false, :force => true do |t|
