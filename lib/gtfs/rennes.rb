@@ -56,6 +56,7 @@ SQL
     def initialize
       super
 #      @steps.insert( @steps.index("stops"), "stops_extensions" )
+      @steps.insert( @steps.index("routes") + 1, "routes_additionals" )
       @steps.insert( @steps.index("routes"), "routes_extensions" )
       # 
       @legacy = {} #
@@ -165,6 +166,19 @@ SQL
     end
     handle :routes_extensions do |line|
       @lines_accessible[line[:route_id]] = line[:route_accessible].to_i == 1
+    end
+
+    handle :routes_additionals do |line|
+      Line.create( agency_id: @agency.id,
+                   src_id: line[:route_id],
+                   short_name: line[:route_short_name],
+                   long_name: line[:route_long_name],
+                   short_long_name: shorten_long_name( line ),
+                   bgcolor: line[:route_color],
+                   fgcolor: line[:route_text_color],
+                   usage: :special,
+                   :accessible => false, # because we don't know
+                   hidden: true )
     end
 
     def pre_routes
@@ -346,6 +360,7 @@ SQL
       mlog "Linking lines and stops"
       ActiveRecord::Base.transaction do
         @agency.lines.each do |line|
+          next unless @lines_stops.has_key? line.id
           line.stops = @lines_stops[line.id].keys.collect {|stop_id| @all_new_stops[stop_id] }.reject{|x| x.nil? }
           line.save
         end
