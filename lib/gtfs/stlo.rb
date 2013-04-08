@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'csv'
+require 'base_importer'
 require 'st_lo_importer'
 require 'stop_registry'
 
@@ -7,7 +8,7 @@ require 'gmap_polyline_encoder'
 require 'point'
 
 module Gtfs 
-  class StLo < Base
+  class StLo < BaseImporter
     def fix_stlo_headsign headsign
       headsign.split(/ (è|=>) /).pop
     end
@@ -555,7 +556,7 @@ module Gtfs
           stop.save
         end
       end
-      center_agency
+      @agency.centerize!
 
       [ Date::civil( 2013, 4, 1 ), 
         Date::civil( 2013, 5, 1 ),

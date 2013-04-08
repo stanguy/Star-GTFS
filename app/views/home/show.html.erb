@@ -54,7 +54,7 @@
       <ul id="line_types">
         <li><a href="#urban">Lignes urbaines</a></li>
         <% unless lines_groupes[1].empty? %><li><a href="#suburban">Suburbaines</a></li><% end %>
-        <% unless lines_groupes[1].empty? %><li><a href="#express">Express</a></li><% end %>
+        <% unless lines_groupes[2].empty? %><li><a href="#express">Express</a></li><% end %>
         <li><a href="#special">Spéciales</a></li>
       </ul>
       <%  [ "urban", "suburban", "express", "special" ].each_with_index do |h_id,idx| next if lines_groupes[idx].empty? %>

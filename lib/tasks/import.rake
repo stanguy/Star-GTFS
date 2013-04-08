@@ -1,6 +1,7 @@
 require 'gtfs/base'
 require 'gtfs/rennes'
 require 'gtfs/stlo'
+require 'gtfs/bordeaux'
 
 namespace :stargtfs do
 
@@ -8,10 +9,11 @@ namespace :stargtfs do
 
   desc "Import a number of agencies"
   task :import, [:agencies] => :environment do|t,args|
-    args.with_defaults( :agencies => 'rennes:stlo' )
+    args.with_defaults( :agencies => 'rennes:bordeaux:stlo' )
     Importers = { 
       :rennes => Gtfs::Rennes,
-      :stlo => Gtfs::StLo 
+      :stlo => Gtfs::StLo,
+      :bordeaux => Gtfs::Bordeaux 
     }
     
     args[:agencies].split(/:/).each do |cityname|
@@ -19,6 +21,8 @@ namespace :stargtfs do
       if Importers.has_key? citysym
         importer = Importers[citysym].new
         importer.run
+      else
+        print "No importer for #{citysym}"
       end
     end
   end
