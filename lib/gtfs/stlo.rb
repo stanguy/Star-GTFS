@@ -456,6 +456,7 @@ module Gtfs
       stops = []
       missings = []
 
+      @point_factory = RGeo::Geographic.spherical_factory :srid => 4326
       xml.xpath("//Folder/Placemark").each do |elem|
         point_coord_elem = elem.at_xpath( "Point/coordinates" )
         line_coord_elem = elem.at_xpath( "LineString/coordinates" )
@@ -495,7 +496,8 @@ module Gtfs
                                        :src_code => src_id,
                                        :src_name => name,
                                        :src_lat => coords[1],
-                                       :src_lon => coords[0]
+                                       :src_lon => coords[0],
+                                       :geom => @point_factory.point( coords[0], coords[1] )
                                      })
             stops << stop
           end
@@ -518,18 +520,10 @@ module Gtfs
       #puts missings.uniq
 
       mlog "Computing positions and bearings"
-
+      
       stops.uniq.each do |stop|
         next if stop.stop_aliases.count == 0
-        points = stop.stop_aliases.where( 'src_lat is not null' ).collect do |sa|
-          Point.from_lon_lat( sa.src_lon, sa.src_lat, 4326 )
-        end
-        collection = MultiPoint.from_points( points, 4326 )
-        position = collection.envelope.center
-        position.srid = 4326
-        stop.geom = position
-        stop.lat = position.lat
-        stop.lon = position.lon
+        stop.geom = stop.stop_aliases.where( 'geom is not null' ).select( "AsText(ST_Centroid(ST_Collect(geom::geometry))) AS center" )[0].center
         stop.save
       end
 
@@ -540,7 +534,7 @@ module Gtfs
           start = trip.stop_times.order(:arrival).first.stop
           stop = trip.stop_times.order(:arrival).last.stop
           next if start.geom.nil? or stop.geom.nil?
-          bearing = start.geom.bearing( stop.geom )
+          bearing = GTFSPoint::bearing( start.geom, stop.geom )
           next if bearing.nil?
           base_dir = bearing > 0 ? 'E' : 'W'
           dirs = [ 'N', 'N' + base_dir, 'N' + base_dir, base_dir, base_dir, 'S' + base_dir, 'S' + base_dir, 'S' ] 

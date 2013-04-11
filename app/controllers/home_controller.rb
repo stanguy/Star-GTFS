@@ -61,13 +61,13 @@ class HomeController < ApplicationController
       select( "id,short_name").
       where( :id => l.stops.collect(&:line_ids_cache).
                       map {|ids| ids.split(',') }.flatten.uniq ).each { |vl| other_lines[vl.id] = vl.short_name }
-    data = l.stops.collect do|stop|
+    data = l.stops.where("geom is not null").collect do|stop|
       if stop.slug == @selected_stop_id
         @selected_stop = stop
       end
       stop_info = {
         :name => stop.name,
-        :id => stop.slug, :lat => stop.lat, :lon => stop.lon,
+        :id => stop.slug, :lat => stop.geom.lat, :lon => stop.geom.lon,
         :accessible => ( l.accessible && stop.accessible ),
         :schedule_url => url_for({ :agency_id => @agency, :action => 'schedule', :line_id => l, :stop_id => stop, :only_path => true }),
         
@@ -97,6 +97,13 @@ class HomeController < ApplicationController
         colors: { :fg => l.fgcolor, :bg => l.bgcolor },
         incidents: @incidents.collect { |i| { id: i.id, title: i.title } }
       }, callback: params[:callback]
+      # possible evolution of the output:
+      # { paths: [ /paths/ ], colors: {...}, incidents: [ ],
+      #   slug: "...", short: "...",
+      #   stops: [ { name: "...", slug: "...", times: [] }, { ... } ]
+      # }
+      # and the following as config:
+      #   urls: { x: "/foo/{{bar}}/quux/{{zog}}" ... },
     else
       @line_data = data
       @line_paths = l.polylines.collect(&:path)

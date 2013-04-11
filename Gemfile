@@ -9,7 +9,7 @@ gem 'fastercsv', :platforms => :ruby_18
 gem 'nokogiri'
 
 gem 'pg'
-gem 'spatial_adapter', :git => "https://github.com/Empact/spatial_adapter.git"
+gem 'activerecord-postgis-adapter'
 gem 'inherited_resources'
 
 gem 'jquery-rails'

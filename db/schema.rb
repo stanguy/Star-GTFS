@@ -11,24 +11,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130326210824) do
+ActiveRecord::Schema.define(:version => 20130410194933) do
 
   create_table "agencies", :force => true do |t|
-    t.string      "name"
-    t.string      "url"
-    t.string      "tz"
-    t.string      "phone"
-    t.string      "lang"
-    t.string      "city"
-    t.boolean     "ads_allowed"
-    t.datetime    "created_at",                 :null => false
-    t.datetime    "updated_at",                 :null => false
-    t.string      "slug"
-    t.string      "publisher"
-    t.string      "feed_url"
-    t.string      "feed_ref"
-    t.multi_point "bbox",        :limit => nil,                 :srid => 4326
-    t.point       "center",      :limit => nil,                 :srid => 4326
+    t.string   "name"
+    t.string   "url"
+    t.string   "tz"
+    t.string   "phone"
+    t.string   "lang"
+    t.string   "city"
+    t.boolean  "ads_allowed"
+    t.datetime "created_at",                                                                    :null => false
+    t.datetime "updated_at",                                                                    :null => false
+    t.string   "slug"
+    t.string   "publisher"
+    t.string   "feed_url"
+    t.string   "feed_ref"
+    t.spatial  "center",      :limit => {:srid=>4326, :type=>"point", :geographic=>true}
+    t.spatial  "bbox",        :limit => {:srid=>4326, :type=>"multi_point", :geographic=>true}
   end
 
   create_table "bike_stations", :force => true do |t|
@@ -38,26 +38,22 @@ ActiveRecord::Schema.define(:version => 20130326210824) do
     t.float    "lat"
     t.float    "lon"
     t.boolean  "pos"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-    t.point    "geom",       :limit => nil,                 :srid => 4326
+    t.datetime "created_at",                                                             :null => false
+    t.datetime "updated_at",                                                             :null => false
+    t.spatial  "geom",       :limit => {:srid=>4326, :type=>"point", :geographic=>true}
   end
 
   create_table "calendar_dates", :force => true do |t|
-    t.integer  "calendar_id"
-    t.date     "exception_date"
-    t.boolean  "exclusion"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.integer "calendar_id"
+    t.date    "exception_date"
+    t.boolean "exclusion"
   end
 
   create_table "calendars", :force => true do |t|
-    t.string   "src_id"
-    t.integer  "days"
-    t.date     "start_date"
-    t.date     "end_date"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string  "src_id"
+    t.integer "days"
+    t.date    "start_date"
+    t.date    "end_date"
   end
 
   create_table "cities", :force => true do |t|
@@ -105,8 +101,8 @@ ActiveRecord::Schema.define(:version => 20130326210824) do
     t.string   "long_name"
     t.string   "bgcolor"
     t.string   "fgcolor"
-    t.datetime "created_at",                                        :null => false
-    t.datetime "updated_at",                                        :null => false
+    t.datetime "created_at",                                                                                     :null => false
+    t.datetime "updated_at",                                                                                     :null => false
     t.string   "usage"
     t.string   "picto_url"
     t.string   "short_long_name"
@@ -114,9 +110,11 @@ ActiveRecord::Schema.define(:version => 20130326210824) do
     t.boolean  "accessible"
     t.string   "old_src_id"
     t.integer  "agency_id"
-    t.point    "center",          :limit => nil,                                    :srid => 4326
-    t.boolean  "hidden",                         :default => false
+    t.boolean  "hidden",                                                                      :default => false
+    t.spatial  "center",          :limit => {:srid=>4326, :type=>"point", :geographic=>true}
   end
+
+  add_index "lines", ["agency_id"], :name => "index_lines_on_agency_id"
 
   create_table "lines_stops", :id => false, :force => true do |t|
     t.integer "line_id"
@@ -129,9 +127,9 @@ ActiveRecord::Schema.define(:version => 20130326210824) do
     t.string   "address"
     t.float    "lat"
     t.float    "lon"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-    t.point    "geom",       :limit => nil,                 :srid => 4326
+    t.datetime "created_at",                                                             :null => false
+    t.datetime "updated_at",                                                             :null => false
+    t.spatial  "geom",       :limit => {:srid=>4326, :type=>"point", :geographic=>true}
   end
 
   create_table "polylines", :force => true do |t|
@@ -150,9 +148,9 @@ ActiveRecord::Schema.define(:version => 20130326210824) do
     t.string   "schedule"
     t.float    "lat"
     t.float    "lon"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-    t.point    "geom",       :limit => nil,                 :srid => 4326
+    t.datetime "created_at",                                                             :null => false
+    t.datetime "updated_at",                                                             :null => false
+    t.spatial  "geom",       :limit => {:srid=>4326, :type=>"point", :geographic=>true}
   end
 
   create_table "stop_aliases", :force => true do |t|
@@ -162,11 +160,12 @@ ActiveRecord::Schema.define(:version => 20130326210824) do
     t.string   "src_name"
     t.float    "src_lat"
     t.float    "src_lon"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                                                              :null => false
+    t.datetime "updated_at",                                                              :null => false
     t.boolean  "accessible"
     t.string   "description"
     t.string   "old_src_id"
+    t.spatial  "geom",        :limit => {:srid=>4326, :type=>"point", :geographic=>true}
   end
 
   create_table "stop_times", :id => false, :force => true do |t|
@@ -184,14 +183,14 @@ ActiveRecord::Schema.define(:version => 20130326210824) do
     t.string   "name"
     t.float    "lat"
     t.float    "lon"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at",                                                                 :null => false
+    t.datetime "updated_at",                                                                 :null => false
     t.integer  "city_id"
     t.string   "line_ids_cache"
     t.string   "slug"
     t.boolean  "accessible"
     t.integer  "agency_id"
-    t.point    "geom",           :limit => nil,                 :srid => 4326
+    t.spatial  "geom",           :limit => {:srid=>4326, :type=>"point", :geographic=>true}
   end
 
   create_table "trips", :force => true do |t|

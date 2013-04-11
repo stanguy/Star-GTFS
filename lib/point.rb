@@ -10,11 +10,11 @@ end
     
 
 
-class Point
-  def bearing rpoint
-    lat1 = self.lat.toRad();
+module GTFSPoint
+  def self.bearing lpoint, rpoint
+    lat1 = lpoint.lat.toRad();
     lat2 = rpoint.lat.toRad();
-    lon1 = self.lon;
+    lon1 = lpoint.lon;
     lon2 = rpoint.lon;
 
     dLat = (lat2-lat1).toRad();

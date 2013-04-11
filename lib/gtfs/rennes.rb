@@ -93,7 +93,7 @@ module Gtfs
       result['opendata']['answer']['data']['pos'].each do|pos|
         pos['lat'] = pos['latitude'].to_f
         pos['lon'] = pos['longitude'].to_f
-        pos['geom'] = Point.from_lon_lat( pos['lon'], pos['lat'], 4326 )
+        pos['geom'] = @point_factory.point( pos['lon'], pos['lat'] )
         [ 'latitude', 'longitude', 'phone', 'district' ].each {|k| pos.delete k }
         Pos.create( pos )
       end
@@ -103,7 +103,7 @@ module Gtfs
       result['opendata']['answer']['data']['station'].each do|bs|
         bs['lat'] = bs['latitude'].to_f
         bs['lon'] = bs['longitude'].to_f
-        bs['geom'] = Point.from_lon_lat( bs['lon'], bs['lat'], 4326 )
+        bs['geom'] = @point_factory.point( bs['lon'], bs['lat'] )
         [ 'latitude', 'longitude', 'state', 'district', 'slotsavailable','bikesavailable','lastupdate' ].each {|k| bs.delete k }
         BikeStation.create( bs )
       end
@@ -113,7 +113,7 @@ module Gtfs
       result['opendata']['answer']['data']['station'].each do|ms|
         ms['lat'] = ms['latitude'].to_f
         ms['lon'] = ms['longitude'].to_f
-        ms['geom'] = Point.from_lon_lat( ms['lon'], ms['lat'], 4326 )
+        ms['geom'] = @point_factory.point( ms['lon'], ms['lat'] )
         ms['src_id'] = ms['id']
         [ 'id', 'latitude', 'longitude', 'hasPlatformDirection1', 'hasPlatformDirection2', 'rankingPlatformDirection1', 'rankingPlatformDirection2', 'floors', 'lastupdate' ].each {|k| ms.delete k }
         MetroStation.create( ms )

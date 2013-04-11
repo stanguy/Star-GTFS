@@ -29,6 +29,8 @@ module Gtfs
       @all_stop_times = []
       @lines_stops = {}
       @all_headsigns = {}
+      @point_factory = RGeo::Geographic.spherical_factory :srid => 4326
+
     end
     
     def run
@@ -118,13 +120,13 @@ SQL
       valid_stops = {}
       @all_stops.each do |shortname,stops|
         checked_stops = { }
-        p = Point.from_lon_lat( stops.first[:stop_lon].to_f, stops.first[:stop_lat].to_f, 4326 )
+        p = @point_factory.point( stops.first[:stop_lon].to_f, stops.first[:stop_lat].to_f )
         checked_stops[p] = [stops.shift]
         stops.each do |stop|
           found = false
-          p2 = Point.from_lon_lat( stop[:stop_lon].to_f, stop[:stop_lat].to_f, 4326 )
+          p2 = @point_factory.point( stop[:stop_lon].to_f, stop[:stop_lat].to_f )
           checked_stops.each do |p,cs_stops|
-            if p.ellipsoidal_distance( p2 ) < 200
+            if p.distance( p2 ) < 200
               found = true
               cs_stops << stop
               break
@@ -170,7 +172,7 @@ SQL
                                  :agency_id => @agency.id,
                                  :lat => lat,
                                  :lon => lon,
-                                 :geom => Point.from_lon_lat( lon, lat, 4326 ),
+                                 :geom => @point_factory.point( lon, lat ),
                                  :city_id => stop_city_id,
                                  :accessible => is_accessible })
         stops.each do |stop|
@@ -179,6 +181,7 @@ SQL
                                          :src_name => stop[:stop_name],
                                          :src_lat => stop[:stop_lat],
                                          :src_lon => stop[:stop_lon],
+                                         :geom => @point_factory.point( stop[:stop_lon], stop[:stop_lat] ),
                                          :description => stop[:stop_desc],
                                          :accessible => stop[:wheelchair_boarding] == 1 })
           @legacy[:stops][stop[:stop_id]] = new_stop.id
@@ -313,7 +316,7 @@ SQL
         Trip.all.each do |trip|
           start = trip.stop_times.order(:arrival).first.stop
           stop = trip.stop_times.order(:arrival).last.stop
-          bearing = start.geom.bearing( stop.geom )
+          bearing = GTFSPoint::bearing( start.geom, stop.geom )
           next if bearing.nil?
           base_dir = bearing > 0 ? 'E' : 'W'
           dirs = [ 'N', 'N' + base_dir, 'N' + base_dir, base_dir, base_dir, 'S' + base_dir, 'S' + base_dir, 'S' ] 
