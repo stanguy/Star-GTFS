@@ -11,6 +11,7 @@ gem 'nokogiri'
 gem 'pg'
 gem 'activerecord-postgis-adapter'
 gem 'inherited_resources'
+gem 'apartment'
 
 gem 'jquery-rails'
 
@@ -42,5 +43,6 @@ group :development, :test do
   gem 'rb-inotify', '~> 0.8.8'
   gem "better_errors"
   gem "binding_of_caller"
+#  gem 'database_cleaner'
 end
 

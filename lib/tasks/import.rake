@@ -19,6 +19,7 @@ namespace :stargtfs do
     args[:agencies].split(/:/).each do |cityname|
       citysym = cityname.to_sym
       if Importers.has_key? citysym
+        Apartment::Database.switch( cityname )
         importer = Importers[citysym].new
         importer.run
       else
