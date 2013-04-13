@@ -296,7 +296,7 @@ class HomeController < ApplicationController
       if @agency.nil?
         not_found
       end
-      Apartment::Database.switch( @agency.slug )
+      Apartment::Database.switch( @agency.slug.gsub "-", "" )
     else
       not_found
     end

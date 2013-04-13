@@ -91,13 +91,23 @@ SQL
 
   # and now, common GTFS handlers
     handle :agency do |line|
-      @agency = Agency.create( :name => line[:agency_name],
-                               :url => line[:agency_url],
-                               :tz => line[:agency_timezone],
-                               :phone => line[:agency_phone],
-                               :lang => line[:agency_lang],
-                               :city => city,
-                               :ads_allowed => ads_allowed )
+      @agency = Agency.where( :name => line[:agency_name] ).first
+      if @agency
+        @agency.update_attributes( :url => line[:agency_url],
+                                   :tz => line[:agency_timezone],
+                                   :phone => line[:agency_phone],
+                                   :lang => line[:agency_lang],
+                                   :city => city,
+                                   :ads_allowed => ads_allowed )
+      else
+        @agency = Agency.create( :name => line[:agency_name],
+                                 :url => line[:agency_url],
+                                 :tz => line[:agency_timezone],
+                                 :phone => line[:agency_phone],
+                                 :lang => line[:agency_lang],
+                                 :city => city,
+                                 :ads_allowed => ads_allowed )
+      end
     end
 
     handle :feed_info do |line|

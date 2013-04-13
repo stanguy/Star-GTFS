@@ -63,13 +63,20 @@ module Gtfs
     
     def run
       
-      @agency = Agency.create( :name => "TUAS",
-                               :publisher => "Veolia Transdev",
-                               :feed_ref => "20111103",
-                               :tz => "Europe/Paris",
-                               :lang => :fr,
-                               :city => "Saint Lô",
-                               :ads_allowed => false )
+      agency_info = { :publisher => "Veolia Transdev",
+        :feed_ref => "20111103",
+        :tz => "Europe/Paris",
+        :lang => :fr,
+        :city => "Saint Lô",
+        :ads_allowed => false 
+      }
+      @agency = Agency.where( :name => "TUAS" ).first
+      if @agency
+        @agency.update_attributes( agency_info )
+      else
+        @agency = Agency.create( agency_info.merge( { :name => "TUAS" } ) )
+      end
+
       @calendars = { }
       
       stop_registry = StopRegistry.new @agency
@@ -487,7 +494,7 @@ module Gtfs
             when "madelaine"
               qname = "madeleine"
             end
-            stop = Stop.where( "ts_rank_cd( '{0.1, 0.2, 0.4, 1.0}', to_tsvector('french',unaccent_string(name)), plainto_tsquery( 'french', ? ) ) > 0", qname ).first
+            stop = Stop.where( "ts_rank_cd( '{0.1, 0.2, 0.4, 1.0}', to_tsvector('french',public.unaccent_string(name)), plainto_tsquery( 'french', ? ) ) > 0", qname ).first
           end
           if stop.nil?
             missings << name

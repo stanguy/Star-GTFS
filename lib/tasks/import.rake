@@ -9,19 +9,25 @@ namespace :stargtfs do
 
   desc "Import a number of agencies"
   task :import, [:agencies] => :environment do|t,args|
-    args.with_defaults( :agencies => 'rennes:bordeaux:stlo' )
+    args.with_defaults( :agencies => 'rennes:bordeaux:saintlo' )
     Importers = { 
       :rennes => Gtfs::Rennes,
-      :stlo => Gtfs::StLo,
+      :saintlo => Gtfs::StLo,
       :bordeaux => Gtfs::Bordeaux 
     }
     
     args[:agencies].split(/:/).each do |cityname|
       citysym = cityname.to_sym
       if Importers.has_key? citysym
-        Apartment::Database.switch( cityname )
+        current_scheme = cityname + "_" + Time.now.to_i.to_s
+        Apartment::Database.create( current_scheme )
+        Apartment::Database.switch( current_scheme )
         importer = Importers[citysym].new
         importer.run
+        if ActiveRecord::Base.connection.schema_exists? cityname
+          ActiveRecord::Base.connection.execute "DROP SCHEMA #{cityname} CASCADE"
+        end
+        ActiveRecord::Base.connection.execute "ALTER SCHEMA #{current_scheme} RENAME TO #{cityname}"
       else
         print "No importer for #{citysym}"
       end
