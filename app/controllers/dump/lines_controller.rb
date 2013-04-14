@@ -1,4 +1,4 @@
-class Dump::LinesController < InheritedResources::Base
+class Dump::LinesController < Dump::BaseController
   defaults :resource_class => Line
   respond_to :json
   belongs_to :agency

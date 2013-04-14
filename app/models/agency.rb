@@ -19,6 +19,9 @@ class Agency < ActiveRecord::Base
     self.save
   end
       
+  def db_slug
+    slug.gsub "-", "" 
+  end
       
 
 end

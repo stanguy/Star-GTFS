@@ -1,4 +1,4 @@
-class Dump::StopsController < InheritedResources::Base
+class Dump::StopsController < Dump::BaseController
   defaults :resource_class => Stop
   respond_to :json
   belongs_to :line, :optional => true
