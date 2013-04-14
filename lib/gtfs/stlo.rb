@@ -531,6 +531,8 @@ module Gtfs
       stops.uniq.each do |stop|
         next if stop.stop_aliases.count == 0
         stop.geom = stop.stop_aliases.where( 'geom is not null' ).select( "AsText(ST_Centroid(ST_Collect(geom::geometry))) AS center" )[0].center
+        stop.lat = stop.geom.lat
+        stop.lon = stop.geom.lon
         stop.save
       end
 
