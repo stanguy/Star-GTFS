@@ -5,8 +5,11 @@ namespace :stargtfs do
   task :maptimize_export => :environment do
     str = CSV.generate do |csv|
       csv << [ "id", "lat", "lng" ]
-      Stop.all.each do |stop|
-        csv << [ stop.slug, stop.lat, stop.lon ]
+      Agency.where( slug: [ "rennes", "saint-lo" ] ).each do |agency|
+        Apartment::Database.switch agency.db_slug
+        Stop.all.each do |stop|
+          csv << [ stop.slug, stop.lat, stop.lon ]
+        end
       end
     end
     r = Net::HTTP.start( 'v2.maptimize.com', 80 ) do |http|
