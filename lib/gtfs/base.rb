@@ -113,7 +113,7 @@ SQL
     handle :feed_info do |line|
       @agency.publisher = line[:feed_publisher_name]
       @agency.feed_url = line[:feed_publisher_url]
-      @agency.feed_ref = line[:feed_end_date]
+      @agency.feed_ref = line[:feed_start_date]
     end
 
     handle :stops do |line|
