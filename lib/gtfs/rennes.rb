@@ -151,6 +151,7 @@ module Gtfs
         
         line.trips.of_week_day(Calendar::WEEKDAY).each do |trip|
           signer = Digest::SHA2.new
+          signer << trip.calendar.range_to_s
           trip.stop_times.order('arrival ASC').each do |st|
             signer << st.arrival.to_s << st.stop_id.to_s
           end

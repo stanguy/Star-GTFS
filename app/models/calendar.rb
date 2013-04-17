@@ -50,12 +50,13 @@ class Calendar < ActiveRecord::Base
     end
     where( "( end_date >= ? AND start_date <= ? AND days & ? > 0 AND #{exclude_test} ) OR #{include_test}", date, date, 1 << ( ( t.wday - 1 ) % 7 ), except_exclude, except_include )
   }
-
   def to_s
-    [ self.start_date.strftime( "%Y%m%d" ), 
-      self.end_date.strftime( "%Y%m%d" ),
+    [ self.range_to_s,
       self.days ].join("-")
   end
       
-
+  def range_to_s
+    [ self.start_date.strftime( "%Y%m%d" ), 
+      self.end_date.strftime( "%Y%m%d" ) ].join( "-")
+  end
 end
