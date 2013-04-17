@@ -25,6 +25,7 @@ SitemapGenerator::Sitemap.create do
   #     add article_path(article), :lastmod => article.updated_at
   #   end
   Agency.all.each do |agency|
+    Apartment::Database.switch agency.db_slug
     add agency_path(agency)
     agency.lines.each do |line|
       add home_line_path( agency, line ), :priority => 0.75
