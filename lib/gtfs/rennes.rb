@@ -133,7 +133,7 @@ module Gtfs
       mlog "Adding index for stop_times/trips"
       ActiveRecord::Migration.add_index( :stop_times, [ :trip_id ] )
 
-      check_multiple_trips
+      check_multiple_trips unless not ENV["RENNES_SKIP_CHECK"].nil?
 
       mlog "Adding other indexes"
       ActiveRecord::Migration.add_index( :stop_times, [ :line_id, :calendar_id, :arrival ] )
