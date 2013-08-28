@@ -16,6 +16,7 @@ gem 'apartment'
 gem 'jquery-rails'
 
 gem 'carrierwave'
+gem 'mini_magick'
 gem 'stringex'
 gem 'sunspot_rails'
 gem 'sitemap_generator'
