@@ -15,6 +15,17 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
 }
 
+@mixin fix-jui-maps {
+    &, div, span {
+        font-size: 16px;
+    }
+    
+    .ui-state-default a, .ui-state-active a {
+        font-weight: bold;
+        font-size: 100%;
+    }
+}
+
 
 h1, h2, h3, h4, h5, th, #line_types li a, label {
     @include title_fonts;
@@ -104,6 +115,7 @@ $baseActiveColor: #FF0084;
 #navigator {
     @include map-control;
     @include vertical-gradient;
+    @include fix-jui-maps;
     display: none;
     padding-bottom: 20px;
     overflow: hidden;
@@ -239,6 +251,7 @@ button#clock {
 
 #infowindow {
     @include map-control;
+    @include fix-jui-maps;
     padding: 5px 10px 20px 30px;
     max-width: 33%;
 
@@ -269,8 +282,9 @@ button#clock {
                 padding: 2px 10px;
                 float: left;
                 border-right: 1px solid #ddd;
-                @include fixed_fonts;
                 a.t {
+                    @include fixed_fonts;
+                    font-size: 16px;
                     color: #000;
                     text-decoration: none;
                     &:hover {
