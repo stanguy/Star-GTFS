@@ -17,7 +17,7 @@ module Gtfs
     def line_usage line
       return :urban if [ 'Urbaine', 'Inter-quartiers', 'Majeure' ].include? line[:route_desc] 
       return :express if line[:route_desc].match( /^Express/ )
-      return :suburban if [ 'Intercommunale', 'Suburbaine' ].include? line[:route_desc]
+      return :suburban if [ 'Intercommunale', 'Suburbaine', 'Métropolitaine' ].include? line[:route_desc]
       :special
     end
 
@@ -69,8 +69,8 @@ module Gtfs
 
     handle :routes do |line|
       new_line = super line
-      if File.exists?( File.join( @root, line[:route_short_name] + ".png" ) )
-        new_line.picto_url = File.open( File.join( @root, line[:route_short_name] + ".png" ) )
+      if File.exists?( File.join( @root, line[:route_id] + ".png" ) )
+        new_line.picto_url = File.open( File.join( @root, line[:route_id] + ".png" ) )
         new_line.save
       elsif @lines_picto_urls.has_key? line[:route_short_name]
         new_line.remote_picto_url_url = @lines_picto_urls[line[:route_short_name]]
