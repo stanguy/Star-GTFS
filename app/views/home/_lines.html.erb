@@ -6,7 +6,7 @@
                     home_line_path(@agency,line), { 'data-short' => line.short_name, :style=> "color: ##{line.fgcolor}" } )%>
      <% else %>
       <li>
-        <%= link_to image_tag( line.picto_url ) + content_tag('span', line.full_name), home_line_path(@agency,line), { 'data-short' => line.short_name } %>
+        <%= link_to image_tag( line.picto_url, alt: line.short_name ) + content_tag('span', line.full_name), home_line_path(@agency,line), { 'data-short' => line.short_name } %>
       <% end %>
     </li>
   <% end %>
