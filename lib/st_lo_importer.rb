@@ -32,7 +32,7 @@ class StLoImporter
     head = data[valid_stop_indexes.first]
     while trip_i < head.length
       unless head[trip_i].nil? 
-        if head[trip_i].strip.match(/^(\d+:\d+|-|\|)$/)
+        if head[trip_i].strip.match(/^(\d+:\d+|-|\|)[A-Z]?$/)
           trip_indexes << trip_i
         elsif !head[trip_i].blank?
           break
@@ -45,8 +45,8 @@ class StLoImporter
       trip_result = { trip_calendar => [] }
       valid_stop_indexes.each do |line_idx|
         next if data[line_idx][idx].nil?
-        next unless data[line_idx][idx].match(/^\d+:\d+$/)
-        trip_time = { :t => data[line_idx][idx].split(':').inject(0) { |m,v| m = m * 60 + v.to_i } * 60, 
+        next unless matches = data[line_idx][idx].strip.match(/^(\d+:\d+)[A-Z]?$/)
+        trip_time = { :t => matches[1].split(':').inject(0) { |m,v| m = m * 60 + v.to_i } * 60, 
           :s => @stop_registry[data[line_idx][self.stop_col]] }
         if @time_exceptions.has_key? [line_idx,idx]
           exception_calendar = @time_exceptions[[line_idx,idx]]
