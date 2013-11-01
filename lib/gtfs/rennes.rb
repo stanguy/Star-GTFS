@@ -190,7 +190,12 @@ module Gtfs
         end
         mlog "End of purge for #{line.long_name}"
       end
-      Calendar.all.select { |c| c.trips.count == 0 }.map(&:delete)
+      Calendar.all.each do |c| 
+        if c.trips.count == 0 
+          c.calendar_dates.clear
+          c.delete
+        end
+      end
     end
     def import_kml
       mlog "Importing KML"
