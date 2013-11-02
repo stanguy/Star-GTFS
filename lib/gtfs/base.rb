@@ -224,17 +224,13 @@ SQL
         end
       end
       start_d = Date.strptime( line[:start_date], '%Y%m%d' )
-      puts "Read start calendar as #{start_d}"
       unless start_d.monday?
         ref = if start_d.sunday? then 7.days else start_d.wday.days end
         start_d = ( start_d - ( ref - 1.day ) ).to_date
-        puts "Start calendar not monday, so: #{start_d}"
       end
       end_d = Date.strptime( line[:end_date], '%Y%m%d' )
-      puts "Read end calendar as #{end_d}"
       unless end_d.sunday?
         end_d = ( end_d + ( 7 - end_d.wday ).days ).to_date
-        puts "End calendar not sunday, so: #{end_d}"
       end
       @calendar[id] = Calendar.create( src_id: id,
                                        days: days,
