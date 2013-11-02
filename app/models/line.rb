@@ -3,7 +3,7 @@ class Line < ActiveRecord::Base
   acts_as_url :short_long_name, :url_attribute => :slug
   mount_uploader :picto_url, LinePictoUploader
 
-  searchable do 
+  searchable auto_index: false do 
     string :short_name, :stored => true
     text :long_name, :stored => true
     integer :agency_id

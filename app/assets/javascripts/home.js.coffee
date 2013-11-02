@@ -230,7 +230,7 @@ class MapBus
                 false
             search: =>
                 this.clearMap()
-        }).data("autocomplete")._renderItem = ( ul, item ) =>
+        }).data("uiAutocomplete")._renderItem = ( ul, item ) =>
             if item.type == "stop" and item.lat?
                 this.markers.push new Marker( @map, item )
             $( "<li></li>" ).data( "item.autocomplete", item )
@@ -448,4 +448,3 @@ $.dthg.Bus = {
         loadLines()
         mapBus = new MapBus()
 }
-

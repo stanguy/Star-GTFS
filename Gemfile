@@ -14,6 +14,7 @@ gem 'inherited_resources'
 gem 'apartment'
 
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 
 gem 'carrierwave'
 gem 'mini_magick'
@@ -44,6 +45,7 @@ group :development, :test do
   gem 'rb-inotify', '~> 0.8.8'
   gem "better_errors"
   gem "binding_of_caller"
+  gem "pry-rails"
 #  gem 'database_cleaner'
 end
 
