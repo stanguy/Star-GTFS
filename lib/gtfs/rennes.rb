@@ -24,6 +24,9 @@ module Gtfs
     def shorten_long_name line
       basename = line[:route_long_name]
       basename.split( '<>' ).map(&:strip).collect do |destination|
+        if destination.match( /\// )
+          destination = destination.split( /\// ).last
+        end
         if m = destination.match( /^([^\/(]*) [\/(]/ )
           m[1]
         else
