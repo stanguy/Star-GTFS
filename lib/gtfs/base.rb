@@ -136,7 +136,7 @@ SQL
           found = false
           p2 = @point_factory.point( stop[:stop_lon].to_f, stop[:stop_lat].to_f )
           checked_stops.each do |p,cs_stops|
-            if p.distance( p2 ) < 200
+            if p.distance( p2 ) < 225
               found = true
               cs_stops << stop
               break
