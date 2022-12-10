@@ -327,19 +327,26 @@ SQL
         end
       end
       compute_bearings
+      mlog "Done post run"
     end
     
     def compute_bearings
       mlog "Computing bearings"
+      cache_bearings = {}
       ActiveRecord::Base.transaction do
         Trip.all.each do |trip|
-          start = trip.stop_times.order(:arrival).first.stop
-          stop = trip.stop_times.order(:arrival).last.stop
-          bearing = GTFSPoint::bearing( start.geom, stop.geom )
-          next if bearing.nil?
-          base_dir = bearing > 0 ? 'E' : 'W'
-          dirs = [ 'N', 'N' + base_dir, 'N' + base_dir, base_dir, base_dir, 'S' + base_dir, 'S' + base_dir, 'S' ] 
-          trip.bearing = dirs[ (bearing.abs * 8 / 180).floor ]
+          stop_times = trip.stop_times.order(:arrival)
+          cache_key = stop_times.first.stop_id.to_s + "-" + stop_times.last.stop_id.to_s
+          unless cache_bearings.has_key? cache_key
+            start = stop_times.first.stop
+            stop = stop_times.last.stop
+            bearing = GTFSPoint::bearing( start.geom, stop.geom )
+            next if bearing.nil?
+            base_dir = bearing > 0 ? 'E' : 'W'
+            dirs = [ 'N', 'N' + base_dir, 'N' + base_dir, base_dir, base_dir, 'S' + base_dir, 'S' + base_dir, 'S' ] 
+            cache_bearings[cache_key] = dirs[ (bearing.abs * 8 / 180).floor ]
+          end
+          trip.bearing = cache_bearings[cache_key]
           trip.save
         end
       end

@@ -16,6 +16,7 @@ gem 'apartment'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
+gem 'json', "~> 1.8.2"
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'stringex'
@@ -41,7 +42,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'webrat'
 #  gem 'factory_girl_rails'
-  gem 'rails-dev-boost', :git => 'git://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
+#  gem 'rails-dev-boost', :git => 'https://github.com/thedarkone/rails-dev-boost.git', :require => 'rails_development_boost'
   gem 'rb-inotify', '~> 0.8.8'
   gem "better_errors"
   gem "binding_of_caller"

@@ -6,8 +6,8 @@ production:
 
 development:
   solr:
-    hostname: localhost
-    port: 8080
+    hostname: search
+    port: 8983
     log_level: INFO
 
 test:

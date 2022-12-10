@@ -3,6 +3,9 @@
 development:
   adapter: postgis
   database: stargtfs
+  host: database
+  password: <%= ENV.fetch("DB_PASSWORD") { password } %>
+  username: stargtfs
   pool: 5
   postgis_extension: true
   schema_search_path: public,postgis

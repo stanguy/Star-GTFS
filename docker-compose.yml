@@ -1,0 +1,32 @@
+version: "3.3"
+services:
+  database:
+    image: postgis/postgis:10-3.2
+    environment:
+      - POSTGRES_DB=stargtfs
+      - POSTGRES_USER=stargtfs
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./containers/database/init-postgis-schema.sh:/docker-entrypoint-initdb.d/init-postgis-schema.sh
+  search:
+    image: solr:8
+    volumes:
+      - ./containers/search/:/default_config
+    command:
+      - solr-precreate
+      - default
+      - /default_config
+  app:
+    build:
+      context: ./
+      dockerfile: containers/app/Dockerfile
+    volumes:
+      - ./:/app
+    environment:
+      - RAILS_ENV=development
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      - database
+      - search
+    ports:
+      - 3000:3000

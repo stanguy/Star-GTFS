@@ -6,7 +6,7 @@ h2. Requirements
 
  * Ruby 1.9;
  * PostgreSQL 8.4;
- * PostGIS 1.5;
+ * PostGIS 1.5 (must be loaded in a dedicated schema);
  * Apache Solr;
  * Time.
 
