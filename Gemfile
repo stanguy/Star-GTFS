@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '~>3.2.0'
+gem 'rails', '~>5.2.8'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -16,7 +16,7 @@ gem 'apartment'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
-gem 'json', "~> 1.8.2"
+gem 'json', "~> 2.6.3"
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'stringex'
@@ -27,8 +27,8 @@ gem 'em-http-request'
 gem 'unicorn'
 
 group :assets do
-  gem 'sass-rails', "  ~> 3.2.3"
-  gem 'coffee-rails', "~> 3.2.1"
+  gem 'sass-rails', "~> 6.0.0"
+  gem 'coffee-rails', "~> 5.0.0"
   gem 'uglifier', '>= 1.0.3'
   gem 'hogan_assets'
 end
