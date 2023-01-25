@@ -1,5 +1,5 @@
 class Calendar < ActiveRecord::Base
-  attr_accessible :days, :end_date, :src_id, :start_date
+#  attr_accessible :days, :end_date, :src_id, :start_date
   
   has_many :calendar_dates, :dependent => :delete_all
   has_many :trips

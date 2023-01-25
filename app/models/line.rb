@@ -18,7 +18,7 @@ class Line < ActiveRecord::Base
   has_many :headsigns
   has_many :polylines
 
-  scope :visible, where( :hidden => false )
+  scope :visible, -> { where hidden: false }
 
   scope :by_usage, lambda{ |what_usage|
     ( ( what_usage == :all ) ? scoped : where( :usage => what_usage ) ).order('short_name ASC')
@@ -46,7 +46,7 @@ class Line < ActiveRecord::Base
       str = m[1]
       slug = m[2]
     end
-    l = all( :conditions => { :short_name => str } )
+    l = where(:short_name => str)
     if l.count == 0
       raise ActiveRecord::RecordNotFound
     elsif l.count > 1
