@@ -30,6 +30,8 @@ ENV RBENV_ROOT=/rbenv
 ENV RBENV_VERSION=1.9.3-p551
 ENV PATH=$RBENV_ROOT/bin/:$RBENV_ROOT/shims/:$PATH
 
+RUN chown -R rails /rbenv
+
 USER rails
 WORKDIR /app
 
