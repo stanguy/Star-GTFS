@@ -29,7 +29,6 @@ gem 'mini_magick'
 gem 'stringex'
 gem 'sunspot_rails'
 gem 'sitemap_generator'
-gem 'em-http-request'
 
 gem 'unicorn'
 
