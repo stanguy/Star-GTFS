@@ -88,7 +88,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (4.1.0)
       railties (>= 3.1.0)
-    json (1.8.6)
+    json (2.3.0)
     kgio (2.11.4)
     loofah (2.19.1)
       crass (~> 1.0.2)
@@ -228,7 +228,7 @@ DEPENDENCIES
   inherited_resources (~> 1.6.0)
   jquery-rails
   jquery-ui-rails
-  json (~> 1.8.2)
+  json (~> 2.3.0)
   memcache-client
   mini_magick
   minitest (~> 5.1.0)
