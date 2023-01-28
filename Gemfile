@@ -23,7 +23,7 @@ gem 'apartment'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
-gem 'json', "~> 1.8.2"
+gem 'json', "~> 2.3.0"
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'stringex'
