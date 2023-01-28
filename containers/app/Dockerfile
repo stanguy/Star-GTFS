@@ -1,6 +1,6 @@
-FROM debian:jessie AS build_vendors
+FROM debian:buster AS build_vendors
 
-RUN apt-get update && apt-get install -y git autoconf bison curl patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev libdb-dev uuid-dev libpq-dev
+RUN apt-get update && apt-get install -y git autoconf bison curl patch build-essential rustc libssl-dev libyaml-dev libreadline-dev zlib1g-dev libgmp-dev libncurses-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev libpq-dev
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 ENV RBENV_ROOT=/rbenv
 ENV RBENV_VERSION=2.2.9
@@ -18,10 +18,10 @@ RUN gem install bundler -v "~>1.0" && \
     bundle install && \
     rbenv rehash
 
-FROM debian:jessie
+FROM debian:buster
 
 # runtime libs and netcat for waiting
-RUN apt-get update && apt-get install -y --force-yes libgdbm3 libpq5 libyaml-0-2 nodejs netcat
+RUN apt-get update && apt-get install -y libreadline7 libncurses6 libgdbm6 libpq5 libyaml-0-2 nodejs netcat
 
 RUN adduser --home /app --uid 1000 rails
 
